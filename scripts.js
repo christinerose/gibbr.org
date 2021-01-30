@@ -10,10 +10,11 @@ function setNavbarActiveTab() {
 	const navbar = document.createElement('ul');
 	navbar.classList.add("navbar");
 	const pagepath = window.location.pathname;
+	var pagename;
 	if (pagepath == "/") {
-		const pagename = "index.html";
+		pagename = "index.html";
 	} else {
-		const pagename = pagepath.substring(pagepath.lastIndexOf('/') + 1);
+		pagename = pagepath.substring(pagepath.lastIndexOf('/') + 1);
 	}
 	for (i = 0; i < navbarItems.length; i++) {
 		link = document.createElement('a');
