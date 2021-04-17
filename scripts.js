@@ -3,6 +3,14 @@ navbarItems = [
 	{
 		href: "index.html",
 		name: "home"
+	},
+	{
+		href: "software.html",
+		name: "software"
+	},
+	{
+		href: "projects.html",
+		name: "projects"
 	}
 ];
 

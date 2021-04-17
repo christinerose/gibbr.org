@@ -26,3 +26,8 @@ body {
 .navbar li a.active {
 	background-color: #6AC;
 }
+
+a {
+	text-decoration: underline;
+	color: #1897b3
+}
