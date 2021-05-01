@@ -3,6 +3,9 @@ body {
 	max-width: 800px;
 	margin: auto;
 	font-size: 18px;
+	letter-spacing: 0px;
+	font-family: Verdana, sans-serif;
+	font-stretch: normal;
 }
 
 .navbar {
