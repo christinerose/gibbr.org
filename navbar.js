@@ -43,6 +43,7 @@ function setNavbarActiveTab() {
 	// Create navbar element
 	const navbar = document.createElement('ul');
 	navbar.classList.add("navbar");
+	navbar.id = "navbar";
 	for (i = 0; i < navbarItems.length; i++) {
 		link = document.createElement('a');
 		link.href = "../".repeat(depth) + navbarItems[i].href;
