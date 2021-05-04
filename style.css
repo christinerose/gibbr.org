@@ -35,3 +35,12 @@ a {
 	text-decoration: underline;
 	color: #0066cc
 }
+
+figure {
+	text-align: center;
+}
+
+.reference {
+	font-size: 8px;
+	text-align: center;
+}

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="../../style.css">
+	<script src="../../navbar.js" depth=2></script>
+<title>Ryan Gibb</title>
+</head>
+<body>
+
+<h1 id="network-layer-mobility">network layer mobility</h1>
+
+<p>
+	This project blog post is adapted from my dissertation, titled "Ubiquitous Communication for the Internet of Things: An Identifier-Locator addressing split overlay network".
+	A copy can be found <a href="../../resources/diss.pdf">here</a>.
+</p>
+
+<h2 id="definitions">network stack</h2>
+
+<p>
+	First, some prerequisite networking knowledge.
+	A network protocol stack is a view of how protocols are organised into layers.
+	These layers are named the physical, link, network, transport, and application layer as described in the <a href="https://en.wikipedia.org/wiki/OSI_model">OSI model</a>*.
+	The modularity of these protocols has many advantages, such as allowing the protocol used at a layer to be exchanged transparently.
+</p>
+<p>
+	The protocol stack we're concerned with is based off the <a href="https://en.wikipedia.org/wiki/Internet_protocol_suite">Internet Protocol suite</a>, also known as TCP/IP.
+	
+	This network stack is often refered to as an hourglass, with the Internet Protocol (IP) as the skinny waist.
+	<figure>
+		<img width="50%" src="images/diagrams/hourglass_cropped.svg">
+		<figcaption class="reference">
+			Source:
+			<a href="https://iab.org/wp-content/IAB-uploads/2011/03/hourglass-london-ietf.pdf">
+				Steve Deering.
+				"Watching the Waist of the Protocol Hourglass".
+				In: IETF 51 London. 2001.
+			</a>
+		</figcaption>
+	</figure>
+</p>
+<p style="font-size: 8px;">
+	*Note the OSI model and TCP/IP have
+	<a href="https://en.wikipedia.org/wiki/Internet_protocol_suite#Layer_names_and_number_of_layers_in_the_literature">
+		differing semantics
+	</a>, but this is beyond the scope of this blog post.
+</p>
+<p>
+	Packets of a protocol are encapsulated by the protocol below, for example:
+	<figure>
+		<img width="100%" src="images/diagrams/UDP_encapsulation.svg">
+		<figcaption class="reference">
+			Source:
+			<a href="https://commons.wikimedia.org/wiki/File:UDP_encapsulation.svg">
+				Wikimedia UDP encapsulation.svg
+			</a>
+		</figcaption>
+	</figure>
+</p>
+
+<h2 id="motivation">motivation</h2>
+
+<p>
+	Ubiquitous Computing is a vision of the future of computing where devices are omnipresent and exist in many forms.
+	The Internet of Things (IoT) is a modern interpretation of this which envisions many objects existing as Internet-connected smart devices; such as wearable devices, smart vehicles, and smart appliances like fridges, washing machines, and ovens.
+	Many of these devices are physically mobile, which requires network support when moving location.
+</p>
+<p>
+	When we say network mobility in this blog, what we are in fact referring to is network layer (layer 3) mobility.
+	This is also known as a vertical handoff, where the underlying link layer technology can change, like moving from a WiFi to a cellular network.
+	This is to distinguish it from link layer (layer 2) mobility - horizontal handoffs - where the link layer technology and layer 3 network remain the same but the network access point changes, such as when moving between cells in a mobile cellular network.
+	Layer 2 mobility is insufficient when a mobile device moves between link layer technologies or layer 3 networks.
+</p>
+<p>
+	Some examples of mobile IoT devices would be health monitoring devices and smart vehicles.
+	These devices may require constant connectivity with a fast-changing large number of network connectivity options available, particularly in urban environments.
+	For example, a health monitoring device switching from a cellar network to a WiFi network when entering an office building where no cellular signal is available.
+</p>
+<p>
+	The largest solution space for this at the moment is implementing mobility through IoT middleware applications.
+	Middleware, sitting in the application layer, provides a platform for common functionality, including mobility.
+	It is comparatively very easy to deploy such a solution compared to reworking the networking stack.
+	However, it requires the application software to be written for and tied to a specific middleware API, which is rarely standardised.
+	It also adds an additional layer to the node's network stack, with performance and energy use implications, which are particularly relevant to resource-constrained IoT devices.
+</p>
+<p>
+	Ideally, what we want is network support for mobility transparent to the application layer.
+	If we were able to implement mobility at the network layer it would solve our problems!
+</p>
+
+<h2 id="mobility-in-ip">mobility in IP</h2>
+
+<p>
+	As we've discussed, IP is the skinny waist of the Internet.
+	It ties all the other protocols together allowing nodes (computers in a network) to communicate over interoperating networks with potentially different underlying technologies.
+</p>
+<p>
+	IP was designed in 1981.
+	In the same year, IBM introduced its Personal Computer (PC) weighing over 9kg.
+	Today, many mobile computers exist in the form of personal smartphones, in addition to the IoT devices already discussed.
+	IP was not designed for such mobile devices and does not support mobility.
+</p>
+<p>
+	There are two issues with IP pertaining to mobility.
+</p>
+<p>
+	The first is the <i>overloading</i> of IP address semantics.
+	IP addresses are used to identify a node's location in the Internet with routing prefixes and to uniquely identify a node in some scope.
+	This becomes an issue for mobility when a node changes its location in the network as it also has to change its IP address.
+</p>
+<p>
+	This wouldn't be an issue in and of itself if a transport (layer 4) flow could dynamically adjust to a new IP address, which brings us to the second issue with IP addresses: the <i>entanglement</i> of layers.
+	All layers of the TCP/IP stack use IP addresses, although applications should obtain these via DNS.
+	And IP addresses are semi-permanently bound to an interface.
+</p>
+<p>
+	These issues together mean that when moving network all existing communication flows have to be reestablished.
+	This results in application-specific logic being required to deal with network transitions and the connections having to be reestablished.
+	This has performance and energy use implications, due to dropped packets when switching networks and having to reestablish communication sessions.
+	For example, TCP's 3-way handshake has to be re-done, and cryptographic protocols like TLS have to redo their key exchange.
+	The more resource-constrained a device, such as IoT devices, and the more seamless, continuous, connectivity is required the more important these considerations become.
+</p>
+
+<h2 id="ilnp">ILNP</h2>
+
+<p>
+	The Identifier-Locator Network Protocol (ILNP) architecture provides a solution to this problem by separating the semantics of IP addresses into their constituent parts: an identifier and a locator.
+	An identifier uniquely identifies the node - within some scope - and the locator identifies the network in which the node resides, giving the node's location in the Internet.
+	See <a href="https://tools.ietf.org/html/rfc6740">RFC6740</a> for more detail.
+</p>
+<p>
+	The overloading of IP address is solved with this Identifier-Locator addressing split.
+	This also allows us to solve the problem of the entaglement of layers as shown below:
+	<figure>
+		<img width="75%" src="images/diagrams/ilnp_ipv6_names_cropped.svg">
+		<figcaption class="reference">
+			Source:
+			<a href="https://dl.acm.org/doi/abs/10.1145/3341162.3349315">
+				S. N. Bhatti and R. Yanagida.
+				"Seamless internet connectivity for ubiquitous communication"
+				In: PURBA UBICOMP. 2019.
+			</a>
+		</figcaption>
+	</figure>
+</p>
+<p>
+	Applications that use DNS to obtain IP addresses (conforming to <a href="https://tools.ietf.org/html/rfc1958#section-4">RFC1958</a>) will be backwards compatable with ILNPv6 with modifications to DNS  <a href="https://tools.ietf.org/html/rfc6742">RFC6742</a>).
+</p>	
+<p>
+	ILNP can be implemented as an extension to IPv6, called ILNPv6*.
+	The upper 64 bits of an IPv6 address is already used as a routing prefix and is taken as the locator in ILNPv6.
+	The lower 64 bits, the interface identifier in IPv6, is taken as the identifier.
+	ILNPv6's Identifier-Locator Vector (I-LV) corresponds to the IPv6 address.
+	The syntax is identical but the semantics differ.
+	That is, IPv6 addresses and ILNPv6 I-LVs look the same on the wire but are interpreted differently.
+</p>
+<figure>
+	<img width="100%" src="images/diagrams/ilnp_ipv6_addresses_cropped.svg">
+	<figcaption class="reference">
+		Source: <a href="https://tools.ietf.org/html/rfc6741#section-3.1">RFC6741</a>
+	</figcaption>
+</figure>
+<p style="font-size: 8px;">
+	*ILNP can also be implemented as an extension to IPv4 as ILNPv4, but this is not as elegant as ILNPv6 and will not be considered here.
+</p>
+<p>
+	So given an IPv6 address "2001:db8:1:2:3:4:5:6", the ILNPv6 locator would be "2001:db8:1:2" and the identifier "3:4:5:6".
+</p>
+<p>
+	ILNPv6 supports mobility through dynamic binding of identifiers to locators, and ICMP locator update messages.
+	The locator of a node can change while retaining its identifier and communication flows.
+	Additionally, ILNPv6 supports seamless connectivity during a network transition with a soft handoff - making the new connection before breaking the old connection.
+	Note this does require hardware support for multiple connections on the same adaptor such as through CDMA, or two physical network adapters.
+</p>
+<p>
+	As IP was not designed with mobility in mind most solutions to try retrofit mobility to IP somehow, such as the middleware platforms already discussed.
+	This is symptomatic of a larger problem: the ossification of the Internet.
+<p>
+</p>
+	<a href="https://tools.ietf.org/html/rfc6115">RFC6115</a> contains a survey of other solutions available.
+	Unlike alternatives ILNPv6 requires updates to the end hosts only, and does require a proxy or agent, tunnelling, address mapping, or application modifications.
+	The disadvantage of this approach is that it requires a reworking of the whole network stack, which makes it more difficult to deploy.
+</p>
+
+<h2 id="overlay">overlay network</h2>
+
+<p>
+	An overlay network is a 'virtual' network built on another network.
+	Think <a href="https://www.torproject.org/">tor</a>.
+	An underlay network is the underlying network beneath an overlay network.
+</p>
+<p>
+	To demonstrate the operation of the protocol and its support for mobility an ILNPv6 overlay network was created on top of UDP/IPv6 Multicast.
+	An IPv6 multicast group corresponds to a locator in our overlay network, or a 'virtual network'.
+	There is a mechanical translation between 32-bit locators and 64-bit IPv6 multicast groups.
+</p>
+<p>
+	This overlay network was implemented in user space with Python due to time constraints of the project and difficulties associated with kernel programming.
+</p>
+<p>
+	A simple transport protocol (STP) was created for demultiplexing received ILNPv6 packets by wrapping them with a port, similar to UDP.
+</p>
+<figure>
+	<img width="100%" src="images/diagrams/overlay_network_stack.svg">
+	<figcaption>Overlay Network Protocol Stack</figcaption>
+</figure>
+
+<p>
+	Note that in our overlay network, for a node, an interface simply refers to a locator which the node is connected to, via configuration files. The node will have connected to the corresponding IP multicast address.
+</p>
+
+<h4 id="discovery-protocol">discovery protocol</h4>
+
+<p>
+	A discovery protocol was required for nodes to discover each other and to discover routing paths.
+	It is inspired by the Pv6 Neighbour Discovery Protocol.
+	Nodes send solicitations (requests for advertisements) and advertisements (responses to solicitations).
+	Both solicitations and advertisements contain a node's hostname, set of valid locators, and identifier.
+	This means that hostname resolution is included in our protocol, which was done to avoid the complications of a DNS deployment in our overlay.
+</p>
+<p>
+	A simple flood and backwards learn approach was taken.
+	When a node receives a discovery protocol message on an interface it forwards it to every other interface.
+	This relies on the ILNPv6 hop count being decremented to avoid infinitely looping packages in circular topologies.
+	Nodes eavesdrop on discovery protocol messages so one solicitation is sufficient for all nodes in a network to learn about all the others.
+</p>
+<p>
+	Discovery protocol messages are sent to a special ILNPv6 all nodes locator - essentially local broadcast in a virtual network.
+	Forwarding happens at the discovery protocol layer, not the ILNPv6 layer.
+</p>
+<p>
+	Backwards learning is done on these discovery protocol messages; when an ILNPv6 packet is received the forwarding table is updated mapping the source locator of the packet to the interface it was received on.
+	This means the discovery protocol serves to bootstrap the network.
+</p>
+<p>
+	This protocol scales poorly - the number of messages scales quadratically with every additional network containing a node - but it is sufficient for our purposes.
+</p>
+<p>
+	See an example operation of the procotol below. Node A is in network 1, node B in network 2, and node C in both networks.
+	<figure>
+		<img width="100%" src="images/diagrams/discovery_protocol_topology.svg">
+		<figcaption>discovery protocol example topology</figcaption>
+	</figure>
+	<figure>
+		<img width="75%" src="images/diagrams/discovery_protocol_sequence_diagram.svg">
+		<figcaption>discovery protocol example sequence diagram</figcaption>
+	</figure>
+</p>
+
+<h4 id="locator-updates">locator updates</h4>
+
+<p>
+	Our overlay network supports mobility with locator update messages as part of the ILNPv6 layer.
+	The mobile node (MN) sends a locator update over its old locator, and the corresponding node (CN) responds with an acknowledgement via the new locator - verifying a path exists between the new locator and CN exists.
+</p>
+<p>
+	The discovery message sent by the MN on the new locator is simply for path discovery as the CN will not know how to route to 0:0:0:c with no node sending discovery messages from that locator.
+	An alternative solution to this would have been to make nodes send packets to all connected interfaces if there is no mapping in the forwarding table.
+</p>
+<p>
+	See an example of a MN moving from locator 0:0:0:a to locator 0:0:0:c, in a communication session with a CN in locator 0:0:0:b, below:
+	<figure>
+		<img width="75%" src="images/diagrams/locator_update_topology.svg">
+		<figcaption>locator update example topology</figcaption>
+	</figure>
+	<figure>
+		<img width="75%" src="images/diagrams/locator_update_sequence_diagram.svg">
+		<figcaption>locator update example sequence diagram</figcaption>
+	</figure>
+</p>
+
+<h2 id="experiments">experiments</h2>
+
+<p>
+	To demonstrate the operation of the overlay network on resource-constrained IoT devices a Raspberry Pi testbed communicating via ethernet was used. Previous work in this area has been confined to workstation or server machines.
+</p>
+
+<figure>
+	<img width="75%" src="images/testbed.jpg">
+</figure>
+
+<p>
+	The virtual network topology was 3 networks that the MN moved between, and one of which the CN resided in.
+</p>
+
+<figure>
+	<img width="75%" src="images/diagrams/experiment.svg">
+</figure>
+
+<p>
+	The experimental application sent an MTU packet with a sequence number every 10ms from the MN to CN, and CN to MN, resulting in a throughput of 266.6kB/s.
+</p>
+
+<p>
+	Looking at the received sequence by the CN  we can see that there's no loss or misordering - just a smooth seamless line with a constant gradient. The dotted vertical lines show the network transitions.
+</p>
+
+<div style="display: flex">
+	<figure>
+		<img width="100%" src="images/graphs/exp3/Received sequence numbers vs Time on CN.svg">
+		<figcaption>received sequence numbers vs time on CN</figcaption>
+	</figure>
+	<figure>
+		<img width="100%" src="images/graphs/exp3/Received sequence numbers vs Time on MN.svg">
+		<figcaption>received sequence numbers vs time on MN</figcaption>
+	</figure>
+</div>
+
+<p>
+	Looking at the throughputs we can see discrete rectangles for each individual locator showing the separation between locator uses. The smooth aggregate throughput shows that, as suggested by the sequence number graphs, there is seamless connectivity between network transitions. Note that the locators listed refer to the locator the MN is connected to, even for the throughputs on the CN.
+</p>
+
+<div style="display: flex">
+	<figure>
+		<img width="100%" src="images/graphs/exp3/Throughput in 1s buckets vs Time on CN.svg">
+		<figcaption>throughput in 1s buckets vs time on CN</figcaption>
+	</figure>
+	<figure>
+		<img width="100%" src="images/graphs/exp3/Throughput in 1s buckets vs Time on MN.svg">
+		<figcaption>throughput in 1s buckets vs time on MN</figcaption>
+	</figure>
+</div>
+
+<h2 id="conclusion">conclusion</h2>
+
+<p>
+	This project has involved creating an ILNP overlay network, focusing on protocol design and operation; performing an experimental analysis with resource-constrained IoT devices; and demonstrating the protocol's support for mobility with seamless network transitions through the use of a soft handoff.
+</p>
+<p>
+	The limitations of this project are the performance of the program due to the overlay and use of Python; the scaling of the discovery protocol; only one application program is supported for a virtual network stack as it runs on a single process without IPC; and only one instance of the program can be run on a machine, due to the multicast UDP socket used by each instance of the program being bound to the same port.
+</p>
+<p>
+	Further work in this area includes experimenting with a kernel implementation of ILNPv6 on IoT devices; investigating a multihoming policy and the benefits gained from the multipath effect for IoT devices; performing experiments of IoT devices transitioning between networks using a wireless communication link layer such as IEEE 802.11/WiFi, as this more appropriate than Ethernet for an IoT context; performing experiments with two mobile nodes communicating; and performing experiments with even more resource-constrained devices than Raspberry Pis, such as wireless sensors nodes.
+</p>
+
+<hr>
+
+<p>
+	As mentioned at the start, see the <a href="../../resources/diss.pdf">dissertation</a> on which this blog was based for a bit more nuance, and a lot more detail.
+<p>
+</p>
+	If you spot any errors or have any questions feel free to get in touch at ryangibb321 &#60;at&#62; gmail &#60;dot&#62; com.
+</p>
+
+</body>
+</html>
