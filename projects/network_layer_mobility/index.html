@@ -112,27 +112,31 @@
 </p>
 <p>
 	This wouldn't be an issue in and of itself if a transport (layer 4) flow could dynamically adjust to a new IP address, which brings us to the second issue with IP addresses: the <i>entanglement</i> of layers.
-	All layers of the TCP/IP stack use IP addresses, although applications should obtain these via DNS.
-	And IP addresses are semi-permanently bound to an interface.
+	All layers of the TCP/IP stack use IP addresses, and IP addresses are semi-permanently bound to an interface.
 </p>
 <p>
 	These issues together mean that when moving network all existing communication flows have to be reestablished.
-	This results in application-specific logic being required to deal with network transitions and the connections having to be reestablished.
-	This has performance and energy use implications, due to dropped packets when switching networks and having to reestablish communication sessions.
+	This results in application-specific logic being required to deal with network transitions.
+	This has performance and energy use implications due to dropped packets when switching networks and having to reestablish communication sessions.
 	For example, TCP's 3-way handshake has to be re-done, and cryptographic protocols like TLS have to redo their key exchange.
-	The more resource-constrained a device, such as IoT devices, and the more seamless, continuous, connectivity is required the more important these considerations become.
+	The more resource-constrained a device, such as IoT devices, and the more continuous connectivity is required, the more important these considerations become.
 </p>
 
 <h2 id="ilnp">ILNP</h2>
 
 <p>
-	The Identifier-Locator Network Protocol (ILNP) architecture provides a solution to this problem by separating the semantics of IP addresses into their constituent parts: an identifier and a locator.
+	As IP was not designed with mobility in mind most solutions to try retrofit mobility to IP somehow, such as the middleware platforms already discussed.
+	This is symptomatic of a larger problem: the ossification of the Internet.
+	It's easier to build up (in the protocol stack) than to redesign it, especially when the protocol stack is as omnipresent and critial as the modern Internet.
+<p>
+<p>
+	A radical change in IP's addressing from the Identifier-Locator Network Protocol (ILNP) architecture provides a solution to this problem by separating the semantics of IP addresses into their constituent parts: an identifier and a locator.
 	An identifier uniquely identifies the node - within some scope - and the locator identifies the network in which the node resides, giving the node's location in the Internet.
 	See <a href="https://tools.ietf.org/html/rfc6740">RFC6740</a> for more detail.
 </p>
 <p>
 	The overloading of IP address is solved with this Identifier-Locator addressing split.
-	This also allows us to solve the problem of the entaglement of layers as shown below:
+	This also allows us to solve the entaglement of layers:
 	<figure>
 		<img width="75%" src="images/diagrams/ilnp_ipv6_names_cropped.svg">
 		<figcaption class="reference">
@@ -172,16 +176,18 @@
 	ILNPv6 supports mobility through dynamic binding of identifiers to locators, and ICMP locator update messages.
 	The locator of a node can change while retaining its identifier and communication flows.
 	Additionally, ILNPv6 supports seamless connectivity during a network transition with a soft handoff - making the new connection before breaking the old connection.
-	Note this does require hardware support for multiple connections on the same adaptor such as through CDMA, or two physical network adapters.
+	Note that this does require hardware support for multiple connections on the same adaptor, such as through CDMA, or two physical network adapters.
 </p>
-<p>
-	As IP was not designed with mobility in mind most solutions to try retrofit mobility to IP somehow, such as the middleware platforms already discussed.
-	This is symptomatic of a larger problem: the ossification of the Internet.
-<p>
 </p>
 	<a href="https://tools.ietf.org/html/rfc6115">RFC6115</a> contains a survey of other solutions available.
 	Unlike alternatives ILNPv6 requires updates to the end hosts only, and does require a proxy or agent, tunnelling, address mapping, or application modifications.
 	The disadvantage of this approach is that it requires a reworking of the whole network stack, which makes it more difficult to deploy.
+</p>
+<p>
+	ILNP also supports other functionality of benefit to IoT devices, such as multihoming and locator rewriting relays (LRRs).
+	Multihoming refers to connecting a node to more than one network which enables a device to exploit any connectivity available.
+	This is supported by ILNP through allowing transport flows to use multiple locators simultaneously via a dynamic binding of identifiers to locators.
+	LLRs are middleboxes that rewrite locators for privacy and security benefits simular to those provided by NAT without breaking the end-to-end principle.
 </p>
 
 <h2 id="overlay">overlay network</h2>
@@ -232,7 +238,7 @@
 </p>
 <p>
 	Backwards learning is done on these discovery protocol messages; when an ILNPv6 packet is received the forwarding table is updated mapping the source locator of the packet to the interface it was received on.
-	This means the discovery protocol serves to bootstrap the network.
+	This means the discovery protocol serves to bootstrap the network by populating the forwarding table.
 </p>
 <p>
 	This protocol scales poorly - the number of messages scales quadratically with every additional network containing a node - but it is sufficient for our purposes.
