@@ -341,6 +341,179 @@
 	Further work in this area includes experimenting with a kernel implementation of ILNPv6 on IoT devices; investigating a multihoming policy and the benefits gained from the multipath effect for IoT devices; performing experiments of IoT devices transitioning between networks using a wireless communication link layer such as IEEE 802.11/WiFi, as this more appropriate than Ethernet for an IoT context; performing experiments with two mobile nodes communicating; and performing experiments with even more resource-constrained devices than Raspberry Pis, such as wireless sensors nodes.
 </p>
 
+<h2 id="appendix">appendix: system stability issues</h2>
+
+<p>
+	This appendix is going to walk through an interesting hardward problem that caused system stability issues encountered when performing experiments with the overlay network on the Raspberry Pi testbed.
+</p>
+<p>
+	Taking experiment 3 as an example, the received sequence numbers were mostly linear, but there were horizontal gaps and sometimes subsequent spikes (likely due to buffering on one of the nodes):
+	<div style="display: flex">
+		<figure>
+			<img width="100%" src="images/systems_issues_graphs/exp3/Received sequence numbers vs Time on CN.svg">
+			<figcaption>received sequence numbers vs time on CN</figcaption>
+		</figure>
+		<figure>
+			<img width="100%" src="images/systems_issues_graphs/exp3/Received sequence numbers vs Time on MN.svg">
+			<figcaption>received sequence numbers vs time on MN</figcaption>
+		</figure>
+	</div>
+	There was no loss, however.
+</p>
+<p>
+	This issue could be seen a lot more clearly in the throughput graphs:
+	<div style="display: flex">
+		<figure>
+			<img width="100%" src="images/systems_issues_graphs/exp3/Throughput in 1s buckets vs Time on CN.svg">
+			<figcaption>throughput in 1s buckets vs time on CN</figcaption>
+		</figure>
+		<figure>
+			<img width="100%" src="images/systems_issues_graphs/exp3/Throughput in 1s buckets vs Time on MN.svg">
+			<figcaption>throughput in 1s buckets vs time on MN</figcaption>
+		</figure>
+	</div>
+	There are drops in throughput, corresponding to horizontal gaps in the graph, and sometimes subsequent spikes, corresponding to the spikes in received sequence numbers.
+</p>
+<p>
+	As the main focus of this project is obviously networking that was the first area assumed to be where the problem lay, as a scheduling or buffering issue.
+	But the UDP send was not blocking, and the threading and thread synchronisation were working perfectly.
+	The process was tried pinned to a specific CPU core with <code>$ taskset 0x1 &#60;program&#62;</code> to no avail.
+	Using <code>tcpdump</code> showed the same gaps in packets sent and received on the CN, router, and MN.
+</p>
+<p>
+	Running <code>top</code> on the Pi while running showed that when systems issues occurred (printed as a warning by the experiment program) the process was in a 'D' state.
+	This means it was in an uninterruptible sleep, due to I/O, otherwise data corruption could occur.
+	As network issues were already ruled out, the only other I/O was logging.
+	A long D state seems to be a common issue in Network File Systems (NFS), but that is not used here.
+	A system request to display the list of blocked (D state) tasks with <code>echo w &#62;/proc/sysrq-trigger</code> was made when the process was running.
+	The relevant section of the kernel log from this is:
+	<code style="display: block; margin-left: auto; width: 90%; font-size: 10px">
+		$&nbsp;dmesg<br>
+		...<br>
+		[6367695.195711]&nbsp;sysrq:&nbsp;Show&nbsp;Blocked&nbsp;State<br>
+		[6367695.199742]&nbsp;&nbsp;&nbsp;task&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PC&nbsp;stack&nbsp;&nbsp;&nbsp;pid&nbsp;father<br>
+		[6367695.199791]&nbsp;jbd2/mmcblk0p2-&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;824&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;0x00000028<br>
+		[6367695.199801]&nbsp;Call&nbsp;trace:<br>
+		[6367695.199818]&nbsp;&nbsp;__switch_to+0x108/0x1c0<br>
+		[6367695.199828]&nbsp;&nbsp;__schedule+0x328/0x828<br>
+		[6367695.199835]&nbsp;&nbsp;schedule+0x4c/0xe8<br>
+		[6367695.199843]&nbsp;&nbsp;io_schedule+0x24/0x90<br>
+		[6367695.199850]&nbsp;&nbsp;bit_wait_io+0x20/0x60<br>
+		[6367695.199857]&nbsp;&nbsp;__wait_on_bit+0x80/0xf0<br>
+		[6367695.199864]&nbsp;&nbsp;out_of_line_wait_on_bit+0xa8/0xd8<br>
+		[6367695.199872]&nbsp;&nbsp;__wait_on_buffer+0x40/0x50<br>
+		[6367695.199881]&nbsp;&nbsp;jbd2_journal_commit_transaction+0xdf0/0x19f0<br>
+		[6367695.199889]&nbsp;&nbsp;kjournald2+0xc4/0x268<br>
+		[6367695.199897]&nbsp;&nbsp;kthread+0x150/0x170<br>
+		[6367695.199904]&nbsp;&nbsp;ret_from_fork+0x10/0x18<br>
+		[6367695.199957]&nbsp;kworker/1:1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;378944&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;0x00000028<br>
+		[6367695.199984]&nbsp;Workqueue:&nbsp;events&nbsp;dbs_work_handler<br>
+		[6367695.199990]&nbsp;Call&nbsp;trace:<br>
+		[6367695.199998]&nbsp;&nbsp;__switch_to+0x108/0x1c0<br>
+		[6367695.200004]&nbsp;&nbsp;__schedule+0x328/0x828<br>
+		[6367695.200011]&nbsp;&nbsp;schedule+0x4c/0xe8<br>
+		[6367695.200019]&nbsp;&nbsp;schedule_timeout+0x15c/0x368<br>
+		[6367695.200026]&nbsp;&nbsp;wait_for_completion_timeout+0xa0/0x120<br>
+		[6367695.200034]&nbsp;&nbsp;mbox_send_message+0xa8/0x120<br>
+		[6367695.200042]&nbsp;&nbsp;rpi_firmware_transaction+0x6c/0x110<br>
+		[6367695.200048]&nbsp;&nbsp;rpi_firmware_property_list+0xbc/0x178<br>
+		[6367695.200055]&nbsp;&nbsp;rpi_firmware_property+0x78/0x110<br>
+		[6367695.200063]&nbsp;&nbsp;raspberrypi_fw_set_rate+0x5c/0xd8<br>
+		[6367695.200070]&nbsp;&nbsp;clk_change_rate+0xdc/0x500<br>
+		[6367695.200077]&nbsp;&nbsp;clk_core_set_rate_nolock+0x1cc/0x1f0<br>
+		[6367695.200084]&nbsp;&nbsp;clk_set_rate+0x3c/0xc0<br>
+		[6367695.200090]&nbsp;&nbsp;dev_pm_opp_set_rate+0x3d4/0x520<br>
+		[6367695.200096]&nbsp;&nbsp;set_target+0x4c/0x90<br>
+		[6367695.200103]&nbsp;&nbsp;__cpufreq_driver_target+0x2c8/0x678<br>
+		[6367695.200110]&nbsp;&nbsp;od_dbs_update+0xc4/0x1a0<br>
+		[6367695.200116]&nbsp;&nbsp;dbs_work_handler+0x48/0x80<br>
+		[6367695.200123]&nbsp;&nbsp;process_one_work+0x1c4/0x460<br>
+		[6367695.200129]&nbsp;&nbsp;worker_thread+0x54/0x428<br>
+		[6367695.200136]&nbsp;&nbsp;kthread+0x150/0x170<br>
+		[6367695.200142]&nbsp;&nbsp;ret_from_fork+0x10/0x1<br>
+		[6367695.200155]&nbsp;python3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;379325&nbsp;379321&nbsp;0x00000000<br>
+		[6367695.200163]&nbsp;Call&nbsp;trace:<br>
+		[6367695.200170]&nbsp;&nbsp;__switch_to+0x108/0x1c0<br>
+		[6367695.200177]&nbsp;&nbsp;__schedule+0x328/0x828<br>
+		[6367695.200184]&nbsp;&nbsp;schedule+0x4c/0xe8<br>
+		[6367695.200190]&nbsp;&nbsp;io_schedule+0x24/0x90<br>
+		[6367695.200197]&nbsp;&nbsp;bit_wait_io+0x20/0x60<br>
+		[6367695.200204]&nbsp;&nbsp;__wait_on_bit+0x80/0xf0<br>
+		[6367695.200210]&nbsp;&nbsp;out_of_line_wait_on_bit+0xa8/0xd8<br>
+		[6367695.200217]&nbsp;&nbsp;do_get_write_access+0x438/0x5e8<br>
+		[6367695.200224]&nbsp;&nbsp;jbd2_journal_get_write_access+0x6c/0xc0<br>
+		[6367695.200233]&nbsp;&nbsp;__ext4_journal_get_write_access+0x40/0xa8<br>
+		[6367695.200241]&nbsp;&nbsp;ext4_reserve_inode_write+0xa8/0xf8<br>
+		[6367695.200248]&nbsp;&nbsp;ext4_mark_inode_dirty+0x68/0x248<br>
+		[6367695.200255]&nbsp;&nbsp;ext4_dirty_inode+0x54/0x78<br>
+		[6367695.200262]&nbsp;&nbsp;__mark_inode_dirty+0x268/0x4a8<br>
+		[6367695.200269]&nbsp;&nbsp;generic_update_time+0xb0/0xf8<br>
+		[6367695.200275]&nbsp;&nbsp;file_update_time+0xf8/0x138<br>
+		[6367695.200284]&nbsp;&nbsp;__generic_file_write_iter+0x94/0x1e8<br>
+		[6367695.200290]&nbsp;&nbsp;ext4_file_write_iter+0xb4/0x338<br>
+		[6367695.200298]&nbsp;&nbsp;new_sync_write+0x104/0x1b0<br>
+		[6367695.200305]&nbsp;&nbsp;__vfs_write+0x78/0x90<br>
+		[6367695.200312]&nbsp;&nbsp;vfs_write+0xe8/0x1c8<br>
+		[6367695.200318]&nbsp;&nbsp;ksys_write+0x7c/0x108<br>
+		[6367695.200324]&nbsp;&nbsp;__arm64_sys_write+0x28/0x38<br>
+		[6367695.200330]&nbsp;&nbsp;el0_svc_common.constprop.0+0x84/0x218<br>
+		[6367695.200336]&nbsp;&nbsp;el0_svc_handler+0x38/0xa0<br>
+		[6367695.200342]&nbsp;&nbsp;el0_svc+0x10/0x2d4<br>
+	</code>
+</p>
+<p>
+	Looking at the <code>python3</code> task stacktrace:
+	<ul>
+		<li><code>jbd2</code> is the thread that updates the filesystem journal, and <code>ext4</code> is the default Ubuntu file system (as well as a lot of other distributions)</li>
+		<li>We can see than an inode is marked as dirty with <code>ext4_mark_inode_dirty</code>, and a file written with <code>ext4_file_write_iter</code>, and then a virtual file system write <code>vfs_write</code> is translated into an ARM write <code>__arm64_sys_write</code><br>
+		So this is happening during a file write.</li>
+		<li>In ARM, <code>svc</code> means supervisor call, and <code>el0</code> exception level 0 (the lowest level of exception), so some sort of exception occurs and is then handled with <code>el0_svc_handler</code>.</li>
+	</ul>
+</p>
+
+<p>
+	Running <code>trace -r -t -v -p &#60;PID of process&#62;</code>, we can see the writes that take an exceptionally long amount of time. Here is an example where the write of 288 bytes to file descriptor 5 executes successfully but takes 2.24 seconds to complete:
+	<code style="display: block; margin-left: auto; width: 90%; font-size: 10px">
+		21:47:28.684124 (+ 0.000226) write(7, "2021-04-10 21:47:28.684061 [0:0:"..., 194) = 194<br>
+		21:47:28.684381 (+ 0.000256) write(1, "2021-04-10 21:47:28.684308 [alic"..., 122) = 122<br>
+		21:47:28.684583 (+ 0.000202) write(1, "\n", 1) = 1<br>
+		21:47:28.684786 (+ 0.000202) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=5647000}, NULL) = 0 (Timeout)<br>
+		21:47:28.690796 (+ 0.006023) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=0}, NULL) = 0 (Timeout)<br>
+		21:47:30.930965 (+ 2.240200) write(5, "2021-04-10 21:47:30.930813 0:0:0"..., 228) = 228<br>
+		21:47:30.931427 (+ 0.000433) getuid() = 1000<br>
+		21:47:30.931812 (+ 0.000385) socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 9<br>
+		21:47:30.932142 (+ 0.000328) ioctl(9, SIOCGIFINDEX, {ifr_name="eth0", }) = 0<br>
+		21:47:30.932506 (+ 0.000364) close(9) = 0<br>
+		21:47:30.933208 (+ 0.000705) write(4, "2021-04-10 21:47:30.933090 [ff12"..., 348) = 348<br>
+	</code>
+</p>
+<p>
+	So the problem seems to be exceptions that sometimes occur during file writes, which take a long time to resolve.
+	These block the process executing by putting it in a D state until the write returns, affecting the system stability.
+	These exceptions being the cause would make sense, as these issues aren't occurring consistently, but rather intermittently.
+	This is happening on the MN, on the router, and on the CN; so its effect is being amplified 3 times.
+	These exceptions are likely due to the page cache being flushed to disk, combined with poor performance of the Pi's SD cards.
+	But finding the root cause would require more investigation.
+	Regardless, enough is now known to fix the problem.
+</p>
+<p>
+	Removing the logging improved the system stability, but the issues still occurred with reduced frequency. This is because the experimental log is written to <code>stdout</code>, and <code>stdout</code> is piped to disk.
+</p>
+<p>
+	The program was being ran on the Pi's through SSH piping <code>stdout</code> to a file, like this:
+	<code style="display: block; margin-left: auto; width: 90%;">
+		$ ssh &#60;host&#62; "&#60;run&#62; &#62; &#60;experiment_log_file&#62;"
+	</code>
+	Charging this to:
+	<code style="display: block; margin-left: auto; width: 90%;">
+		$ ssh &#60;host&#62; "&#60;run&#62; | cat &#62; &#60;experiment_log_file&#62;"
+	</code>
+	Fixed the issue once and for all.
+</p>
+<p>
+	This essentially spawns another process to write to the file, and lets bash buffer between them. When an I/O exception occurs the writing process is put in a D state until the exception is handled, but the Python process is unaffected as its output is buffered until the writing process is able to read from it again.
+</p>
+
 <hr>
 
 <p>
