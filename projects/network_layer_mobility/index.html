@@ -511,7 +511,7 @@
 	Fixed the issue once and for all.
 </p>
 <p>
-	This essentially spawns another process to write to the file, and lets bash buffer between them. When an I/O exception occurs the writing process is put in a D state until the exception is handled, but the Python process is unaffected as its output is buffered until the writing process is able to read from it again.
+	This essentially spawns another process to write to the file, and lets the shell buffer between them. When an I/O exception occurs the writing process is put in a D state until the exception is handled, but the Python process is unaffected as its output is buffered until the writing process is able to read from it again.
 </p>
 
 <hr>
