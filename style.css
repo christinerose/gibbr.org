@@ -8,6 +8,12 @@ body {
 	font-stretch: normal;
 }
 
+.h1, h1 {
+	font-size: 2em;
+	margin: .67em 0;
+	font-weight: normal;
+}
+
 .navbar {
 	list-style-type: none;
 	margin: 0;
