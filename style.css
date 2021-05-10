@@ -8,9 +8,7 @@ body {
 	font-stretch: normal;
 }
 
-.h1, h1 {
-	font-size: 2em;
-	margin: .67em 0;
+h1 {
 	font-weight: normal;
 }
 
