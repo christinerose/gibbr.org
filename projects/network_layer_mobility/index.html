@@ -344,7 +344,7 @@
 <h2 id="appendix">appendix: system stability issues</h2>
 
 <p>
-	This appendix is going to walk through an interesting hardward problem that caused system stability issues encountered when performing experiments with the overlay network on the Raspberry Pi testbed.
+	This appendix is going to walk through an interesting hardware problem encountered when performing experiments with the overlay network on the Raspberry Pi testbed that caused system stability issues.
 </p>
 <p>
 	Taking experiment 3 as an example, the received sequence numbers were mostly linear, but there were horizontal gaps and sometimes subsequent spikes (likely due to buffering on one of the nodes):
@@ -465,7 +465,7 @@
 	Looking at the <code>python3</code> task stacktrace:
 	<ul>
 		<li><code>jbd2</code> is the thread that updates the filesystem journal, and <code>ext4</code> is the default Ubuntu file system (as well as a lot of other distributions)</li>
-		<li>We can see than an inode is marked as dirty with <code>ext4_mark_inode_dirty</code>, and a file written with <code>ext4_file_write_iter</code>, and then a virtual file system write <code>vfs_write</code> is translated into an ARM write <code>__arm64_sys_write</code><br>
+		<li>We can see than an inode is marked as dirty with <code>ext4_mark_inode_dirty</code>, and a file written with <code>ext4_file_write_iter</code>, and then a virtual file system write <code>vfs_write</code> is translated into an ARM write <code>__arm64_sys_write</code><br>.
 		So this is happening during a file write.</li>
 		<li>In ARM, <code>svc</code> means supervisor call, and <code>el0</code> exception level 0 (the lowest level of exception), so some sort of exception occurs and is then handled with <code>el0_svc_handler</code>.</li>
 	</ul>
