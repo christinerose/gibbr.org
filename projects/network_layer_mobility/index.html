@@ -391,7 +391,7 @@
 	A long D state seems to be a common issue in Network File Systems (NFS), but that is not used here.
 	A system request to display the list of blocked (D state) tasks with <code>echo w &#62;/proc/sysrq-trigger</code> was made when the process was running.
 	The relevant section of the kernel log from this is:
-	<code style="display: block; margin-left: auto; width: 90%; font-size: min(2vw, 10px);">
+	<code style="font-size: min(2vw, 10px);">
 		$&nbsp;dmesg<br>
 		...<br>
 		[6367695.195711]&nbsp;sysrq:&nbsp;Show&nbsp;Blocked&nbsp;State<br>
@@ -477,7 +477,7 @@
 
 <p>
 	Running <code>trace -r -t -v -p &#60;PID of process&#62;</code>, we can see the writes that take an exceptionally long amount of time. Here is an example where the write of 288 bytes to file descriptor 5 executes successfully but takes 2.24 seconds to complete:
-	<code style="display: block; margin-left: auto; width: 90%; font-size: min(1.3vw, 10px);">
+	<code style="font-size: min(1.3vw, 10px);">
 		21:47:28.684124 (+ 0.000226) write(7, "2021-04-10 21:47:28.684061 [0:0:"..., 194) = 194<br>
 		21:47:28.684381 (+ 0.000256) write(1, "2021-04-10 21:47:28.684308 [alic"..., 122) = 122<br>
 		21:47:28.684583 (+ 0.000202) write(1, "\n", 1) = 1<br>
@@ -505,11 +505,11 @@
 </p>
 <p>
 	The program was being ran on the Pi's through SSH piping <code>stdout</code> to a file, like this:
-	<code style="display: block; margin-left: auto; width: 90%;">
+	<code>
 		$ ssh &#60;host&#62; "&#60;run&#62; &#62; &#60;experiment_log_file&#62;"
 	</code>
 	Charging this to:
-	<code style="display: block; margin-left: auto; width: 90%;">
+	<code>
 		$ ssh &#60;host&#62; "&#60;run&#62; | cat &#62; &#60;experiment_log_file&#62;"
 	</code>
 	Fixed the issue once and for all.
