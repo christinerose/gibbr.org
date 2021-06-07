@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="/style.css">
+	<link rel="stylesheet" href="./style.css">
 	<script src="/navbar.js"></script>
 	<title>Network Layer Mobility | Ryan Gibb</title>
 </head>
@@ -306,7 +307,7 @@
 	Looking at the received sequence by the CN  we can see that there's no loss or misordering - just a smooth seamless line with a constant gradient. The dotted vertical lines show the network transitions.
 </p>
 
-<div style="display: flex">
+<div class="wrapper">
 	<figure>
 		<img width="100%" src="images/graphs/exp3/Received sequence numbers vs Time on CN.svg">
 		<figcaption>received sequence numbers vs time on CN</figcaption>
@@ -321,7 +322,7 @@
 	Looking at the throughputs we can see discrete rectangles for each individual locator showing the separation between locator uses. The smooth aggregate throughput shows that, as suggested by the sequence number graphs, there is seamless connectivity between network transitions. Note that the locators listed refer to the locator the MN is connected to, even for the throughputs on the CN.
 </p>
 
-<div style="display: flex">
+<div class="wrapper">
 	<figure>
 		<img width="100%" src="images/graphs/exp3/Throughput in 1s buckets vs Time on CN.svg">
 		<figcaption>throughput in 1s buckets vs time on CN</figcaption>
@@ -351,7 +352,7 @@
 </p>
 <p>
 	Taking experiment 3 as an example, the received sequence numbers were mostly linear, but there were horizontal gaps and sometimes subsequent spikes (likely due to buffering on one of the nodes):
-	<div style="display: flex">
+	<div class="wrapper">
 		<figure>
 			<img width="100%" src="images/systems_issues_graphs/exp3/Received sequence numbers vs Time on CN.svg">
 			<figcaption>received sequence numbers vs time on CN</figcaption>
@@ -365,7 +366,7 @@
 </p>
 <p>
 	This issue could be seen a lot more clearly in the throughput graphs:
-	<div style="display: flex">
+	<div class="wrapper">
 		<figure>
 			<img width="100%" src="images/systems_issues_graphs/exp3/Throughput in 1s buckets vs Time on CN.svg">
 			<figcaption>throughput in 1s buckets vs time on CN</figcaption>
@@ -390,7 +391,7 @@
 	A long D state seems to be a common issue in Network File Systems (NFS), but that is not used here.
 	A system request to display the list of blocked (D state) tasks with <code>echo w &#62;/proc/sysrq-trigger</code> was made when the process was running.
 	The relevant section of the kernel log from this is:
-	<code style="display: block; margin-left: auto; width: 90%; font-size: 10px">
+	<code style="display: block; margin-left: auto; width: 90%; font-size: 2vw;">
 		$&nbsp;dmesg<br>
 		...<br>
 		[6367695.195711]&nbsp;sysrq:&nbsp;Show&nbsp;Blocked&nbsp;State<br>
@@ -476,7 +477,7 @@
 
 <p>
 	Running <code>trace -r -t -v -p &#60;PID of process&#62;</code>, we can see the writes that take an exceptionally long amount of time. Here is an example where the write of 288 bytes to file descriptor 5 executes successfully but takes 2.24 seconds to complete:
-	<code style="display: block; margin-left: auto; width: 90%; font-size: 10px">
+	<code style="display: block; margin-left: auto; width: 90%; font-size: 1.3vw">
 		21:47:28.684124 (+ 0.000226) write(7, "2021-04-10 21:47:28.684061 [0:0:"..., 194) = 194<br>
 		21:47:28.684381 (+ 0.000256) write(1, "2021-04-10 21:47:28.684308 [alic"..., 122) = 122<br>
 		21:47:28.684583 (+ 0.000202) write(1, "\n", 1) = 1<br>
