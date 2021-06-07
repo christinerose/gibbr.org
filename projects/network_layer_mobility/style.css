@@ -1,12 +1,12 @@
 
-code {
+.code-block {
 	display: block;
 	margin-left: auto;
 	width: 90%;
 }
 
 @media screen and (min-width: 400px) {
-	.wrapper {
+	.graph-wrapper {
 		display: flex;
 	}
 }
