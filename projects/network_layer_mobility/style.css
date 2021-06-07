@@ -1,11 +1,6 @@
 
-.wrapper {
-	display: flex
-}
-
-@media screen and (max-width: 400px) {
+@media screen and (min-width: 400px) {
 	.wrapper {
-		display: inline
+		display: flex;
 	}
 }
-
