@@ -333,19 +333,7 @@
 	</figure>
 </div>
 
-<h2 id="conclusion">conclusion</h2>
-
-<p>
-	This project has involved creating an ILNP overlay network, focusing on protocol design and operation; performing an experimental analysis with resource-constrained IoT devices; and demonstrating the protocol's support for mobility with seamless network transitions through the use of a soft handoff.
-</p>
-<p>
-	The limitations of this project are the performance of the program due to the overlay and use of Python; the scaling of the discovery protocol; only one application program is supported for a virtual network stack as it runs on a single process without IPC; and only one instance of the program can be run on a machine, due to the multicast UDP socket used by each instance of the program being bound to the same port.
-</p>
-<p>
-	Further work in this area includes experimenting with a kernel implementation of ILNPv6 on IoT devices; investigating a multihoming policy and the benefits gained from the multipath effect for IoT devices; performing experiments of IoT devices transitioning between networks using a wireless communication link layer such as IEEE 802.11/WiFi, as this more appropriate than Ethernet for an IoT context; performing experiments with two mobile nodes communicating; and performing experiments with even more resource-constrained devices than Raspberry Pis, such as wireless sensors nodes.
-</p>
-
-<h2 id="appendix">appendix: system stability issues</h2>
+<h2 id="system_stability_issues">system stability issues</h2>
 
 <p>
 	This appendix is going to walk through an interesting hardware problem encountered when performing experiments with the overlay network on the Raspberry Pi testbed that caused system stability issues.
@@ -516,6 +504,18 @@
 </p>
 <p>
 	This essentially spawns another process to write to the file, and lets the shell buffer between them. When an I/O exception occurs the writing process is put in a D state until the exception is handled, but the Python process is unaffected as its output is buffered until the writing process is able to read from it again.
+</p>
+
+<h2 id="conclusion">conclusion</h2>
+
+<p>
+	This project has involved creating an ILNP overlay network, focusing on protocol design and operation; performing an experimental analysis with resource-constrained IoT devices; and demonstrating the protocol's support for mobility with seamless network transitions through the use of a soft handoff.
+</p>
+<p>
+	The limitations of this project are the performance of the program due to the overlay and use of Python; the scaling of the discovery protocol; only one application program is supported for a virtual network stack as it runs on a single process without IPC; and only one instance of the program can be run on a machine, due to the multicast UDP socket used by each instance of the program being bound to the same port.
+</p>
+<p>
+	Further work in this area includes experimenting with a kernel implementation of ILNPv6 on IoT devices; investigating a multihoming policy and the benefits gained from the multipath effect for IoT devices; performing experiments of IoT devices transitioning between networks using a wireless communication link layer such as IEEE 802.11/WiFi, as this more appropriate than Ethernet for an IoT context; performing experiments with two mobile nodes communicating; and performing experiments with even more resource-constrained devices than Raspberry Pis, such as wireless sensors nodes.
 </p>
 
 <hr>
