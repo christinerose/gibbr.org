@@ -2,15 +2,15 @@
 navbarItems = [
 	{
 		href: "/index.html",
-		name: "home"
+		name: "Home"
 	},
 	{
 		href: "/software.html",
-		name: "software"
+		name: "Software"
 	},
 	{
 		href: "/projects/index.html",
-		name: "projects"
+		name: "Projects"
 	}
 ];
 
