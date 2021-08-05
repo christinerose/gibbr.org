@@ -31,7 +31,7 @@ function setNavbarActiveTab() {
 		link.href = navbarItems[i].href;
 		link.innerText = navbarItems[i].name;
 		console.log(pagepath);
-		if (navbarItems[i].href == pagepath) {
+		if (navbarItems[i].href == pagepath || navbarItems[i].href == pagepath + ".html") {
 			link.classList.add("active");
 		}
 		listItem = document.createElement('li');
