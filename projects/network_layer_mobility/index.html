@@ -495,11 +495,11 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 <p>
 	The program was being ran on the Pi's through SSH piping <code>stdout</code> to a file, like this:
 	<code class="code-block">
-		$ ssh &#60;host&#62; "&#60;run&#62; &#62; &#60;experiment_log_file&#62;"
+		$ ssh HOST "RUN &#62; EXPERIMENT_LOG_FILE"
 	</code class="code-block">
 	Charging this to:
 	<code class="code-block">
-		$ ssh &#60;host&#62; "&#60;run&#62; | cat &#62; &#60;experiment_log_file&#62;"
+		$ ssh HOST "RUN | cat &#62; EXPERIMENT_LOG_FILE"
 	</code>
 	Fixed the issue once and for all.
 </p>
