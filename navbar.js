@@ -1,7 +1,7 @@
 
 navbarItems = [
 	{
-		href: "/index.html",
+		href: "/",
 		name: "Home"
 	},
 	{
@@ -9,7 +9,7 @@ navbarItems = [
 		name: "Software"
 	},
 	{
-		href: "/projects/index.html",
+		href: "/projects/",
 		name: "Projects"
 	}
 ];
@@ -17,9 +17,8 @@ navbarItems = [
 function setNavbarActiveTab() {
 	var pagepath = window.location.pathname;
 
-	// If the path is a directory, append with "index.html"
-	if (pagepath[pagepath.length - 1] == "/") {
-		pagepath += "index.html";
+	if (pagepath.endsWith("index.html")) {
+		pagepath = pagepath.substring( 0, pagepath.indexOf("index.html"))
 	}
 	
 	// Create navbar element
