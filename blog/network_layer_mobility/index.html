@@ -226,7 +226,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	Note that in our overlay network, for a node, an interface simply refers to a locator which the node is connected to, via configuration files. The node will have connected to the corresponding IP multicast address.
 </p>
 
-<h4 id="discovery-protocol">Discovery protocol</h4>
+<h2 id="discovery-protocol">Discovery protocol</h4>
 
 <p>
 	A discovery protocol was required for nodes to discover each other and to discover routing paths.
@@ -264,7 +264,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	</figure>
 </p>
 
-<h4 id="locator-updates">Locator updates</h4>
+<h2 id="locator-updates">Locator updates</h4>
 
 <p>
 	Our overlay network supports mobility with locator update messages as part of the ILNPv6 layer.
@@ -462,8 +462,8 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	Looking at the <code>python3</code> task stacktrace:
 	<ul>
 		<li><code>jbd2</code> is the thread that updates the filesystem journal, and <code>ext4</code> is the default Ubuntu file system (as well as a lot of other distributions)</li>
-		<li>We can see than an inode is marked as dirty with <code>ext4_mark_inode_dirty</code>, and a file written with <code>ext4_file_write_iter</code>, and then a virtual file system write <code>vfs_write</code> is translated into an ARM write <code>__arm64_sys_write</code><br>.
-		So this is happening during a file write.</li>
+		<li>We can see than an inode is marked as dirty with <code>ext4_mark_inode_dirty</code>, and a file written with <code>ext4_file_write_iter</code>, and then a virtual file system write <code>vfs_write</code> is translated into an ARM write <code>__arm64_sys_write</code>.<br>
+			So this is happening during a file write.</li>
 		<li>In ARM, <code>svc</code> means supervisor call, and <code>el0</code> exception level 0 (the lowest level of exception), so some sort of exception occurs and is then handled with <code>el0_svc_handler</code>.</li>
 	</ul>
 </p>
