@@ -9,8 +9,8 @@ navbarItems = [
 		name: "Software"
 	},
 	{
-		href: "/projects/",
-		name: "Projects"
+		href: "/blog/",
+		name: "Blog"
 	}
 ];
 
