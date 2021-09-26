@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage[
+	a4paper,
+	width=150mm,
+	top=25mm,
+	bottom=25mm,
+	hmarginratio=1:1
+]{geometry}
+
+\lstset{
+	basicstyle=\footnotesize\ttfamily
+}
+
+\begin{document}
+
+\begin{figure}[ht]
+	\begin{tabular}{c}
+	\begin{lstlisting}
+		/* IPv6 */
+		|            64 bits                  |         64 bits         |
+		+-------------------------------------+-------------------------+
+		|   IPv6 Unicast Routing Prefix       |  Interface Identifier   |
+		+-------------------------------------+-------------------------+
+
+		/* ILNPv6 */
+		|            64 bits                  |         64 bits         |
+		+-------------------------------------+-------------------------+
+		|             Locator                 |  Node Identifier (NID)  |
+		+-------------------------------------+-------------------------+
+	\end{lstlisting}
+	\end{tabular}
+\end{figure}
+
+\end{document}
