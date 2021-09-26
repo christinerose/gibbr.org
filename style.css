@@ -1,5 +1,5 @@
 body {
-	font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
+	font-family: -apple-system, sans-serif;
 	max-width: 800px;
 	margin: auto;
 	font-size: 18px;
@@ -48,4 +48,16 @@ figure {
 .reference {
 	font-size: 8px;
 	text-align: center;
+}
+
+.code-block {
+	display: block;
+	margin-left: auto;
+	width: 90%;
+}
+
+@media screen and (min-width: 400px) {
+	.graph-wrapper {
+		display: flex;
+	}
 }

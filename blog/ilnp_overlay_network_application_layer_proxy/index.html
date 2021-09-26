@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="stylesheet" href="/style.css">
+	<script src="/navbar.js"></script>
+	<title>ILNP overlay network application layer interface | Ryan Gibb</title>
+</head>
+
+<body>
+
+<span style="float: right;">September 2021</span>
+<h1 id="cubes">
+	ILNP overlay network application layer interface
+</h1>
+
+<p>
+	My <a href="../network_layer_mobility">dissertation</a> involved implementing an <a href="../network_layer_mobility#ilnp">Identifier-Locator Network Protocol</a> (ILNP) <a href="../network_layer_mobility#overlay">overlay network</a> in Python which can be found at <a href="https://github.com/RyanGibb/ilnp-overlay-network">github.com/RyanGibb/ilnp-overlay-network</a>.
+</p>
+
+<p>
+	Something I want to do as part of this was to add some sort of application layer interface so that programs other than those written in python specifically for the overlay could be run over it, and so that multiple programs could be ran over one overylay network stack.
+	However, this wasn't a priority, as it wasn't neccasary to obtain experimental results.
+</p>
+<p>
+	I've found a few weekends to hack away at this over the summer and this blog post will explore my solution.
+</p>
+
+
+<h2 id="datagrams">Datagrams</h2>
+
+<p>
+	First up, how can we send a datagram over this overlay network?
+</p>
+<p>
+	We already provide a socket interface in Python with the skinny transport layer (STP), which just wraps an ILNP packet in a port for demultiplexing, very similar to UDP.
+	But this requires the program sending the data to import <code>transport.py</code> and instantiate a whole overlay stack.
+	We could some sort of inter-process communication with a unix domain socket, but this would only solve one of our problems.
+	It would allow programs writen in other languages to use our overlay, but it will still require writing programs specifcally to use our overlay.
+</p>
+<p>
+	Instead, to provide an interface that existing programs can use, we can use a local UDP port as a proxy into our overlay.
+	So data will be sent to a listening local UDP port by an application, and we will have a program instantiates the overlay stack, reads from this socket, and sends the data over the overlay by communicating with <code>transport.py</code>. We'll call this program <code>proxy.py</code>.
+</p>
+<p>
+	However, this local proxy will require adding some connection state to a stateless commmucation protocol.
+	When <code>proxy.py</code> recieves a packet how will it know what virtual hostname (which are are different to the underlay hostnames), and STP port, to send it to?
+	We'll call this combination of hostname and port the 'remote'.
+</p>
+<p>
+	We could have a default remote hard coded, but this would only allow one communication channel.
+	So instead we will have a mapping from local ports to remotes, where the local port is the port of the UDP socket connecting to our listening UDP socket.
+	To allow these mappings to be dynamic we'll use out-of-band communication, and have <code>proxy.py</code> listening on a unix domain socket <code>./sock</code> for new mappings.
+	And as we don't have any restrictions on the STP ports we're using in our overlay, we might as well use a 1-to-1 mapping of UDP ports to STP ports to simplify things.
+	An ILNP overlay aware application could create a mapping itself, but to support existing programs we can manually create one with:
+	<div class="code-block">
+		<code>
+			python proxy_create.py LOCAL_PORT REMOTE_HOSTNAME REMOTE_PORT
+		</code>
+	</div>
+</p>
+<p>
+	Now recieving is very simple.
+	We just spawn a thread for every ILNP STP socket and when we recieve a packet on this port we forward it via UDP to this port locally.
+	Note that a socket doesn't neccasarily have to send packets to our overlay to recieve packets from it, but a mapping does have to exist for it's port.
+</p>
+
+So our local UDP proxy operating with 3 mappings would loop like:
+<figure>
+	<img width="75%" src="proxy.svg">
+</figure>
+
+<!-- 
+could have server port for every con
+but this would require an *additional*
+-2x num udp ports
+-2x threads
+additional mapping between server ports and client ports (so the server knows where to send recieved packets)
+
+we could have created a listening UDP port for every connection mapping, but this would just have required some mapping from these lsitening ports to the client ports when recieving packets,
+and would use twice the number of ports.
+-->
+
+<!-- 
+When clients connected to our server UDP socket we check their port and if they have a mapping we sent the packet to the remote over the overlay network.
+The remote will then send the pack with the STP port to the same UDP port, and it will be recieved by whatever process is listening there.
+-->
+
+<!-- <h2 id="testbed">Testbed</h2> -->
+
+<p>
+	Unfortunately I don't have access to the Raspberry Pi testbed that I used for the dissertation's <a href="../network_layer_mobility/#experiments">experiments</a> anymore.
+	Luckily I do have my current laptop, an old tower PC, and an old hp laptop being used as a server.
+	We'll leave the overlay network topology as it was in the experiments:
+	<figure>
+		<img width="75%" src="../network_layer_mobility/images/diagrams/experiment.svg">
+	</figure>
+	With <code>ryan-laptop</code> as the mobile node (MN), <code>ryan-pc</code> as the corresponding node (CN), and <code>hp-laptop</code> as the router. This is transparent to the programs proxied through our overlay, as well as the proxy itself.
+</p>
+<p>
+	So first we'll create the two proxy sockets redirecting to our overlay on <code>ryan-laptop</code> and <code>ryan-pc</code>:
+	<code class="code-block">
+		ryan@ryan-laptop $ python proxy.py ../config/config.ini 10000<br>
+		ryan@ryan-pc $ python proxy.py ../config/config.ini 10000<br>
+	</code>
+</p>
+<p>
+	Then create the mappinsgs
+	<code class="code-block">
+		ryan@ryan-laptop $ python proxy_create.py 10000 ryan-pc 10001<br>
+		ryan@ryan-pc $ python proxy_create.py 10000 ryan-laptop 10001<br>
+	</code>
+<p>
+	Then run the proxy without any mappings on <code>hp-laptop</code> in order to instantiate the ILNP stack so it can forward packets:
+	<code class="code-block">
+		ryan@hp-laptop $ python proxy.py<br>
+	</code>
+</p>
+<p>
+	Now on both <code>ryan-laptop</code> and <code>ryan-pc</code> we can run netcat, and it works!
+	<code class="code-block">
+		# listen for UDP packets from 10000 on port 10001<br>
+		ryan@ryan-laptop $ nc -u 127.0.0.1 10000 -p 10001<br>
+		hello,<br>
+		world<br>
+		<br>
+		ryan@ryan-pc $ nc -u 127.0.0.1 10000 -p 10001<br>
+		hello,<br>
+		world<br>
+	</code>
+</p>
+<p>
+	In this way we can have bidirectonal datagram communication over our overlay network using a local UDP proxy.
+</p>
+<p>
+	See <a href="https://github.com/RyanGibb/ilnp-overlay-network/blob/master/src">github.com/RyanGibb/ilnp-overlay-network/blob/master/sr</a> for the implementation of <code>proxy.sh</code> and <code>proxy_create.py</code>.
+</p>
+
+
+
+<h2 id="streams">Streams</h2>
+
+<p>
+	Now datagrams are great and all, but how can we have a reliable ordered bytestream over our overlay?
+</p>
+<p>
+	We could follow a similar approach to what we did with datgrams.
+	Namely proxy TCP connections over our overlay.
+	But this would not provide reliability.
+	Loss... not just from moving... also congestion... cosmic rays...
+	Despite making a big deal about the lack of loss in our overlay, this was a lack of loss due to mobility. It doesn't prevent against normal loss due to congestion, or random cosmic rays.
+</p>
+<p>
+	We could proxy SSH TCP traffic over udp, but that would fact that introducing new protocols (or even modifying existing protocols) has become nearly impossible tends to reinforce that situation. That is not stopping people from trying, though. At linux.conf.au 2018, Jana Iyengar, a develop not give the same reliability, order, and congestion control as ...
+	Essentially TCP starts and ends on one machine.
+</p>
+<p>
+	We could add a transport layer protocol echoing TCP that provides a reliable, ordered, bytestream to our overlay in addition to the Skinny Transport Procotol (that echoes UDP).
+	But this is a lot of work!
+</p>
+<p>
+	mosh...
+</p>
+<p>
+	UDP is basically a port wrapped around an IP packet for demultiplexing.
+	TCP provides is the meaty one of the 2.
+
+	What if we could treat our unreliable datagram as an IP packet?
+
+	kerel ... eeeeeh
+</p>
+<p>
+	What if we could use a transport layer protocol that runs over UDP?
+
+	QUIC is the first that springs to mind.
+	but intended for performat HTTP
+	combines HTTP and TLS equivalent encryption into one packet
+	but userland
+	(mainly being deployed in google products)
+		> UDP also facilitates the creation of a user-space implementation, which was also desired. (Iyengar didn't say this, but one reason to want such an implementation is to get the protocol deployed and updated quickly; many systems out there rarely receive kernel updates.)
+		> This sort of work can (and has been) done in the Linux kernel, but the bar for inclusion there is high. The QUIC developers wanted to be able to experiment with various algorithms and see how they worked.
+	requires ANOTHER proxy
+</p>
+<p>
+	SCTP is a procotol...
+	RFC
+
+	it's worth noting that there are a lot of parralels between what sctp and ilnp provide, just implemented at different layers of the network stack.
+	> multi-homing and redundant paths to increase resilience and reliability
+	> Message-based multi-streaming
+
+	But what we really care about is...:
+	RFC6951
+	https://lwn.net/Articles/834666/
+	provides a extension for running SCTP encapsulated in UDP packets, instead of IP packets.
+	The intent behind this is traversing middleboxes, but a side effect is that we can proxy SCTP over our overlay
+
+	There is a userspace implementation of SCTP.
+	But it only provides a raw socket interface in C++, bringing us back to the problem of having to write programs specifically for it.
+
+	Luckily the Linux kernel has introduced support for SCTP encapsulation in UDP (RFC) since 5.11, released February 2021.
+
+	And the openbsd gang have included support for SCTP in their netcat implementation.
+</p>
+<p>
+	SCTP UDP ports
+	destination
+	encapsulation (listening)
+
+	Link docs
+	Set with sysctl
+	https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html
+	https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
+</p>
+<p>
+	Putting all the pieces together
+
+	Overlay encap ports talking too each other
+
+
+	The network stack looks something like:
+	trash
+	Just kidding. But not really.
+
+	Here's the actually stack:
+</p>
+<p>
+
+
+QUIC
+https://github.com/quicwg/base-drafts/wiki/Implementations
+https://quiche.googlesource.com/quiche/
+
+mosh
+https://mosh.org
+
+
+
+
+https://datatracker.ietf.org/doc/html/rfc4960
+
+https://datatracker.ietf.org/doc/html/rfc6951
+
+SCTP userspace
+https://github.com/sctp/lksctp-tools
+https://docs.google.com/presentation/d/190sBrVsLICDn6ayni9bYTjZNRUgpOjlvUhbIVhyjfpA/htmlpresent?pli=1#!
+https://chromium.googlesource.com/external/github.com/sctplab/usrsctp/+/HEAD/Manual.md
+https://github.com/sctplab/usrsctp
+
+
+SCTP UDP encap rfc6951 linux kernel 5.11
+https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.11
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/diff/net/sctp/?id=v5.11&id2=v5.10
+(plus some changes to headers)
+
+https://developers.redhat.com/articles/2021/06/04/easier-way-go-sctp-over-udp-linux-kernel#why_we_need_sctp_over_udp
+
+
+
+does the linux kernel contain quic
+https://news.ycombinator.com/item?id=27311714
+https://news.ycombinator.com/item?id=19476439
+https://lwn.net/Articles/745590/
+
+
+
+
+
+ip tables
+
+
+
+https://lwn.net/Articles/745590/
+https://tailscale.com/blog/how-nat-traversal-works/
+
+
+
+
+
+
+</body>
+
+</html>
