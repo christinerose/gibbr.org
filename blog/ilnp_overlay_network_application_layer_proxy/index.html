@@ -178,7 +178,7 @@ The remote will then send the pack with the STP port to the same UDP port, and i
 		> This sort of work can (and has been) done in the Linux kernel, but the bar for inclusion there is high. The QUIC developers wanted to be able to experiment with various algorithms and see how they worked.
 	requires ANOTHER proxy -->
 	However, QUIC only exists as a <a href="https://github.com/quicwg/base-drafts/wiki/Implementations">number of userspace implementations</a>.
-	This has great benefits for development, but means we would be back to a raw socket interface that we couldn't use existing programs with.
+	This has great benefits for development, but means we would be back to a raw userspace socket interface that we couldn't use existing programs with.
 </p>
 <p>
 	A slightly older protocol Stream Control Transmission Protocol (SCTP), defined in <a href="https://datatracker.ietf.org/doc/html/rfc4960">RFC4960</a>, is potentially a better solution.
@@ -193,7 +193,7 @@ The remote will then send the pack with the STP port to the same UDP port, and i
 </p>
 <p>
 	There is a <a href="https://github.com/sctplab/usrsctp">userspace implementation of SCTP</a>.
-	But it only provides a raw socket interface in C++, bringing us back to the problem of having to write programs specifically for it.
+	But it only provides a userspace socket interface in C++, bringing us back to the problem of requiring programs to be written specifically for it.
 	Luckily the Linux kernel has <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/diff/net/sctp/?id=v5.11&id2=v5.10">implemented</a> RFC6951 in <a href="https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.11">version 5.11</a>, released February 2021.
 </p>
 <p>
