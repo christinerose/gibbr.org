@@ -40,6 +40,10 @@ a {
 	text-decoration: underline;
 	color: #0066cc;
 }
+h2 a {
+	text-decoration: none;
+	color: #262729;
+}
 
 figure {
 	text-align: center;
