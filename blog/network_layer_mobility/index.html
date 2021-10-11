@@ -25,7 +25,7 @@
 A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://studres.cs.st-andrews.ac.uk/Library/ProjectLibrary/cs4099/2021/rtg2-Final_Report.pdf">here</a> for St Andrews folk), and the associated implementation can be found at <a href="https://github.com/RyanGibb/ilnp-overlay-network">github.com/RyanGibb/ilnp-overlay-network</a>.
 </p>
 
-<h2 id="definitions">Network stack</h2>
+<h2 id="definitions"><a href="#definitions">Network stack</a></h2>
 
 <p>
 	First, some prerequisite networking knowledge.
@@ -68,7 +68,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	</figure>
 </p>
 
-<h2 id="motivation">Motivation</h2>
+<h2 id="motivation"><a href="#motivation">Motivation</a></h2>
 
 <p>
 	Ubiquitous Computing is a vision of the future of computing where devices are omnipresent and exist in many forms.
@@ -98,7 +98,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	If we were able to implement mobility at the network layer it would solve our problems!
 </p>
 
-<h2 id="mobility-in-ip">Mobility in IP</h2>
+<h2 id="mobility-in-ip"><a href="#mobility-in-ip">Mobility in IP</a></h2>
 
 <p>
 	As we've discussed, IP is the skinny waist of the Internet.
@@ -130,7 +130,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	The more resource-constrained a device, such as IoT devices, and the more continuous connectivity is required, the more important these considerations become.
 </p>
 
-<h2 id="ilnp">ILNP</h2>
+<h2 id="ilnp"><a href="#ilnp">ILNP</a></h2>
 
 <p>
 	As IP was not designed with mobility in mind most solutions to try retrofit mobility to IP somehow, such as the middleware platforms already discussed.
@@ -198,7 +198,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	LLRs are middleboxes that rewrite locators for privacy and security benefits simular to those provided by NAT without breaking the end-to-end principle.
 </p>
 
-<h2 id="overlay">Overlay network</h2>
+<h2 id="overlay"><a href="#overlay">Overlay network</a></h2>
 
 <p>
 	An overlay network is a 'virtual' network built on another network.
@@ -225,7 +225,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	Note that in our overlay network, for a node, an interface simply refers to a locator which the node is connected to, via configuration files. The node will have connected to the corresponding IP multicast address.
 </p>
 
-<h2 id="discovery-protocol">Discovery protocol</h4>
+<h2 id="discovery-protocol"><a href="#discovery-protocol">Discovery protocol</a></h2>
 
 <p>
 	A discovery protocol was required for nodes to discover each other and to discover routing paths.
@@ -263,7 +263,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	</figure>
 </p>
 
-<h2 id="locator-updates">Locator updates</h4>
+<h2 id="locator-updates"><a href="#locator-updates">Locator updates</a></h2>
 
 <p>
 	Our overlay network supports mobility with locator update messages as part of the ILNPv6 layer.
@@ -285,7 +285,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	</figure>
 </p>
 
-<h2 id="experiments">Experiments</h2>
+<h2 id="experiments"><a href="#experiments">Experiments</a></h2>
 
 <p>
 	To demonstrate the operation of the overlay network on resource-constrained IoT devices a Raspberry Pi testbed communicating via ethernet was used. Previous work in this area has been confined to workstation or server machines.
@@ -337,7 +337,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	</figure>
 </div>
 
-<h2 id="system_stability_issues">System stability issues</h2>
+<h2 id="system-stability-issues"><a href="#system-stability-issues">System stability issues</a></h2>
 
 <p>
 	An interesting hardware problem was encountered when performing experiments with the overlay network on the Raspberry Pi testbed that caused system stability issues.
@@ -510,7 +510,7 @@ A copy can be found <a href="/resources/diss.pdf">here</a> (or <a href="https://
 	This essentially spawns another process to write to the file, and lets the shell buffer between them. When an I/O exception occurs the writing process is put in a D state until the exception is handled, but the Python process is unaffected as its output is buffered until the writing process is able to read from it again.
 </p>
 
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 
 <p>
 	This project has involved creating an ILNP overlay network, focusing on protocol design and operation; performing an experimental analysis with resource-constrained IoT devices; and demonstrating the protocol's support for mobility with seamless network transitions through the use of a soft handoff.
