@@ -88,16 +88,20 @@
 <h2 id="does-it-work"><a href="#does-it-work">Does it work?</a></h2>
 
 <p>
-	This is all find and dandy in theory, but does it work in practice?
+	This is all great in theory, but does it work in practice?
 </p>
 <p>
 	Unfortunately I don't have access to the Raspberry Pi testbed that I used for my dissertation's <a href="../network_layer_mobility/#experiments">experiments</a> anymore.
-	Luckily at the time of experimenting with this (but not at the time of writeup) I had access to my my current laptop, an old tower PC, and an old HP laptop being used as a server, all on the same network (important for multicast).
+	Luckily at the time of experimenting with this (but not at the time of writeup) I had access to my my current laptop <code>ryan-laptop</code>, an old tower PC <code>ryan-pc</code>, and an old HP laptop <code>hp-laptop</code> being used as a server, all on the same network (important for multicast).
+	I have <code>ryan-laptop</code> and <code>ryan-pc</code> running Arch Linux, and <code>hp-laptop</code> running Ubuntu Server 21.04.
+</p>
+<p>
 	We'll leave the overlay network topology as it was in the experiments:
 	<figure>
 		<img width="75%" src="../network_layer_mobility/images/diagrams/experiment.svg">
 	</figure>
-	With <code>ryan-laptop</code> as the mobile node (MN), <code>ryan-pc</code> as the corresponding node (CN), and <code>hp-laptop</code> as the router. This toplogy and mobility is transparent to the programs proxied through our overlay, as well as the proxy itself.
+	With <code>ryan-laptop</code> as the mobile node (MN), <code>ryan-pc</code> as the corresponding node (CN), and <code>hp-laptop</code> as the router.
+	This toplogy and mobility is transparent to the programs proxied through our overlay, as well as the proxy itself.
 </p>
 <p>
 	First we'll create the two proxy sockets on port 10000 redirecting to our overlay at both endpoints, <code>ryan-laptop</code> and <code>ryan-pc</code>:
@@ -150,12 +154,10 @@
 	That is, proxy TCP connections over our overlay.
 	But this would not provide reliability; or rather this would only provide reliable deliverly locally to our TCP proxy.
 	Despite emphasising the lack of loss in our overlay, this was a lack of loss due to mobility.
-	It doesn't prevent against loss due to congestion, hardware failures, or cosmic rays.
+	It doesn't prevent against loss due to congestion, link layer failures, or cosmic rays.
 </p>
 <p>
 	In a similar way to how our skinny transport procotol emulates UDP, we could add a transport layer protocol emulating TCP that provides a reliable, ordered, bytestream to our overlay.
-</p>
-<p>
 	But this is a lot of work.
 </p>
 <p>
@@ -243,19 +245,16 @@
 	<code class="code-block" style="font-size: min(2vw, 14px);">
 		ncat -u -l 10002 -c "ncat -u 127.0.0.1 10001 -p 10002" --keep-open
 	</code>
-	And creating the neccasary proxy mappings:
+	And proxy mapping sending packets from local port <code>encap_port</code> to remote port <code>udp_port</code>:
 	<code class="code-block" style="font-size: min(2vw, 14px);">
-		# send packets from local port 10002 (udp_port) to remote port 10003 (encap_port)
 		ryan-pc: % python proxy_create.py 10002 alice 10003<br>
-		# send packets from local port 10003 (encap_port) to remote port 10003 (encap_port)
+		ryan-laptop: % python proxy_create.py 10002 bob 10003
+	</code>
+	And add proxy mapping sending packets from local port <code>encap_port</code> to remote port <code>encap_port</code>, which is required as control messages will be exchanged between the two SCTP instances:
+	<code class="code-block" style="font-size: min(2vw, 14px);">
 		ryan-pc: % python proxy_create.py 10003 alice 10003<br>
-		<br>
-		# equivalent for ryan-laptop<br>
-		ryan-laptop: % python proxy_create.py 10002 bob 10003<br>
 		ryan-laptop: % python proxy_create.py 10003 bob 10003
 	</code>
-	Note the 10003 to 10003 <code>encap_port</code> mapping is required as control messages will be exchanged between the two SCTP instances.
-	The 10002 <code>udp_port</code> is only used for data.
 </p>
 <p>
 	Now we can run netcat with SCTP :-)
