@@ -22,13 +22,16 @@
 </p>
 
 <p>
-	As part of this, I wanted to add an application layer interface to the overlay to support existing applications. That is, applications other than those written in python specifically for the overlay.
+	As part of this, I wanted to add an application layer interface to the overlay to support existing applications*. That is, applications other than those written in python specifically for the overlay.
 	This would also allow multiple applications to run over one overlay network stack.
 	However, this wasn't a priority for my dissertation as it wasn't necessary to obtain experimental results.
 </p>
 <p>
 	Since graduating I've found a few weekends to work on this and a solution will be explored in this blog post.
 </p>
+<span class="reference">
+	*To those who still want to know why I posit, why not?
+</span>
 
 <h2 id="datagrams"><a href="#datagrams">Datagrams</a></h2>
 
@@ -175,7 +178,7 @@
 </p>
 <p>
 	QUIC, implemented in 2012, and defined in <a href="https://datatracker.ietf.org/doc/html/rfc9000">RFC9000</a>, is the first that springs to mind.
-	This is a transport layer protocol intended to provide performant and secure HTTP connections
+	This is a transport layer protocol intended to provide performant and secure HTTP connections.
 	To get around various protocol ossification problems, including NAT traversal, QUIC runs over UDP.
 	This works to our benefit as if we could proxy QUIC to send UDP packets over our overlay this would be perfect for our use case.
 	<!-- combines HTTP and TLS equivalent encryption into one packet
@@ -186,6 +189,7 @@
 	requires ANOTHER proxy -->
 	However, QUIC only exists as a <a href="https://github.com/quicwg/base-drafts/wiki/Implementations">number of userspace implementations</a>.
 	This has great benefits for development, but means we would be back to a raw userspace socket interface that we couldn't use existing programs with.
+	We could write another proxy from applications to a QUIC userspace process, but let's see if we can do better.
 </p>
 <p>
 	A slightly older protocol Stream Control Transmission Protocol (SCTP), defined in <a href="https://datatracker.ietf.org/doc/html/rfc4960">RFC4960</a>, is a better solution.
@@ -195,16 +199,15 @@
 <p>
 	But what we really care about is defined in <a href="https://datatracker.ietf.org/doc/html/rfc6951">RFC6951</a>.
 	This extension to SCTP provides an option to encapsulate SCTP packets in UDP packets instead of IP packets.
-	The main purpose of this extension is to allow SCTP packets to traverse 'legacy' NATs, the same reason QUIC uses UDP, but it also means we can proxy SCTP encapsulated in UDP over our overlay!
+	The main purpose of this extension is to allow SCTP packets to traverse 'legacy' NAT - the same reason QUIC uses UDP - but it also means we can proxy SCTP encapsulated in UDP over our overlay!
 	<!-- https://lwn.net/Articles/834666/ -->
 </p>
 <p>
-	There is a <a href="https://github.com/sctplab/usrsctp">userspace implementation of SCTP</a>.
-	But it only provides a userspace socket interface in C++, bringing us back to the problem of requiring programs to be written specifically for it.
-	We could write another proxy from applications to a userspace process of this implementation, but luckily the Linux kernel has <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/diff/net/sctp/?id=v5.11&id2=v5.10">implemented</a> RFC6951 in <a href="https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.11">version 5.11</a>, released February 2021, and the nmap suite have included support for SCTP in their ncat utility (a spiritual successor to netcat).
+	There is a <a href="https://github.com/sctplab/usrsctp">userspace implementation of SCTP</a>, but it only provides a userspace socket interface in C++.
+	Fortunately the Linux kernel has <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/diff/net/sctp/?id=v5.11&id2=v5.10">implemented</a> RFC6951 in <a href="https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.11">version 5.11</a>, released February 2021, and the nmap suite have included support for SCTP in their ncat utility (a spiritual successor to netcat).
 </p>
 <p>
-	Note that only the end hosts require SCTP support so the fact that <code>hp-laptop</code> is running Ubuntu using an older kernel is not an issue.
+	Note that only the end hosts require SCTP support, so the fact that <code>hp-laptop</code> is running Ubuntu using an older kernel is not an issue.
 </p>
 <p>
 	SCTP UDP encapulsation uses a <code>udp_port</code> and <code>encap_port</code>.
@@ -231,7 +234,7 @@
 </p>
 <p>
 	As we want to intercept the SCTP UDP packets for proxying over our overlay, we won't use the IANA-assigned 9899 port for these variables.
-	Instead, we'll use ncat to intercept outgoing SCTP UDP packets (sent to <code>udp_port</code>) proxying them over our overlay, and to forward received SCTP UDP packets to <code>encap_port</code>, where the kernel SCTP implementation will be listening.
+	Instead, we'll use ncat to intercept outgoing SCTP UDP packets (sent to <code>udp_port</code>) proxying them over our overlay, and to forward received SCTP UDP packets to <code>encap_port</code>, where the kernel SCTP implementation will be listening. It's worth noting that this will likely break any other applications using SCTP.
 </p>
 
 <h2 id="putting-it-all-together"><a href="#putting-it-all-together">Putting it all together</a></h2>
@@ -325,6 +328,9 @@
 	All these proxies and overlays obviously have performance implications.
 </p>
 <p>
+	As David Wheeler said, "All problems in computer science can be solved by another level of indirection, except for the problem of too many layers of indirection."
+</p>
+<p>
 	But hey, it works!
 </p>
 <p>
@@ -332,7 +338,7 @@
 	<figure>
 		<img width="40%" src="network_stack.svg">
 	</figure>
-	Note the various proxying and mappings are not depicted.
+	The various proxying and mappings are not depicted.
 </p>
 
 <!-- 
