@@ -1,5 +1,5 @@
 ---
-header-includes: <link rel="shortcut icon" href="/favicon.ico" />
+header-includes: <link rel="shortcut icon" href="/favicon.ico">
 css: /style.css
 include-before:
 	<ul class="navbar" id="navbar">
