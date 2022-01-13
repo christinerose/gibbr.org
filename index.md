@@ -22,3 +22,4 @@ Home
 Find my CV [here](/resources/cv.pdf).
 
 Feel free to get in touch at [ryan@gibb.xyz](mailto:ryan@gibb.xyz).
+
