@@ -6,7 +6,7 @@ pagetitle: "Cubes | Ryan Gibb"
 
 2021-06-03
 
-An infinite runner with cubes created in unity. Play it [here](https://ryangibb.xyz/cubes/play/).
+An infinite runner with cubes created in unity. Play it [here](play/).
 
 See the blog post [here](https://ryangibb.xyz/cubes/).
 
