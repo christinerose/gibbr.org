@@ -85,6 +85,7 @@ First, we'll create the two proxy sockets on port 10000 redirecting to our overl
 </div>
 
 Then create the mappings:
+
 <div class="code-block">
 	ryan-laptop $ python proxy_create.py 10000 ryan-pc 10001
 	
@@ -92,11 +93,13 @@ Then create the mappings:
 </div>
 
 We will also require running the proxy without any mappings on `hp-laptop` to instantiate the ILNP stack so it can forward packets:
+
 <div class="code-block">
 	hp-laptop $ python proxy.py
 </div>
 
 Now on both endpoints we can run netcat to listen for UDP packets from 10000 on port 10001, and they can communicate!
+
 <div class="code-block">
 	ryan-laptop $ nc -u 127.0.0.1 10000 -p 10001
 	hello,
@@ -180,6 +183,7 @@ Instead, we'll use ncat to intercept outgoing SCTP UDP packets (sent to `udp_por
 ## Putting it all together
 
 On both `ryan-laptop` and `ryan-pc` we configure the kernel SCTP implementation's listening port and outgoing destination port:
+
 <div class="code-block">
 	# UDP listening port
 	$ sudo sysctl -w net.sctp.encap_port=10002

@@ -66,17 +66,17 @@
 
 ryan-pc $ python proxy.py ../config/config.ini 10000</code></pre>
 </div>
-Then create the mappings:
+<p>Then create the mappings:</p>
 <div class="code-block">
 <pre><code>ryan-laptop $ python proxy_create.py 10000 ryan-pc 10001
 
 ryan-pc $ python proxy_create.py 10000 ryan-laptop 10001</code></pre>
 </div>
-We will also require running the proxy without any mappings on <code>hp-laptop</code> to instantiate the ILNP stack so it can forward packets:
+<p>We will also require running the proxy without any mappings on <code>hp-laptop</code> to instantiate the ILNP stack so it can forward packets:</p>
 <div class="code-block">
 <pre><code>hp-laptop $ python proxy.py</code></pre>
 </div>
-Now on both endpoints we can run netcat to listen for UDP packets from 10000 on port 10001, and they can communicate!
+<p>Now on both endpoints we can run netcat to listen for UDP packets from 10000 on port 10001, and they can communicate!</p>
 <div class="code-block">
 <pre><code>ryan-laptop $ nc -u 127.0.0.1 10000 -p 10001
 hello,
@@ -119,7 +119,7 @@ Note that when connecting to a remote server, the client should set this to the 
 </div>
 <p>As we want to intercept the SCTP UDP packets for proxying over our overlay, we won’t use the IANA-assigned 9899 port for these variables. Instead, we’ll use ncat to intercept outgoing SCTP UDP packets (sent to <code>udp_port</code>) proxying them over our overlay, and to forward received SCTP UDP packets to <code>encap_port</code>, where the kernel SCTP implementation will be listening. It’s worth noting that this will likely break any other applications using SCTP.</p>
 <h2 id="putting-it-all-together">Putting it all together</h2>
-On both <code>ryan-laptop</code> and <code>ryan-pc</code> we configure the kernel SCTP implementation’s listening port and outgoing destination port:
+<p>On both <code>ryan-laptop</code> and <code>ryan-pc</code> we configure the kernel SCTP implementation’s listening port and outgoing destination port:</p>
 <div class="code-block">
 <pre><code># UDP listening port
 $ sudo sysctl -w net.sctp.encap_port=10002
