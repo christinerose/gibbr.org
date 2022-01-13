@@ -21,29 +21,12 @@ The modularity of protocols in a network stack has many advantages, such as allo
 The protocol stack we're concerned with is based off the [Internet Protocol suite](https://en.wikipedia.org/wiki/Internet_protocol_suite), also known as TCP/IP.
 
 This network stack is often referred to as an hourglass, with the Internet Protocol (IP) as the skinny waist.
-<figure>
-	<img width="50%" src="images/diagrams/hourglass_cropped.svg">
-	<figcaption class="reference">
-		source:
-		<a href="https://iab.org/wp-content/IAB-uploads/2011/03/hourglass-london-ietf.pdf">
-			Steve Deering.
-			"Watching the Waist of the Protocol Hourglass".
-			In: IETF 51 London. 2001.
-		</a>
-	</figcaption>
-</figure>
+
+![[Steve Deering. "Watching the Waist of the Protocol Hourglass". In: IETF 51 London. 2001.](https://iab.org/wp-content/IAB-uploads/2011/03/hourglass-london-ietf.pdf)](images/diagrams/hourglass_cropped.svg){width=50%}
 
 Packets of a protocol are encapsulated by the protocol below, for example:
 
-<figure>
-	<img width="100%" src="images/diagrams/UDP_encapsulation.svg">
-	<figcaption class="reference">
-		source:
-		<a href="https://commons.wikimedia.org/wiki/File:UDP_encapsulation.svg">
-			Wikimedia UDP encapsulation.svg
-		</a>
-	</figcaption>
-</figure>
+![[Wikimedia UDP encapsulation.svg](https://commons.wikimedia.org/wiki/File:UDP_encapsulation.svg)](images/diagrams/UDP_encapsulation.svg)
 
 ## Motivation
 
@@ -68,7 +51,6 @@ It also adds an additional layer to the node's network stack, with performance a
 
 Ideally, what we want is network support for mobility transparent to the application layer.
 If we were able to implement mobility at the network layer it would solve our problems!
-
 
 ## Mobility in IP
 
@@ -107,17 +89,8 @@ See [RFC6740](https://tools.ietf.org/html/rfc6740) for more detail.
 
 The overloading of IP address is solved with this Identifier-Locator addressing split.
 This also allows us to solve the entanglement of layers:
-<figure>
-	<img width="75%" src="images/diagrams/ilnp_ipv6_names_cropped.svg">
-	<figcaption class="reference">
-		source:
-		<a href="https://dl.acm.org/doi/abs/10.1145/3341162.3349315">
-			S. N. Bhatti and R. Yanagida.
-			"Seamless internet connectivity for ubiquitous communication"
-			In: PURBA UBICOMP. 2019.
-		</a>
-	</figcaption>
-</figure>
+
+![[S. N. Bhatti and R. Yanagida. "Seamless internet connectivity for ubiquitous communication" In: PURBA UBICOMP. 2019](https://dl.acm.org/doi/abs/10.1145/3341162.3349315)](images/diagrams/ilnp_ipv6_names_cropped.svg){width=75%}
 
 Applications that use DNS to obtain IP addresses (conforming to [RFC1958](https://tools.ietf.org/html/rfc1958#section-4)) will be backwards compatible with ILNPv6 with modifications to DNS  [RFC6742](https://tools.ietf.org/html/rfc6742)).
 	
@@ -129,12 +102,7 @@ ILNPv6's Identifier-Locator Vector (I-LV) corresponds to the IPv6 address.
 The syntax is identical but the semantics differ.
 That is, IPv6 addresses and ILNPv6 I-LVs look the same on the wire but are interpreted differently.
 
-<figure>
-	<img width="100%" src="images/diagrams/ilnp_ipv6_addresses_cropped.svg">
-	<figcaption class="reference">
-		source: [RFC6741](https://tools.ietf.org/html/rfc6741#section-3.1)
-	</figcaption>
-</figure>
+![[RFC6741](https://tools.ietf.org/html/rfc6741#section-3.1)](images/diagrams/ilnp_ipv6_addresses_cropped.svg)
 
 So given an IPv6 address "2001:db8:1:2:3:4:5:6", the ILNPv6 locator would be "2001:db8:1:2" and the identifier "3:4:5:6".
 
@@ -166,10 +134,7 @@ This overlay network was implemented in user space with Python due to time const
 
 A simple transport protocol (STP) was created for demultiplexing received ILNPv6 packets by wrapping them with a port, similar to UDP.
 
-<figure>
-	<img width="100%" src="images/diagrams/overlay_network_stack.svg">
-	<figcaption>overlay network protocol stack</figcaption>
-</figure>
+![overlay network protocol stack](images/diagrams/overlay_network_stack.svg)
 
 Note that in our overlay network, for a node, an interface simply refers to a locator which the node is connected to, via configuration files. The node will have connected to the corresponding IP multicast address.
 
@@ -196,14 +161,9 @@ This protocol scales poorly - the number of messages scales quadratically with e
 
 See an example operation of the protocol below. Node A is in network 1, node B in network 2, and node C in both networks.
 
-<figure>
-	<img width="100%" src="images/diagrams/discovery_protocol_topology.svg">
-	<figcaption>discovery protocol example topology</figcaption>
-</figure>
-<figure>
-	<img width="75%" src="images/diagrams/discovery_protocol_sequence_diagram.svg">
-	<figcaption>discovery protocol example sequence diagram</figcaption>
-</figure>
+![discovery protocol example topology](images/diagrams/discovery_protocol_topology.svg){width=75%}
+
+![discovery protocol example sequence diagram](images/diagrams/discovery_protocol_sequence_diagram.svg){width=75%}
 
 ## Locator updates
 
@@ -215,56 +175,35 @@ An alternative solution to this would have been to make nodes send packets to al
 
 See an example of a MN moving from locator 0:0:0:a to locator 0:0:0:c, in a communication session with a CN in locator 0:0:0:b, below:
 
-<figure>
-	<img width="75%" src="images/diagrams/locator_update_topology.svg">
-	<figcaption>locator update example topology</figcaption>
-</figure>
-<figure>
-	<img width="75%" src="images/diagrams/locator_update_sequence_diagram.svg">
-	<figcaption>locator update example sequence diagram</figcaption>
-</figure>
+![locator update example topology](images/diagrams/locator_update_topology.svg){width=75%}
+
+![locator update example sequence diagram](images/diagrams/locator_update_sequence_diagram.svg){width=75%}
 
 ## Experiments
 
 To demonstrate the operation of the overlay network on resource-constrained IoT devices a Raspberry Pi testbed communicating via ethernet was used. Previous work in this area has been confined to workstation or server machines.
 
-<figure>
-	<img width="75%" src="images/testbed.jpg">
-</figure>
+![](images/testbed.jpg){width=75%}
 
 The virtual network topology was 3 networks that the MN moved between every 20 seconds, one of which the CN resided in.
 
-<figure>
-	<img width="75%" src="images/diagrams/experiment.svg">
-</figure>
+![](images/diagrams/experiment.svg){width=75%}
 
 The experimental application sent an MTU packet with a sequence number every 10ms from the MN to CN, and CN to MN, resulting in a throughput of 266.6kB/s.
 
 Looking at the received sequence by the CN  we can see that there's no loss or misordering - just a smooth seamless line with a constant gradient. The dotted vertical lines show the network transitions.
 
-<div class="graph-wrapper">
-	<figure>
-		<img width="100%" src="images/graphs/exp3/Received sequence numbers vs Time on CN.svg">
-		<figcaption>received sequence numbers vs time on CN</figcaption>
-	</figure>
-	<figure>
-		<img width="100%" src="images/graphs/exp3/Received sequence numbers vs Time on MN.svg">
-		<figcaption>received sequence numbers vs time on MN</figcaption>
-	</figure>
-</div>
+|
+:-:|:-:
+![Received sequence numbers vs time on CN](images/graphs/exp3/Received sequence numbers vs Time on CN.svg)| ![Received sequence numbers vs time on MN](images/graphs/exp3/Received sequence numbers vs Time on MN.svg)
+Received sequence numbers vs time on CN | Received sequence numbers vs time on MN
 
 Looking at the throughputs we can see discrete rectangles for each individual locator showing the separation between locator uses. The smooth aggregate throughput shows that, as suggested by the sequence number graphs, there is seamless connectivity between network transitions. Note that the locators listed refer to the locator the MN is connected to, even for the throughputs on the CN.
 
-<div class="graph-wrapper">
-	<figure>
-		<img width="100%" src="images/graphs/exp3/Throughput in 1s buckets vs Time on CN.svg">
-		<figcaption>throughput in 1s buckets vs time on CN</figcaption>
-	</figure>
-	<figure>
-		<img width="100%" src="images/graphs/exp3/Throughput in 1s buckets vs Time on MN.svg">
-		<figcaption>throughput in 1s buckets vs time on MN</figcaption>
-	</figure>
-</div>
+|
+:-:|:-:
+![Throughput in 1s buckets vs Time on CN](images/graphs/exp3/Throughput in 1s buckets vs Time on CN.svg)| ![Throughput in 1s buckets vs Time on MN](images/graphs/exp3/Throughput in 1s buckets vs Time on MN.svg)
+Throughput in 1s buckets vs Time on CN | Throughput in 1s buckets vs Time on MN
 
 ## System stability issues
 
@@ -272,31 +211,19 @@ An interesting hardware problem was encountered when performing experiments with
 
 Taking experiment 3 as an example, the received sequence numbers were mostly linear, but there were horizontal gaps and sometimes subsequent spikes (likely due to buffering on one of the nodes):
 
-<div class="graph-wrapper">
-<figure>
-	<img width="100%" src="images/systems_issues_graphs/exp3/Received sequence numbers vs Time on CN.svg">
-	<figcaption>received sequence numbers vs time on CN</figcaption>
-</figure>
-<figure>
-	<img width="100%" src="images/systems_issues_graphs/exp3/Received sequence numbers vs Time on MN.svg">
-	<figcaption>received sequence numbers vs time on MN</figcaption>
-</figure>
-</div>
+|
+:-:|:-:
+![Received sequence numbers vs time on CN](images/systems_issues_graphs/exp3/Received sequence numbers vs Time on CN.svg)| ![Received sequence numbers vs time on MN](images/systems_issues_graphs/exp3/Received sequence numbers vs Time on MN.svg)
+Received sequence numbers vs time on CN | Received sequence numbers vs time on MN
 
 There was no loss, however.
 
 This issue could be seen a lot more clearly in the throughput graphs:
 
-<div class="graph-wrapper">
-<figure>
-	<img width="100%" src="images/systems_issues_graphs/exp3/Throughput in 1s buckets vs Time on CN.svg">
-	<figcaption>throughput in 1s buckets vs time on CN</figcaption>
-</figure>
-<figure>
-	<img width="100%" src="images/systems_issues_graphs/exp3/Throughput in 1s buckets vs Time on MN.svg">
-	<figcaption>throughput in 1s buckets vs time on MN</figcaption>
-</figure>
-</div>
+|
+:-:|:-:
+![Throughput in 1s buckets vs Time on CN](images/systems_issues_graphs/exp3/Throughput in 1s buckets vs Time on CN.svg)| ![Throughput in 1s buckets vs Time on MN](images/systems_issues_graphs/exp3/Throughput in 1s buckets vs Time on MN.svg)
+Throughput in 1s buckets vs Time on CN | Throughput in 1s buckets vs Time on MN
 
 There are drops in throughput, corresponding to horizontal gaps in the graph, and sometimes subsequent spikes, corresponding to the spikes in received sequence numbers.
 
@@ -312,79 +239,79 @@ A long D state seems to be a common issue in Network File Systems (NFS), but tha
 A system request to display the list of blocked (D state) tasks with `echo w > /proc/sysrq-trigger` was made when the process was running.
 The relevant section of the kernel log from this is:
 
-<code class="code-block" style="font-size: min(2vw, 10px);">
-	$&nbsp;dmesg<br>
-	...<br>
-	[6367695.195711]&nbsp;sysrq:&nbsp;Show&nbsp;Blocked&nbsp;State<br>
-	[6367695.199742]&nbsp;&nbsp;&nbsp;task&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PC&nbsp;stack&nbsp;&nbsp;&nbsp;pid&nbsp;father<br>
-	[6367695.199791]&nbsp;jbd2/mmcblk0p2-&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;824&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;0x00000028<br>
-	[6367695.199801]&nbsp;Call&nbsp;trace:<br>
-	[6367695.199818]&nbsp;&nbsp;__switch_to+0x108/0x1c0<br>
-	[6367695.199828]&nbsp;&nbsp;__schedule+0x328/0x828<br>
-	[6367695.199835]&nbsp;&nbsp;schedule+0x4c/0xe8<br>
-	[6367695.199843]&nbsp;&nbsp;io_schedule+0x24/0x90<br>
-	[6367695.199850]&nbsp;&nbsp;bit_wait_io+0x20/0x60<br>
-	[6367695.199857]&nbsp;&nbsp;__wait_on_bit+0x80/0xf0<br>
-	[6367695.199864]&nbsp;&nbsp;out_of_line_wait_on_bit+0xa8/0xd8<br>
-	[6367695.199872]&nbsp;&nbsp;__wait_on_buffer+0x40/0x50<br>
-	[6367695.199881]&nbsp;&nbsp;jbd2_journal_commit_transaction+0xdf0/0x19f0<br>
-	[6367695.199889]&nbsp;&nbsp;kjournald2+0xc4/0x268<br>
-	[6367695.199897]&nbsp;&nbsp;kthread+0x150/0x170<br>
-	[6367695.199904]&nbsp;&nbsp;ret_from_fork+0x10/0x18<br>
-	[6367695.199957]&nbsp;kworker/1:1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;378944&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;0x00000028<br>
-	[6367695.199984]&nbsp;Workqueue:&nbsp;events&nbsp;dbs_work_handler<br>
-	[6367695.199990]&nbsp;Call&nbsp;trace:<br>
-	[6367695.199998]&nbsp;&nbsp;__switch_to+0x108/0x1c0<br>
-	[6367695.200004]&nbsp;&nbsp;__schedule+0x328/0x828<br>
-	[6367695.200011]&nbsp;&nbsp;schedule+0x4c/0xe8<br>
-	[6367695.200019]&nbsp;&nbsp;schedule_timeout+0x15c/0x368<br>
-	[6367695.200026]&nbsp;&nbsp;wait_for_completion_timeout+0xa0/0x120<br>
-	[6367695.200034]&nbsp;&nbsp;mbox_send_message+0xa8/0x120<br>
-	[6367695.200042]&nbsp;&nbsp;rpi_firmware_transaction+0x6c/0x110<br>
-	[6367695.200048]&nbsp;&nbsp;rpi_firmware_property_list+0xbc/0x178<br>
-	[6367695.200055]&nbsp;&nbsp;rpi_firmware_property+0x78/0x110<br>
-	[6367695.200063]&nbsp;&nbsp;raspberrypi_fw_set_rate+0x5c/0xd8<br>
-	[6367695.200070]&nbsp;&nbsp;clk_change_rate+0xdc/0x500<br>
-	[6367695.200077]&nbsp;&nbsp;clk_core_set_rate_nolock+0x1cc/0x1f0<br>
-	[6367695.200084]&nbsp;&nbsp;clk_set_rate+0x3c/0xc0<br>
-	[6367695.200090]&nbsp;&nbsp;dev_pm_opp_set_rate+0x3d4/0x520<br>
-	[6367695.200096]&nbsp;&nbsp;set_target+0x4c/0x90<br>
-	[6367695.200103]&nbsp;&nbsp;__cpufreq_driver_target+0x2c8/0x678<br>
-	[6367695.200110]&nbsp;&nbsp;od_dbs_update+0xc4/0x1a0<br>
-	[6367695.200116]&nbsp;&nbsp;dbs_work_handler+0x48/0x80<br>
-	[6367695.200123]&nbsp;&nbsp;process_one_work+0x1c4/0x460<br>
-	[6367695.200129]&nbsp;&nbsp;worker_thread+0x54/0x428<br>
-	[6367695.200136]&nbsp;&nbsp;kthread+0x150/0x170<br>
-	[6367695.200142]&nbsp;&nbsp;ret_from_fork+0x10/0x1<br>
-	[6367695.200155]&nbsp;python3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;379325&nbsp;379321&nbsp;0x00000000<br>
-	[6367695.200163]&nbsp;Call&nbsp;trace:<br>
-	[6367695.200170]&nbsp;&nbsp;__switch_to+0x108/0x1c0<br>
-	[6367695.200177]&nbsp;&nbsp;__schedule+0x328/0x828<br>
-	[6367695.200184]&nbsp;&nbsp;schedule+0x4c/0xe8<br>
-	[6367695.200190]&nbsp;&nbsp;io_schedule+0x24/0x90<br>
-	[6367695.200197]&nbsp;&nbsp;bit_wait_io+0x20/0x60<br>
-	[6367695.200204]&nbsp;&nbsp;__wait_on_bit+0x80/0xf0<br>
-	[6367695.200210]&nbsp;&nbsp;out_of_line_wait_on_bit+0xa8/0xd8<br>
-	[6367695.200217]&nbsp;&nbsp;do_get_write_access+0x438/0x5e8<br>
-	[6367695.200224]&nbsp;&nbsp;jbd2_journal_get_write_access+0x6c/0xc0<br>
-	[6367695.200233]&nbsp;&nbsp;__ext4_journal_get_write_access+0x40/0xa8<br>
-	[6367695.200241]&nbsp;&nbsp;ext4_reserve_inode_write+0xa8/0xf8<br>
-	[6367695.200248]&nbsp;&nbsp;ext4_mark_inode_dirty+0x68/0x248<br>
-	[6367695.200255]&nbsp;&nbsp;ext4_dirty_inode+0x54/0x78<br>
-	[6367695.200262]&nbsp;&nbsp;__mark_inode_dirty+0x268/0x4a8<br>
-	[6367695.200269]&nbsp;&nbsp;generic_update_time+0xb0/0xf8<br>
-	[6367695.200275]&nbsp;&nbsp;file_update_time+0xf8/0x138<br>
-	[6367695.200284]&nbsp;&nbsp;__generic_file_write_iter+0x94/0x1e8<br>
-	[6367695.200290]&nbsp;&nbsp;ext4_file_write_iter+0xb4/0x338<br>
-	[6367695.200298]&nbsp;&nbsp;new_sync_write+0x104/0x1b0<br>
-	[6367695.200305]&nbsp;&nbsp;__vfs_write+0x78/0x90<br>
-	[6367695.200312]&nbsp;&nbsp;vfs_write+0xe8/0x1c8<br>
-	[6367695.200318]&nbsp;&nbsp;ksys_write+0x7c/0x108<br>
-	[6367695.200324]&nbsp;&nbsp;__arm64_sys_write+0x28/0x38<br>
-	[6367695.200330]&nbsp;&nbsp;el0_svc_common.constprop.0+0x84/0x218<br>
-	[6367695.200336]&nbsp;&nbsp;el0_svc_handler+0x38/0xa0<br>
-	[6367695.200342]&nbsp;&nbsp;el0_svc+0x10/0x2d4<br>
-</code>
+<div class="code-block" style="font-size: min(2vw, 10px);">
+	$ dmesg
+	...
+	[6367695.195711] sysrq: Show Blocked State
+	[6367695.199742]   task                        PC stack   pid father
+	[6367695.199791] jbd2/mmcblk0p2- D    0   824      2 0x00000028
+	[6367695.199801] Call trace:
+	[6367695.199818]  __switch_to+0x108/0x1c0
+	[6367695.199828]  __schedule+0x328/0x828
+	[6367695.199835]  schedule+0x4c/0xe8
+	[6367695.199843]  io_schedule+0x24/0x90
+	[6367695.199850]  bit_wait_io+0x20/0x60
+	[6367695.199857]  __wait_on_bit+0x80/0xf0
+	[6367695.199864]  out_of_line_wait_on_bit+0xa8/0xd8
+	[6367695.199872]  __wait_on_buffer+0x40/0x50
+	[6367695.199881]  jbd2_journal_commit_transaction+0xdf0/0x19f0
+	[6367695.199889]  kjournald2+0xc4/0x268
+	[6367695.199897]  kthread+0x150/0x170
+	[6367695.199904]  ret_from_fork+0x10/0x18
+	[6367695.199957] kworker/1:1     D    0 378944      2 0x00000028
+	[6367695.199984] Workqueue: events dbs_work_handler
+	[6367695.199990] Call trace:
+	[6367695.199998]  __switch_to+0x108/0x1c0
+	[6367695.200004]  __schedule+0x328/0x828
+	[6367695.200011]  schedule+0x4c/0xe8
+	[6367695.200019]  schedule_timeout+0x15c/0x368
+	[6367695.200026]  wait_for_completion_timeout+0xa0/0x120
+	[6367695.200034]  mbox_send_message+0xa8/0x120
+	[6367695.200042]  rpi_firmware_transaction+0x6c/0x110
+	[6367695.200048]  rpi_firmware_property_list+0xbc/0x178
+	[6367695.200055]  rpi_firmware_property+0x78/0x110
+	[6367695.200063]  raspberrypi_fw_set_rate+0x5c/0xd8
+	[6367695.200070]  clk_change_rate+0xdc/0x500
+	[6367695.200077]  clk_core_set_rate_nolock+0x1cc/0x1f0
+	[6367695.200084]  clk_set_rate+0x3c/0xc0
+	[6367695.200090]  dev_pm_opp_set_rate+0x3d4/0x520
+	[6367695.200096]  set_target+0x4c/0x90
+	[6367695.200103]  __cpufreq_driver_target+0x2c8/0x678
+	[6367695.200110]  od_dbs_update+0xc4/0x1a0
+	[6367695.200116]  dbs_work_handler+0x48/0x80
+	[6367695.200123]  process_one_work+0x1c4/0x460
+	[6367695.200129]  worker_thread+0x54/0x428
+	[6367695.200136]  kthread+0x150/0x170
+	[6367695.200142]  ret_from_fork+0x10/0x1
+	[6367695.200155] python3         D    0 379325 379321 0x00000000
+	[6367695.200163] Call trace:
+	[6367695.200170]  __switch_to+0x108/0x1c0
+	[6367695.200177]  __schedule+0x328/0x828
+	[6367695.200184]  schedule+0x4c/0xe8
+	[6367695.200190]  io_schedule+0x24/0x90
+	[6367695.200197]  bit_wait_io+0x20/0x60
+	[6367695.200204]  __wait_on_bit+0x80/0xf0
+	[6367695.200210]  out_of_line_wait_on_bit+0xa8/0xd8
+	[6367695.200217]  do_get_write_access+0x438/0x5e8
+	[6367695.200224]  jbd2_journal_get_write_access+0x6c/0xc0
+	[6367695.200233]  __ext4_journal_get_write_access+0x40/0xa8
+	[6367695.200241]  ext4_reserve_inode_write+0xa8/0xf8
+	[6367695.200248]  ext4_mark_inode_dirty+0x68/0x248
+	[6367695.200255]  ext4_dirty_inode+0x54/0x78
+	[6367695.200262]  __mark_inode_dirty+0x268/0x4a8
+	[6367695.200269]  generic_update_time+0xb0/0xf8
+	[6367695.200275]  file_update_time+0xf8/0x138
+	[6367695.200284]  __generic_file_write_iter+0x94/0x1e8
+	[6367695.200290]  ext4_file_write_iter+0xb4/0x338
+	[6367695.200298]  new_sync_write+0x104/0x1b0
+	[6367695.200305]  __vfs_write+0x78/0x90
+	[6367695.200312]  vfs_write+0xe8/0x1c8
+	[6367695.200318]  ksys_write+0x7c/0x108
+	[6367695.200324]  __arm64_sys_write+0x28/0x38
+	[6367695.200330]  el0_svc_common.constprop.0+0x84/0x218
+	[6367695.200336]  el0_svc_handler+0x38/0xa0
+	[6367695.200342]  el0_svc+0x10/0x2d4
+</div>
 
 Looking at the `python3` task stacktrace:
 
@@ -396,19 +323,19 @@ Looking at the `python3` task stacktrace:
 
 Running `trace -r -t -v -p <PID of process>`, we can see the writes that take an exceptionally long amount of time. Here is an example where the write of 288 bytes to file descriptor 5 executes successfully but takes 2.24 seconds to complete:
 
-<code class="code-block" style="font-size: min(1.3vw, 10px);">
-	21:47:28.684124 (+ 0.000226) write(7, "2021-04-10 21:47:28.684061 [0:0:"..., 194) = 194<br>
-	21:47:28.684381 (+ 0.000256) write(1, "2021-04-10 21:47:28.684308 [alic"..., 122) = 122<br>
-	21:47:28.684583 (+ 0.000202) write(1, "\n", 1) = 1<br>
-	21:47:28.684786 (+ 0.000202) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=5647000}, NULL) = 0 (Timeout)<br>
-	21:47:28.690796 (+ 0.006023) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=0}, NULL) = 0 (Timeout)<br>
-	21:47:30.930965 (+ 2.240200) write(5, "2021-04-10 21:47:30.930813 0:0:0"..., 228) = 228<br>
-	21:47:30.931427 (+ 0.000433) getuid() = 1000<br>
-	21:47:30.931812 (+ 0.000385) socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 9<br>
-	21:47:30.932142 (+ 0.000328) ioctl(9, SIOCGIFINDEX, {ifr_name="eth0", }) = 0<br>
-	21:47:30.932506 (+ 0.000364) close(9) = 0<br>
-	21:47:30.933208 (+ 0.000705) write(4, "2021-04-10 21:47:30.933090 [ff12"..., 348) = 348<br>
-</code>
+<div class="code-block" style="font-size: min(1.3vw, 10px);">
+	21:47:28.684124 (+ 0.000226) write(7, "2021-04-10 21:47:28.684061 [0:0:"..., 194) = 194
+	21:47:28.684381 (+ 0.000256) write(1, "2021-04-10 21:47:28.684308 [alic"..., 122) = 122
+	21:47:28.684583 (+ 0.000202) write(1, "\n", 1) = 1
+	21:47:28.684786 (+ 0.000202) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=5647000}, NULL) = 0 (Timeout)
+	21:47:28.690796 (+ 0.006023) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=0}, NULL) = 0 (Timeout)
+	21:47:30.930965 (+ 2.240200) write(5, "2021-04-10 21:47:30.930813 0:0:0"..., 228) = 228
+	21:47:30.931427 (+ 0.000433) getuid() = 1000
+	21:47:30.931812 (+ 0.000385) socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 9
+	21:47:30.932142 (+ 0.000328) ioctl(9, SIOCGIFINDEX, {ifr_name="eth0", }) = 0
+	21:47:30.932506 (+ 0.000364) close(9) = 0
+	21:47:30.933208 (+ 0.000705) write(4, "2021-04-10 21:47:30.933090 [ff12"..., 348) = 348
+</div>
 
 So the problem seems to be exceptions that sometimes occur during file writes, which take a long time to resolve.
 These block the process executing by putting it in a D state until the write returns, affecting the system stability.

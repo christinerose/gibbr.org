@@ -45,24 +45,15 @@ figure {
 	text-align: center;
 }
 
-.reference {
-	font-size: 8px;
-	text-align: center;
-}
-
 .code-block {
 	display: block;
 	margin-left: auto;
 	width: 90%;
-}
-
-@media screen and (min-width: 400px) {
-	.graph-wrapper {
-		display: flex;
-	}
+	font-size: min(2vw, 14px);
 }
 
 img {
-	width: 100%
+	width: 100%;
+	display: block;
+	margin:auto;
 }
-
