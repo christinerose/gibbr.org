@@ -14,60 +14,24 @@
     ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/style.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <link rel="shortcut icon" href="/favicon.ico">
-  <script>
-      navbarItems = [
-          {
-              href: "/",
-              name: "Home"
-          },
-          {
-              href: "/software.html",
-              name: "Software"
-          },
-          {
-              href: "/blog/",
-              name: "Blog"
-          }
-      ];
-      
-      function setNavbarActiveTab() {
-          var pagepath = window.location.pathname;
-      
-          if (pagepath.endsWith("index.html")) {
-              pagepath = pagepath.substring( 0, pagepath.indexOf("index.html"))
-          }
-          
-          // Create navbar element
-          const navbar = document.createElement('ul');
-          navbar.classList.add("navbar");
-          navbar.id = "navbar";
-          for (i = 0; i < navbarItems.length; i++) {
-              link = document.createElement('a');
-              link.href = navbarItems[i].href;
-              link.innerText = navbarItems[i].name;
-              console.log(pagepath);
-              if (navbarItems[i].href == pagepath || navbarItems[i].href == pagepath + ".html") {
-                  link.classList.add("active");
-              }
-              listItem = document.createElement('li');
-              listItem.appendChild(link);
-              navbar.appendChild(listItem);
-          }
-          links = navbar.getElementsByTagName("a");
-          for (i = 0; i < links.length; i++) {
-          }
-          document.body.prepend(navbar);
-      }
-      
-      document.addEventListener("DOMContentLoaded", setNavbarActiveTab);
-  </script>
+  <link rel="shortcut icon" href="/favicon.ico" />
 </head>
 <body>
+<ul class="navbar" id="navbar">
+<li>
+<a href="/">Home</a>
+</li>
+<li>
+<a href="/software.html">Software</a>
+</li>
+<li>
+<a href="/blog/">Blog</a>
+</li>
+</ul>
 <h1 id="section">404</h1>
 <p>Page not found!</p>
 </body>

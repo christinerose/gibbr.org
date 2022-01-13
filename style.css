@@ -17,7 +17,6 @@ h1 {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	background-color: #ddd;
 	overflow: hidden;
 }
 .navbar li {
@@ -30,10 +29,7 @@ h1 {
 	text-decoration: none;
 }
 .navbar li a:hover {
-	background-color: #bbb;
-}
-.navbar li a.active {
-	background-color: #6AC;
+	background-color: #ddd;
 }
 
 a {

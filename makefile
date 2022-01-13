@@ -1,11 +1,11 @@
-MARKDOWN = pandoc -H header.html -c style.css
+MARKDOWN = pandoc -s includes.yaml
 MD_FILES = $(shell find . -type f -name '*.md')
 HTML_FILES = $(patsubst %.md,%.html,$(MD_FILES))
 
-all: $(HTML_FILES) makefile
+all: $(HTML_FILES)
 
-# clean:
-# 	rm -fv HTML_FILES
+clean:
+	rm -v $(HTML_FILES)
 
-%.html: %.md style.css
+%.html: %.md style.css makefile includes.yaml
 	$(MARKDOWN) $< --output $@
