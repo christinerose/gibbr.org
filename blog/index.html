@@ -1,31 +1,77 @@
 <!DOCTYPE html>
-<html>
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="shortcut icon" href="/favicon.ico">
-	<link rel="stylesheet" href="/style.css">
-	<script src="/navbar.js"></script>
-	<title>Blog | Ryan Gibb</title>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Blog | Ryan Gibb</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <script>
+      navbarItems = [
+          {
+              href: "/",
+              name: "Home"
+          },
+          {
+              href: "/software.html",
+              name: "Software"
+          },
+          {
+              href: "/blog/",
+              name: "Blog"
+          }
+      ];
+      
+      function setNavbarActiveTab() {
+          var pagepath = window.location.pathname;
+      
+          if (pagepath.endsWith("index.html")) {
+              pagepath = pagepath.substring( 0, pagepath.indexOf("index.html"))
+          }
+          
+          // Create navbar element
+          const navbar = document.createElement('ul');
+          navbar.classList.add("navbar");
+          navbar.id = "navbar";
+          for (i = 0; i < navbarItems.length; i++) {
+              link = document.createElement('a');
+              link.href = navbarItems[i].href;
+              link.innerText = navbarItems[i].name;
+              console.log(pagepath);
+              if (navbarItems[i].href == pagepath || navbarItems[i].href == pagepath + ".html") {
+                  link.classList.add("active");
+              }
+              listItem = document.createElement('li');
+              listItem.appendChild(link);
+              navbar.appendChild(listItem);
+          }
+          links = navbar.getElementsByTagName("a");
+          for (i = 0; i < links.length; i++) {
+          }
+          document.body.prepend(navbar);
+      }
+      
+      document.addEventListener("DOMContentLoaded", setNavbarActiveTab);
+  </script>
 </head>
-
 <body>
-	<h1>Blog</h1>
-	<ul>
-		<li>
-			<span style="float: right;"> October 2021</span>
-			<a href="ilnp_overlay_network_application_layer_interface">ILNP overlay network application layer interface</a>
-		</li>
-		<li>
-			<span style="float: right;"> June 2021</span>
-			<a href="cubes">Cubes</a>
-		</li>
-		<li>
-			<span style="float: right;"> May 2021</span>
-			<a href="network_layer_mobility">Network layer mobility</a>
-		</li>
-	</ul>
+<ul>
+<li>2021-10-16 <a href="ilnp_overlay_network_application_layer_interface">ILNP overlay network application layer interface</a></li>
+<li>2021-06-03 <a href="cubes">Cubes</a></li>
+<li>2021-05-10 <a href="network_layer_mobility">Network layer mobility</a></li>
+</ul>
 </body>
-
 </html>
