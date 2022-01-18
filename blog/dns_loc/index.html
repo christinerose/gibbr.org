@@ -50,12 +50,12 @@
 </ul>
 <p>RFC-1876 also describes algorithms for resolving locations for domain names or IP addresses with decreasing accuracy. It still refers to classful addressing, despite being published 3 years after CIDR[1], probably because the algorithm it was adapted from was published in 1989.</p>
 <p>An aside; <code>find.me.uk</code> can be used to get the location of any UK postcode. E.g.:</p>
-<pre><code>dig loc cb30fd.find.me.uk</code></pre>
+<pre><code>$ dig loc cb30fd.find.me.uk</code></pre>
 <p>There are a few notable issues with the DNS LOC RR, distinct from other DNS RRs:</p>
 <ul>
 <li>There’s no verification of LOC’s, see:</li>
 </ul>
-<pre><code>dig loc ryan.gibb.xyz</code></pre>
+<pre><code>$ dig loc ryan.gibb.xyz</code></pre>
 <ul>
 <li>The privacy and security implications.</li>
 </ul>

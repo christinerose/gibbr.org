@@ -26,13 +26,13 @@ It still refers to classful addressing, despite being published 3 years after CI
 
 An aside; `find.me.uk` can be used to get the location of any UK postcode. E.g.:
 
-	dig loc cb30fd.find.me.uk
+	$ dig loc cb30fd.find.me.uk
 
 There are a few notable issues with the DNS LOC RR, distinct from other DNS RRs:
 
 - There's no verification of LOC's, see:
 ```
-dig loc ryan.gibb.xyz
+$ dig loc ryan.gibb.xyz
 ```
 - The privacy and security implications.
 
