@@ -239,7 +239,6 @@ A long D state seems to be a common issue in Network File Systems (NFS), but tha
 A system request to display the list of blocked (D state) tasks with `echo w > /proc/sysrq-trigger` was made when the process was running.
 The relevant section of the kernel log from this is:
 
-<pre>
 	$ dmesg
 	...
 	[6367695.195711] sysrq: Show Blocked State
@@ -311,7 +310,6 @@ The relevant section of the kernel log from this is:
 	[6367695.200330]  el0_svc_common.constprop.0+0x84/0x218
 	[6367695.200336]  el0_svc_handler+0x38/0xa0
 	[6367695.200342]  el0_svc+0x10/0x2d4
-</pre>
 
 Looking at the `python3` task stacktrace:
 
@@ -323,7 +321,6 @@ Looking at the `python3` task stacktrace:
 
 Running `trace -r -t -v -p <PID of process>`, we can see the writes that take an exceptionally long amount of time. Here is an example where the write of 288 bytes to file descriptor 5 executes successfully but takes 2.24 seconds to complete:
 
-<pre>
 	21:47:28.684124 (+ 0.000226) write(7, "2021-04-10 21:47:28.684061 [0:0:"..., 194) = 194
 	21:47:28.684381 (+ 0.000256) write(1, "2021-04-10 21:47:28.684308 [alic"..., 122) = 122
 	21:47:28.684583 (+ 0.000202) write(1, "\n", 1) = 1
@@ -335,7 +332,6 @@ Running `trace -r -t -v -p <PID of process>`, we can see the writes that take an
 	21:47:30.932142 (+ 0.000328) ioctl(9, SIOCGIFINDEX, {ifr_name="eth0", }) = 0
 	21:47:30.932506 (+ 0.000364) close(9) = 0
 	21:47:30.933208 (+ 0.000705) write(4, "2021-04-10 21:47:30.933090 [ff12"..., 348) = 348
-</pre>
 
 So the problem seems to be exceptions that sometimes occur during file writes, which take a long time to resolve.
 These block the process executing by putting it in a D state until the write returns, affecting the system stability.
@@ -349,15 +345,11 @@ Removing the logging improved the system stability, but the issues still occurre
 
 The program was being ran on the Pi's through SSH piping `stdout` to a file, like this:
 
-```
 	$ ssh HOST "RUN > EXPERIMENT_LOG_FILE"
-```
 
 Changing this to:
 
-```
 	$ ssh HOST "RUN | cat > EXPERIMENT_LOG_FILE"
-```
 
 Fixed the issue once and for all.
 
@@ -382,3 +374,4 @@ Further work in this area includes:
 As mentioned at the start, see the [dissertation](../../resources/diss.pdf) on which this blog was based for a bit more nuance, and a lot more detail.
 
 If you spot any errors or have any questions feel free to get in touch at [ryan@gibb.xyz](mailto:ryan@gibb.xyz).
+

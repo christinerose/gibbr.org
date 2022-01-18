@@ -29,3 +29,4 @@ The world is generated using a Markov Chain containing transitions from segments
 
 The square boxes denote a segment with 0 length and simplify the building of the Markov Chain.
 They are similar to an epsilon transition in a state machine.
+

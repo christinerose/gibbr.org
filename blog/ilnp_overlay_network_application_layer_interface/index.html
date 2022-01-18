@@ -12,8 +12,12 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="../../style.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
@@ -40,9 +44,7 @@
 <p>However, this local proxy will require adding some connection state to a stateless communication protocol. When <code>proxy.py</code> receives a packet how will it know what virtual hostname (which are different to the underlay hostnames), and STP port, to send it to? We’ll call this combination of hostname and port the ‘remote’.</p>
 <p>We could have a default remote hard coded, but this would only allow one communication channel. So instead we will have a mapping from local ports to remotes, where the local port is the port of the UDP socket connecting to our listening UDP socket. To allow these mappings to be dynamic we’ll use out-of-band communication and have <code>proxy.py</code> listening on a unix domain socket <code>./sock</code> for new mappings. As we don’t have any restrictions on the STP ports we’re using in our overlay, we might as well use a 1-to-1 mapping of UDP ports to STP ports to simplify things.</p>
 <p>An ILNP overlay aware application could create a mapping itself, but to support existing programs we can manually create one with:</p>
-<pre>
-    $ python proxy_create.py LOCAL_PORT REMOTE_HOSTNAME REMOTE_PORT
-</pre>
+<pre><code>$ python proxy_create.py LOCAL_PORT REMOTE_HOSTNAME REMOTE_PORT</code></pre>
 <p>Now receiving is very simple. We just spawn a thread for every ILNP STP socket and when we receive a packet on this socket we forward with UDP to the corresponding port locally. Note that a socket doesn’t necessarily have to send packets to our overlay to receive packets from it, but a mapping does have to exist for its port.</p>
 <p>So our local UDP proxy operating with 3 mappings would loop like:</p>
 <p><img src="proxy.svg" style="width:75.0%" /></p>
@@ -57,31 +59,23 @@
 <p><img src="../network_layer_mobility/images/diagrams/experiment.svg" style="width:75.0%" /></p>
 <p>With <code>ryan-laptop</code> as the mobile node (MN), <code>ryan-pc</code> as the corresponding node (CN), and <code>hp-laptop</code> as the router. This topology and mobility is transparent to the programs proxied through our overlay, as well as the proxy itself.</p>
 <p>First, we’ll create the two proxy sockets on port 10000 redirecting to our overlay at both endpoints, <code>ryan-laptop</code> and <code>ryan-pc</code>:</p>
-<pre>
-    ryan-laptop $ python proxy.py ../config/config.ini 10000
-    
-    ryan-pc $ python proxy.py ../config/config.ini 10000
-</pre>
+<pre><code>ryan-laptop $ python proxy.py ../config/config.ini 10000
+
+ryan-pc $ python proxy.py ../config/config.ini 10000</code></pre>
 <p>Then create the mappings:</p>
-<pre>
-    ryan-laptop $ python proxy_create.py 10000 ryan-pc 10001
-    
-    ryan-pc $ python proxy_create.py 10000 ryan-laptop 10001
-</pre>
+<pre><code>ryan-laptop $ python proxy_create.py 10000 ryan-pc 10001
+
+ryan-pc $ python proxy_create.py 10000 ryan-laptop 10001</code></pre>
 <p>We will also require running the proxy without any mappings on <code>hp-laptop</code> to instantiate the ILNP stack so it can forward packets:</p>
-<pre>
-    hp-laptop $ python proxy.py
-</pre>
+<pre><code>hp-laptop $ python proxy.py</code></pre>
 <p>Now on both endpoints we can run netcat to listen for UDP packets from 10000 on port 10001, and they can communicate!</p>
-<pre>
-    ryan-laptop $ nc -u 127.0.0.1 10000 -p 10001
-    hello,
-    world
-    
-    ryan-pc $ nc -u 127.0.0.1 10000 -p 10001
-    hello,
-    world
-</pre>
+<pre><code>ryan-laptop $ nc -u 127.0.0.1 10000 -p 10001
+hello,
+world
+
+ryan-pc $ nc -u 127.0.0.1 10000 -p 10001
+hello,
+world</code></pre>
 <p>We could replace netcat with any other application interfacing with a UDP socket as long as we know its source port. If we don’t have a predictable source port, we could just proxy it through netcat to provide one.</p>
 <p>Through this, we can have bidirectional datagram communication over our overlay network using a local UDP proxy.</p>
 <h2 id="streams">Streams</h2>
@@ -96,79 +90,57 @@
 <p>There is a <a href="https://github.com/sctplab/usrsctp">userspace implementation of SCTP</a>, but it only provides a userspace socket interface in C++. Fortunately the Linux kernel has <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/diff/net/sctp/?id=v5.11&id2=v5.10">implemented</a> RFC6951 in <a href="https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.11">version 5.11</a>, released February 2021, and the nmap suite have included support for SCTP in their ncat utility (a spiritual successor to netcat).</p>
 <p>Note that only the end hosts require SCTP support, so the fact that <code>hp-laptop</code> is running Ubuntu using an older kernel is not an issue.</p>
 <p>SCTP UDP encapulsation uses a <code>udp_port</code> and <code>encap_port</code>. From the <a href="https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html">sysctl kernel documentation</a>:</p>
-<pre>
-    udp_port - INTEGER
-    
-    The listening port for the local UDP tunnelling sock. Normally it’s using the IANA-assigned UDP port number 9899 (sctp-tunneling).
-    
-    This UDP sock is used for processing the incoming UDP-encapsulated SCTP packets (from RFC6951), and shared by all applications in the same net namespace.
-    
-    This UDP sock will be closed when the value is set to 0.
-    
-    The value will also be used to set the src port of the UDP header for the outgoing UDP-encapsulated SCTP packets. For the dest port, please refer to ‘encap_port’ below.
-    
-encap_port - INTEGER
-    
-    The default remote UDP encapsulation port.
-    
-    This value is used to set the dest port of the UDP header for the outgoing UDP-encapsulated SCTP packets by default. Users can also change the value for each sock/asoc/transport by using setsockopt. For further information, please refer to RFC6951.
-    
-    Note that when connecting to a remote server, the client should set this to the port that the UDP tunneling sock on the peer server is listening to and the local UDP tunneling sock on the client also must be started. On the server, it would get the encap_port from the incoming packet’s source port.
-</pre>
+<pre><code>udp_port - INTEGER
+
+The listening port for the local UDP tunnelling sock. Normally it’s using the IANA-assigned UDP port number 9899 (sctp-tunneling).
+
+This UDP sock is used for processing the incoming UDP-encapsulated SCTP packets (from RFC6951), and shared by all applications in the same net namespace.
+
+This UDP sock will be closed when the value is set to 0.
+
+The value will also be used to set the src port of the UDP header for the outgoing UDP-encapsulated SCTP packets. For the dest port, please refer to ‘encap_port’ below.</code></pre>
+<p>encap_port - INTEGER</p>
+<pre><code>The default remote UDP encapsulation port.
+
+This value is used to set the dest port of the UDP header for the outgoing UDP-encapsulated SCTP packets by default. Users can also change the value for each sock/asoc/transport by using setsockopt. For further information, please refer to RFC6951.
+
+Note that when connecting to a remote server, the client should set this to the port that the UDP tunneling sock on the peer server is listening to and the local UDP tunneling sock on the client also must be started. On the server, it would get the encap_port from the incoming packet’s source port.</code></pre>
 <p>As we want to intercept the SCTP UDP packets for proxying over our overlay, we won’t use the IANA-assigned 9899 port for these variables. Instead, we’ll use ncat to intercept outgoing SCTP UDP packets (sent to <code>udp_port</code>) proxying them over our overlay, and to forward received SCTP UDP packets to <code>encap_port</code>, where the kernel SCTP implementation will be listening. It’s worth noting that this will likely break any other applications using SCTP.</p>
 <h2 id="putting-it-all-together">Putting it all together</h2>
 <p>On both <code>ryan-laptop</code> and <code>ryan-pc</code> we configure the kernel SCTP implementation’s listening port and outgoing destination port:</p>
-<pre>
-    # UDP listening port
-    $ sudo sysctl -w net.sctp.encap_port=10002
-    # UDP dest port
-    $ sudo sysctl -w net.sctp.udp_port=10003
-</pre>
+<pre><code># UDP listening port
+$ sudo sysctl -w net.sctp.encap_port=10002
+# UDP dest port
+$ sudo sysctl -w net.sctp.udp_port=10003</code></pre>
 <p>To redirect outgoing SCTP UDP packets over the overlay we’ll redirect packets destined for port 10002 to the overlay with source port 10002:</p>
-<pre>
-    $ ncat -u -l 10002 -c "ncat -u 127.0.0.1 10001 -p 10002" --keep-open
-</pre>
+<pre><code>$ ncat -u -l 10002 -c &quot;ncat -u 127.0.0.1 10001 -p 10002&quot; --keep-open</code></pre>
 <p>Proxy mappings redirecting packets from local port <code>encap_port</code> to remote port <code>udp_port</code>:</p>
-<pre>
-    ryan-pc: % python proxy_create.py 10002 alice 10003
-    ryan-laptop: % python proxy_create.py 10002 bob 10003
-</pre>
+<pre><code>ryan-pc: % python proxy_create.py 10002 alice 10003
+ryan-laptop: % python proxy_create.py 10002 bob 10003</code></pre>
 <p>And as control messages will be exchanged between the two SCTP instances we’ll also require redirecting packets from local port <code>encap_port</code> to remote port <code>encap_port</code>.</p>
-<pre>
-    ryan-pc: % python proxy_create.py 10003 alice 10003
-    ryan-laptop: % python proxy_create.py 10003 bob 10003
-</pre>
+<pre><code>ryan-pc: % python proxy_create.py 10003 alice 10003
+ryan-laptop: % python proxy_create.py 10003 bob 10003</code></pre>
 <p>Now we can run ncat with SCTP :-)</p>
-<pre>
-    ryan-laptop $ ncat --sctp -l 9999
-    hello,
-    world
-    
-    ryan-pc $ ncat --sctp 127.0.0.1 9999
-    hello,
-    world
-</pre>
+<pre><code>ryan-laptop $ ncat --sctp -l 9999
+hello,
+world
+
+ryan-pc $ ncat --sctp 127.0.0.1 9999
+hello,
+world</code></pre>
 <p>But this <em>still</em> doesn’t allow us to use existing applications using a standard TCP socket over our overlay. For this, we turn to <code>ssh</code>.</p>
 <p>On both end points we can run:</p>
-<pre>
-    $ ncat --sctp -l 9999 -c "ncat 127.0.0.1 22" --keep-open
-</pre>
+<pre><code>$ ncat --sctp -l 9999 -c &quot;ncat 127.0.0.1 22&quot; --keep-open</code></pre>
 <p>Which will use ncat to send sctp data to port 22, used for ssh.</p>
 <p>With an openssh server configured on the machine we can then use:</p>
-<pre>
-    $ ssh -o "ProxyCommand ncat --sctp 127.0.0.1 9999" -N -D 8080 localhost
-</pre>
+<pre><code>$ ssh -o &quot;ProxyCommand ncat --sctp 127.0.0.1 9999&quot; -N -D 8080 localhost</code></pre>
 <p>To connect via ssh over our overlay.</p>
 <p>And if we have ssh… we have anything!</p>
 <p>That is, we can create a SOCKS proxy to send anything over our overlay. For example, we can create a proxy:</p>
-<pre>
-    $ ssh -o "ProxyCommand ncat --sctp 127.0.0.1 9999" -N -D 8080 localhost
-</pre>
+<pre><code>$ ssh -o &quot;ProxyCommand ncat --sctp 127.0.0.1 9999&quot; -N -D 8080 localhost</code></pre>
 <p>And then configure your web browser of choice to use this proxy.</p>
 <p>Alternatively, one could also proxy a raw TCP connection on port <code>PORT</code> over SCTP and our overlay with:</p>
-<pre>
-    $ ncat -l PORT -c "ncat --sctp 127.0.0.1 9999" --keep-open
-</pre>
+<pre><code>$ ncat -l PORT -c &quot;ncat --sctp 127.0.0.1 9999&quot; --keep-open</code></pre>
 <h2 id="taking-a-step-back">Taking a step back</h2>
 <p>Putting all the pieces together, the network stack looks something like:</p>
 <p><img src="bin.jpg" style="width:75.0%" /></p>
