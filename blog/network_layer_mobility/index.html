@@ -12,12 +12,8 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="/style.css" />
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
@@ -41,11 +37,11 @@
 <p>The protocol stack we’re concerned with is based off the <a href="https://en.wikipedia.org/wiki/Internet_protocol_suite">Internet Protocol suite</a>, also known as TCP/IP.</p>
 <p>This network stack is often referred to as an hourglass, with the Internet Protocol (IP) as the skinny waist.</p>
 <figure>
-<img src="images/diagrams/hourglass_cropped.svg" style="width:50.0%" alt="Steve Deering. “Watching the Waist of the Protocol Hourglass”. In: IETF 51 London. 2001." /><figcaption aria-hidden="true"><a href="https://iab.org/wp-content/IAB-uploads/2011/03/hourglass-london-ietf.pdf">Steve Deering. “Watching the Waist of the Protocol Hourglass”. In: IETF 51 London. 2001.</a></figcaption>
+<img src="images/diagrams/hourglass_cropped.svg" style="width:50.0%" alt="" /><figcaption><a href="https://iab.org/wp-content/IAB-uploads/2011/03/hourglass-london-ietf.pdf">Steve Deering. “Watching the Waist of the Protocol Hourglass”. In: IETF 51 London. 2001.</a></figcaption>
 </figure>
 <p>Packets of a protocol are encapsulated by the protocol below, for example:</p>
 <figure>
-<img src="images/diagrams/UDP_encapsulation.svg" alt="Wikimedia UDP encapsulation.svg" /><figcaption aria-hidden="true"><a href="https://commons.wikimedia.org/wiki/File:UDP_encapsulation.svg">Wikimedia UDP encapsulation.svg</a></figcaption>
+<img src="images/diagrams/UDP_encapsulation.svg" alt="" /><figcaption><a href="https://commons.wikimedia.org/wiki/File:UDP_encapsulation.svg">Wikimedia UDP encapsulation.svg</a></figcaption>
 </figure>
 <h2 id="motivation">Motivation</h2>
 <p>Ubiquitous Computing is a vision of the future of computing where devices are omnipresent and exist in many forms. The Internet of Things (IoT) is a modern interpretation of this which envisions many objects existing as Internet-connected smart devices; such as wearable devices, smart vehicles, and smart appliances like fridges, washing machines, and ovens. Many of these devices are physically mobile, which requires network support when moving location.</p>
@@ -64,12 +60,12 @@
 <p>As IP was not designed with mobility in mind most solutions to try retrofit mobility to IP somehow, such as the middleware platforms already discussed. This is symptomatic of a larger problem: the ossification of the Internet. It’s easier to build up (in the protocol stack) than to redesign it, especially when the protocol stack is as omnipresent and critical as the modern Internet. A radical change in IP’s addressing from the Identifier-Locator Network Protocol (ILNP) architecture provides a solution to this mobility problem by separating the semantics of IP addresses into their constituent parts: an identifier and a locator. An identifier uniquely identifies the node - within some scope - and the locator identifies the network in which the node resides, giving the node’s location in the Internet. See <a href="https://tools.ietf.org/html/rfc6740">RFC6740</a> for more detail.</p>
 <p>The overloading of IP address is solved with this Identifier-Locator addressing split. This also allows us to solve the entanglement of layers:</p>
 <figure>
-<img src="images/diagrams/ilnp_ipv6_names_cropped.svg" style="width:75.0%" alt="S. N. Bhatti and R. Yanagida. “Seamless internet connectivity for ubiquitous communication” In: PURBA UBICOMP. 2019" /><figcaption aria-hidden="true"><a href="https://dl.acm.org/doi/abs/10.1145/3341162.3349315">S. N. Bhatti and R. Yanagida. “Seamless internet connectivity for ubiquitous communication” In: PURBA UBICOMP. 2019</a></figcaption>
+<img src="images/diagrams/ilnp_ipv6_names_cropped.svg" style="width:75.0%" alt="" /><figcaption><a href="https://dl.acm.org/doi/abs/10.1145/3341162.3349315">S. N. Bhatti and R. Yanagida. “Seamless internet connectivity for ubiquitous communication” In: PURBA UBICOMP. 2019</a></figcaption>
 </figure>
 <p>Applications that use DNS to obtain IP addresses (conforming to <a href="https://tools.ietf.org/html/rfc1958#section-4">RFC1958</a>) will be backwards compatible with ILNPv6 with modifications to DNS <a href="https://tools.ietf.org/html/rfc6742">RFC6742</a>).</p>
 <p>ILNP can be implemented as an extension to IPv6, called ILNPv6. ILNP can also be implemented as an extension to IPv4 as ILNPv4, but this is not as elegant as ILNPv6 and will not be considered here. The upper 64 bits of an IPv6 address is already used as a routing prefix and is taken as the locator in ILNPv6. The lower 64 bits, the interface identifier in IPv6, is taken as the identifier. ILNPv6’s Identifier-Locator Vector (I-LV) corresponds to the IPv6 address. The syntax is identical but the semantics differ. That is, IPv6 addresses and ILNPv6 I-LVs look the same on the wire but are interpreted differently.</p>
 <figure>
-<img src="images/diagrams/ilnp_ipv6_addresses_cropped.svg" alt="RFC6741" /><figcaption aria-hidden="true"><a href="https://tools.ietf.org/html/rfc6741#section-3.1">RFC6741</a></figcaption>
+<img src="images/diagrams/ilnp_ipv6_addresses_cropped.svg" alt="" /><figcaption><a href="https://tools.ietf.org/html/rfc6741#section-3.1">RFC6741</a></figcaption>
 </figure>
 <p>So given an IPv6 address “2001:db8:1:2:3:4:5:6”, the ILNPv6 locator would be “2001:db8:1:2” and the identifier “3:4:5:6”.</p>
 <p>ILNPv6 supports mobility through dynamic binding of identifiers to locators, and ICMP locator update messages. The locator of a node can change while retaining its identifier and communication flows. Additionally, ILNPv6 supports seamless connectivity during a network transition with a soft handoff - making the new connection before breaking the old connection. Note that this does require hardware support for multiple connections on the same adaptor, such as through CDMA, or two physical network adapters.</p>
@@ -81,7 +77,7 @@
 <p>This overlay network was implemented in user space with Python due to time constraints of the project and difficulties associated with kernel programming.</p>
 <p>A simple transport protocol (STP) was created for demultiplexing received ILNPv6 packets by wrapping them with a port, similar to UDP.</p>
 <figure>
-<img src="images/diagrams/overlay_network_stack.svg" alt="overlay network protocol stack" /><figcaption aria-hidden="true">overlay network protocol stack</figcaption>
+<img src="images/diagrams/overlay_network_stack.svg" alt="" /><figcaption>overlay network protocol stack</figcaption>
 </figure>
 <p>Note that in our overlay network, for a node, an interface simply refers to a locator which the node is connected to, via configuration files. The node will have connected to the corresponding IP multicast address.</p>
 <h2 id="discovery-protocol">Discovery protocol</h2>
@@ -92,20 +88,20 @@
 <p>This protocol scales poorly - the number of messages scales quadratically with every additional network containing a node - but it is sufficient for our purposes.</p>
 <p>See an example operation of the protocol below. Node A is in network 1, node B in network 2, and node C in both networks.</p>
 <figure>
-<img src="images/diagrams/discovery_protocol_topology.svg" style="width:75.0%" alt="discovery protocol example topology" /><figcaption aria-hidden="true">discovery protocol example topology</figcaption>
+<img src="images/diagrams/discovery_protocol_topology.svg" style="width:75.0%" alt="" /><figcaption>discovery protocol example topology</figcaption>
 </figure>
 <figure>
-<img src="images/diagrams/discovery_protocol_sequence_diagram.svg" style="width:75.0%" alt="discovery protocol example sequence diagram" /><figcaption aria-hidden="true">discovery protocol example sequence diagram</figcaption>
+<img src="images/diagrams/discovery_protocol_sequence_diagram.svg" style="width:75.0%" alt="" /><figcaption>discovery protocol example sequence diagram</figcaption>
 </figure>
 <h2 id="locator-updates">Locator updates</h2>
 <p>Our overlay network supports mobility with locator update messages as part of the ILNPv6 layer. The mobile node (MN) sends a locator update over its old locator, and the corresponding node (CN) responds with an acknowledgement via the new locator - verifying a path exists between the new locator and CN exists.</p>
 <p>The discovery message sent by the MN on the new locator is simply for path discovery as the CN will not know how to route to 0:0:0:c with no node sending discovery messages from that locator. An alternative solution to this would have been to make nodes send packets to all connected interfaces if there is no mapping in the forwarding table.</p>
 <p>See an example of a MN moving from locator 0:0:0:a to locator 0:0:0:c, in a communication session with a CN in locator 0:0:0:b, below:</p>
 <figure>
-<img src="images/diagrams/locator_update_topology.svg" style="width:75.0%" alt="locator update example topology" /><figcaption aria-hidden="true">locator update example topology</figcaption>
+<img src="images/diagrams/locator_update_topology.svg" style="width:75.0%" alt="" /><figcaption>locator update example topology</figcaption>
 </figure>
 <figure>
-<img src="images/diagrams/locator_update_sequence_diagram.svg" style="width:75.0%" alt="locator update example sequence diagram" /><figcaption aria-hidden="true">locator update example sequence diagram</figcaption>
+<img src="images/diagrams/locator_update_sequence_diagram.svg" style="width:75.0%" alt="" /><figcaption>locator update example sequence diagram</figcaption>
 </figure>
 <h2 id="experiments">Experiments</h2>
 <p>To demonstrate the operation of the overlay network on resource-constrained IoT devices a Raspberry Pi testbed communicating via ethernet was used. Previous work in this area has been confined to workstation or server machines.</p>
@@ -187,79 +183,79 @@
 <p>There are drops in throughput, corresponding to horizontal gaps in the graph, and sometimes subsequent spikes, corresponding to the spikes in received sequence numbers.</p>
 <p>As the main focus of this project is obviously networking that was the first area assumed to be where the problem lay, as a scheduling or buffering issue. But the UDP send was not blocking, and the threading and thread synchronisation were working perfectly. The process was tried pinned to a specific CPU core with <code>$ taskset 0x1 &lt;program&gt;</code> to no avail. Using <code>tcpdump</code> showed the same gaps in packets sent and received on the CN, router, and MN.</p>
 <p>Running <code>top</code> on the Pi while running showed that when systems issues occurred (printed as a warning by the experiment program) the process was in a ‘D’ state. This means it was in an uninterruptible sleep, due to I/O, otherwise data corruption could occur. As network issues were already ruled out, the only other I/O was logging. A long D state seems to be a common issue in Network File Systems (NFS), but that is not used here. A system request to display the list of blocked (D state) tasks with <code>echo w &gt; /proc/sysrq-trigger</code> was made when the process was running. The relevant section of the kernel log from this is:</p>
-<div class="code-block" style="font-size: min(2vw, 10px);">
-<pre><code>$ dmesg
-...
-[6367695.195711] sysrq: Show Blocked State
-[6367695.199742]   task                        PC stack   pid father
-[6367695.199791] jbd2/mmcblk0p2- D    0   824      2 0x00000028
-[6367695.199801] Call trace:
-[6367695.199818]  __switch_to+0x108/0x1c0
-[6367695.199828]  __schedule+0x328/0x828
-[6367695.199835]  schedule+0x4c/0xe8
-[6367695.199843]  io_schedule+0x24/0x90
-[6367695.199850]  bit_wait_io+0x20/0x60
-[6367695.199857]  __wait_on_bit+0x80/0xf0
-[6367695.199864]  out_of_line_wait_on_bit+0xa8/0xd8
-[6367695.199872]  __wait_on_buffer+0x40/0x50
-[6367695.199881]  jbd2_journal_commit_transaction+0xdf0/0x19f0
-[6367695.199889]  kjournald2+0xc4/0x268
-[6367695.199897]  kthread+0x150/0x170
-[6367695.199904]  ret_from_fork+0x10/0x18
-[6367695.199957] kworker/1:1     D    0 378944      2 0x00000028
-[6367695.199984] Workqueue: events dbs_work_handler
-[6367695.199990] Call trace:
-[6367695.199998]  __switch_to+0x108/0x1c0
-[6367695.200004]  __schedule+0x328/0x828
-[6367695.200011]  schedule+0x4c/0xe8
-[6367695.200019]  schedule_timeout+0x15c/0x368
-[6367695.200026]  wait_for_completion_timeout+0xa0/0x120
-[6367695.200034]  mbox_send_message+0xa8/0x120
-[6367695.200042]  rpi_firmware_transaction+0x6c/0x110
-[6367695.200048]  rpi_firmware_property_list+0xbc/0x178
-[6367695.200055]  rpi_firmware_property+0x78/0x110
-[6367695.200063]  raspberrypi_fw_set_rate+0x5c/0xd8
-[6367695.200070]  clk_change_rate+0xdc/0x500
-[6367695.200077]  clk_core_set_rate_nolock+0x1cc/0x1f0
-[6367695.200084]  clk_set_rate+0x3c/0xc0
-[6367695.200090]  dev_pm_opp_set_rate+0x3d4/0x520
-[6367695.200096]  set_target+0x4c/0x90
-[6367695.200103]  __cpufreq_driver_target+0x2c8/0x678
-[6367695.200110]  od_dbs_update+0xc4/0x1a0
-[6367695.200116]  dbs_work_handler+0x48/0x80
-[6367695.200123]  process_one_work+0x1c4/0x460
-[6367695.200129]  worker_thread+0x54/0x428
-[6367695.200136]  kthread+0x150/0x170
-[6367695.200142]  ret_from_fork+0x10/0x1
-[6367695.200155] python3         D    0 379325 379321 0x00000000
-[6367695.200163] Call trace:
-[6367695.200170]  __switch_to+0x108/0x1c0
-[6367695.200177]  __schedule+0x328/0x828
-[6367695.200184]  schedule+0x4c/0xe8
-[6367695.200190]  io_schedule+0x24/0x90
-[6367695.200197]  bit_wait_io+0x20/0x60
-[6367695.200204]  __wait_on_bit+0x80/0xf0
-[6367695.200210]  out_of_line_wait_on_bit+0xa8/0xd8
-[6367695.200217]  do_get_write_access+0x438/0x5e8
-[6367695.200224]  jbd2_journal_get_write_access+0x6c/0xc0
-[6367695.200233]  __ext4_journal_get_write_access+0x40/0xa8
-[6367695.200241]  ext4_reserve_inode_write+0xa8/0xf8
-[6367695.200248]  ext4_mark_inode_dirty+0x68/0x248
-[6367695.200255]  ext4_dirty_inode+0x54/0x78
-[6367695.200262]  __mark_inode_dirty+0x268/0x4a8
-[6367695.200269]  generic_update_time+0xb0/0xf8
-[6367695.200275]  file_update_time+0xf8/0x138
-[6367695.200284]  __generic_file_write_iter+0x94/0x1e8
-[6367695.200290]  ext4_file_write_iter+0xb4/0x338
-[6367695.200298]  new_sync_write+0x104/0x1b0
-[6367695.200305]  __vfs_write+0x78/0x90
-[6367695.200312]  vfs_write+0xe8/0x1c8
-[6367695.200318]  ksys_write+0x7c/0x108
-[6367695.200324]  __arm64_sys_write+0x28/0x38
-[6367695.200330]  el0_svc_common.constprop.0+0x84/0x218
-[6367695.200336]  el0_svc_handler+0x38/0xa0
-[6367695.200342]  el0_svc+0x10/0x2d4</code></pre>
-</div>
+<pre>
+    $ dmesg
+    ...
+    [6367695.195711] sysrq: Show Blocked State
+    [6367695.199742]   task                        PC stack   pid father
+    [6367695.199791] jbd2/mmcblk0p2- D    0   824      2 0x00000028
+    [6367695.199801] Call trace:
+    [6367695.199818]  __switch_to+0x108/0x1c0
+    [6367695.199828]  __schedule+0x328/0x828
+    [6367695.199835]  schedule+0x4c/0xe8
+    [6367695.199843]  io_schedule+0x24/0x90
+    [6367695.199850]  bit_wait_io+0x20/0x60
+    [6367695.199857]  __wait_on_bit+0x80/0xf0
+    [6367695.199864]  out_of_line_wait_on_bit+0xa8/0xd8
+    [6367695.199872]  __wait_on_buffer+0x40/0x50
+    [6367695.199881]  jbd2_journal_commit_transaction+0xdf0/0x19f0
+    [6367695.199889]  kjournald2+0xc4/0x268
+    [6367695.199897]  kthread+0x150/0x170
+    [6367695.199904]  ret_from_fork+0x10/0x18
+    [6367695.199957] kworker/1:1     D    0 378944      2 0x00000028
+    [6367695.199984] Workqueue: events dbs_work_handler
+    [6367695.199990] Call trace:
+    [6367695.199998]  __switch_to+0x108/0x1c0
+    [6367695.200004]  __schedule+0x328/0x828
+    [6367695.200011]  schedule+0x4c/0xe8
+    [6367695.200019]  schedule_timeout+0x15c/0x368
+    [6367695.200026]  wait_for_completion_timeout+0xa0/0x120
+    [6367695.200034]  mbox_send_message+0xa8/0x120
+    [6367695.200042]  rpi_firmware_transaction+0x6c/0x110
+    [6367695.200048]  rpi_firmware_property_list+0xbc/0x178
+    [6367695.200055]  rpi_firmware_property+0x78/0x110
+    [6367695.200063]  raspberrypi_fw_set_rate+0x5c/0xd8
+    [6367695.200070]  clk_change_rate+0xdc/0x500
+    [6367695.200077]  clk_core_set_rate_nolock+0x1cc/0x1f0
+    [6367695.200084]  clk_set_rate+0x3c/0xc0
+    [6367695.200090]  dev_pm_opp_set_rate+0x3d4/0x520
+    [6367695.200096]  set_target+0x4c/0x90
+    [6367695.200103]  __cpufreq_driver_target+0x2c8/0x678
+    [6367695.200110]  od_dbs_update+0xc4/0x1a0
+    [6367695.200116]  dbs_work_handler+0x48/0x80
+    [6367695.200123]  process_one_work+0x1c4/0x460
+    [6367695.200129]  worker_thread+0x54/0x428
+    [6367695.200136]  kthread+0x150/0x170
+    [6367695.200142]  ret_from_fork+0x10/0x1
+    [6367695.200155] python3         D    0 379325 379321 0x00000000
+    [6367695.200163] Call trace:
+    [6367695.200170]  __switch_to+0x108/0x1c0
+    [6367695.200177]  __schedule+0x328/0x828
+    [6367695.200184]  schedule+0x4c/0xe8
+    [6367695.200190]  io_schedule+0x24/0x90
+    [6367695.200197]  bit_wait_io+0x20/0x60
+    [6367695.200204]  __wait_on_bit+0x80/0xf0
+    [6367695.200210]  out_of_line_wait_on_bit+0xa8/0xd8
+    [6367695.200217]  do_get_write_access+0x438/0x5e8
+    [6367695.200224]  jbd2_journal_get_write_access+0x6c/0xc0
+    [6367695.200233]  __ext4_journal_get_write_access+0x40/0xa8
+    [6367695.200241]  ext4_reserve_inode_write+0xa8/0xf8
+    [6367695.200248]  ext4_mark_inode_dirty+0x68/0x248
+    [6367695.200255]  ext4_dirty_inode+0x54/0x78
+    [6367695.200262]  __mark_inode_dirty+0x268/0x4a8
+    [6367695.200269]  generic_update_time+0xb0/0xf8
+    [6367695.200275]  file_update_time+0xf8/0x138
+    [6367695.200284]  __generic_file_write_iter+0x94/0x1e8
+    [6367695.200290]  ext4_file_write_iter+0xb4/0x338
+    [6367695.200298]  new_sync_write+0x104/0x1b0
+    [6367695.200305]  __vfs_write+0x78/0x90
+    [6367695.200312]  vfs_write+0xe8/0x1c8
+    [6367695.200318]  ksys_write+0x7c/0x108
+    [6367695.200324]  __arm64_sys_write+0x28/0x38
+    [6367695.200330]  el0_svc_common.constprop.0+0x84/0x218
+    [6367695.200336]  el0_svc_handler+0x38/0xa0
+    [6367695.200342]  el0_svc+0x10/0x2d4
+</pre>
 <p>Looking at the <code>python3</code> task stacktrace:</p>
 <ul>
 <li><p><code>jbd2</code> is the thread that updates the filesystem journal, and <code>ext4</code> is the default Ubuntu file system (as well as a lot of other distributions)</p></li>
@@ -268,19 +264,19 @@
 <li><p>In ARM, <code>svc</code> means supervisor call, and <code>el0</code> exception level 0 (the lowest level of exception), so some sort of exception occurs and is then handled with <code>el0_svc_handler</code>.</p></li>
 </ul>
 <p>Running <code>trace -r -t -v -p &lt;PID of process&gt;</code>, we can see the writes that take an exceptionally long amount of time. Here is an example where the write of 288 bytes to file descriptor 5 executes successfully but takes 2.24 seconds to complete:</p>
-<div class="code-block" style="font-size: min(1.3vw, 10px);">
-<pre><code>21:47:28.684124 (+ 0.000226) write(7, &quot;2021-04-10 21:47:28.684061 [0:0:&quot;..., 194) = 194
-21:47:28.684381 (+ 0.000256) write(1, &quot;2021-04-10 21:47:28.684308 [alic&quot;..., 122) = 122
-21:47:28.684583 (+ 0.000202) write(1, &quot;\n&quot;, 1) = 1
-21:47:28.684786 (+ 0.000202) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=5647000}, NULL) = 0 (Timeout)
-21:47:28.690796 (+ 0.006023) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=0}, NULL) = 0 (Timeout)
-21:47:30.930965 (+ 2.240200) write(5, &quot;2021-04-10 21:47:30.930813 0:0:0&quot;..., 228) = 228
-21:47:30.931427 (+ 0.000433) getuid() = 1000
-21:47:30.931812 (+ 0.000385) socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 9
-21:47:30.932142 (+ 0.000328) ioctl(9, SIOCGIFINDEX, {ifr_name=&quot;eth0&quot;, }) = 0
-21:47:30.932506 (+ 0.000364) close(9) = 0
-21:47:30.933208 (+ 0.000705) write(4, &quot;2021-04-10 21:47:30.933090 [ff12&quot;..., 348) = 348</code></pre>
-</div>
+<pre>
+    21:47:28.684124 (+ 0.000226) write(7, "2021-04-10 21:47:28.684061 [0:0:"..., 194) = 194
+    21:47:28.684381 (+ 0.000256) write(1, "2021-04-10 21:47:28.684308 [alic"..., 122) = 122
+    21:47:28.684583 (+ 0.000202) write(1, "\n", 1) = 1
+    21:47:28.684786 (+ 0.000202) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=5647000}, NULL) = 0 (Timeout)
+    21:47:28.690796 (+ 0.006023) pselect6(0, NULL, NULL, NULL, {tv_sec=0, tv_nsec=0}, NULL) = 0 (Timeout)
+    21:47:30.930965 (+ 2.240200) write(5, "2021-04-10 21:47:30.930813 0:0:0"..., 228) = 228
+    21:47:30.931427 (+ 0.000433) getuid() = 1000
+    21:47:30.931812 (+ 0.000385) socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 9
+    21:47:30.932142 (+ 0.000328) ioctl(9, SIOCGIFINDEX, {ifr_name="eth0", }) = 0
+    21:47:30.932506 (+ 0.000364) close(9) = 0
+    21:47:30.933208 (+ 0.000705) write(4, "2021-04-10 21:47:30.933090 [ff12"..., 348) = 348
+</pre>
 <p>So the problem seems to be exceptions that sometimes occur during file writes, which take a long time to resolve. These block the process executing by putting it in a D state until the write returns, affecting the system stability. These exceptions being the cause would make sense, as these issues aren’t occurring consistently, but rather intermittently. This is happening on the MN, on the router, and on the CN; so its effect is being amplified 3 times. These exceptions are likely due to the page cache being flushed to disk, combined with poor performance of the Pi’s SD cards. But finding the root cause would require more investigation. Regardless, enough is now known to fix the problem.</p>
 <p>Removing the logging improved the system stability, but the issues still occurred with reduced frequency. This is because the experimental log is written to <code>stdout</code>, and <code>stdout</code> is piped to disk.</p>
 <p>The program was being ran on the Pi’s through SSH piping <code>stdout</code> to a file, like this:</p>

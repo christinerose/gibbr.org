@@ -45,11 +45,10 @@ figure {
 	text-align: center;
 }
 
-.code-block {
+pre {
 	display: block;
-	margin-left: auto;
-	width: 90%;
-	font-size: min(2vw, 14px);
+	overflow-x: auto;
+	background: #faf8f5;
 }
 
 img {

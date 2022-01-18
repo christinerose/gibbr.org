@@ -40,9 +40,9 @@ As we don't have any restrictions on the STP ports we're using in our overlay, w
 
 An ILNP overlay aware application could create a mapping itself, but to support existing programs we can manually create one with:
 
-<div class="code-block">
+<pre>
 	$ python proxy_create.py LOCAL_PORT REMOTE_HOSTNAME REMOTE_PORT
-</div>
+</pre>
 
 Now receiving is very simple.
 We just spawn a thread for every ILNP STP socket and when we receive a packet on this socket we forward with UDP to the corresponding port locally.
@@ -78,29 +78,29 @@ This topology and mobility is transparent to the programs proxied through our ov
 
 First, we'll create the two proxy sockets on port 10000 redirecting to our overlay at both endpoints, `ryan-laptop` and `ryan-pc`:
 
-<div class="code-block">
+<pre>
 	ryan-laptop $ python proxy.py ../config/config.ini 10000
 	
 	ryan-pc $ python proxy.py ../config/config.ini 10000
-</div>
+</pre>
 
 Then create the mappings:
 
-<div class="code-block">
+<pre>
 	ryan-laptop $ python proxy_create.py 10000 ryan-pc 10001
 	
 	ryan-pc $ python proxy_create.py 10000 ryan-laptop 10001
-</div>
+</pre>
 
 We will also require running the proxy without any mappings on `hp-laptop` to instantiate the ILNP stack so it can forward packets:
 
-<div class="code-block">
+<pre>
 	hp-laptop $ python proxy.py
-</div>
+</pre>
 
 Now on both endpoints we can run netcat to listen for UDP packets from 10000 on port 10001, and they can communicate!
 
-<div class="code-block">
+<pre>
 	ryan-laptop $ nc -u 127.0.0.1 10000 -p 10001
 	hello,
 	world
@@ -108,7 +108,7 @@ Now on both endpoints we can run netcat to listen for UDP packets from 10000 on 
 	ryan-pc $ nc -u 127.0.0.1 10000 -p 10001
 	hello,
 	world
-</div>
+</pre>
 
 We could replace netcat with any other application interfacing with a UDP socket as long as we know its source port.
 If we don't have a predictable source port, we could just proxy it through netcat to provide one.
@@ -157,7 +157,7 @@ Note that only the end hosts require SCTP support, so the fact that `hp-laptop` 
 SCTP UDP encapulsation uses a `udp_port` and `encap_port`.
 From the [sysctl kernel documentation](https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html):
 
-<div class="code-block">
+<pre>
 	udp_port - INTEGER
 	
 	The listening port for the local UDP tunnelling sock. Normally it’s using the IANA-assigned UDP port number 9899 (sctp-tunneling).
@@ -175,7 +175,7 @@ encap_port - INTEGER
 	This value is used to set the dest port of the UDP header for the outgoing UDP-encapsulated SCTP packets by default. Users can also change the value for each sock/asoc/transport by using setsockopt. For further information, please refer to RFC6951.
 	
 	Note that when connecting to a remote server, the client should set this to the port that the UDP tunneling sock on the peer server is listening to and the local UDP tunneling sock on the client also must be started. On the server, it would get the encap_port from the incoming packet’s source port.
-</div>
+</pre>
 
 As we want to intercept the SCTP UDP packets for proxying over our overlay, we won't use the IANA-assigned 9899 port for these variables.
 Instead, we'll use ncat to intercept outgoing SCTP UDP packets (sent to `udp_port`) proxying them over our overlay, and to forward received SCTP UDP packets to `encap_port`, where the kernel SCTP implementation will be listening. It's worth noting that this will likely break any other applications using SCTP.
@@ -184,36 +184,36 @@ Instead, we'll use ncat to intercept outgoing SCTP UDP packets (sent to `udp_por
 
 On both `ryan-laptop` and `ryan-pc` we configure the kernel SCTP implementation's listening port and outgoing destination port:
 
-<div class="code-block">
+<pre>
 	# UDP listening port
 	$ sudo sysctl -w net.sctp.encap_port=10002
 	# UDP dest port
 	$ sudo sysctl -w net.sctp.udp_port=10003
-</div>
+</pre>
 
 To redirect outgoing SCTP UDP packets over the overlay we'll redirect packets destined for port 10002 to the overlay with source port 10002:
 
-<div class="code-block">
+<pre>
 	$ ncat -u -l 10002 -c "ncat -u 127.0.0.1 10001 -p 10002" --keep-open
-</div>
+</pre>
 
 Proxy mappings redirecting packets from local port `encap_port` to remote port `udp_port`:
 
-<div class="code-block">
+<pre>
 	ryan-pc: % python proxy_create.py 10002 alice 10003
 	ryan-laptop: % python proxy_create.py 10002 bob 10003
-</div>
+</pre>
 
 And as control messages will be exchanged between the two SCTP instances we'll also require redirecting packets from local port `encap_port` to remote port `encap_port`.
 
-<div class="code-block">
+<pre>
 	ryan-pc: % python proxy_create.py 10003 alice 10003
 	ryan-laptop: % python proxy_create.py 10003 bob 10003
-</div>
+</pre>
 
 Now we can run ncat with SCTP :-)
 
-<div class="code-block">
+<pre>
 	ryan-laptop $ ncat --sctp -l 9999
 	hello,
 	world
@@ -221,24 +221,24 @@ Now we can run ncat with SCTP :-)
 	ryan-pc $ ncat --sctp 127.0.0.1 9999
 	hello,
 	world
-</div>
+</pre>
 
 But this _still_ doesn't allow us to use existing applications using a standard TCP socket over our overlay.
 For this, we turn to `ssh`.
 
 On both end points we can run:
 
-<div class="code-block">
+<pre>
 	$ ncat --sctp -l 9999 -c "ncat 127.0.0.1 22" --keep-open
-</div>
+</pre>
 
 Which will use ncat to send sctp data to port 22, used for ssh.
 
 With an openssh server configured on the machine we can then use:
 
-<div class="code-block">
+<pre>
 	$ ssh -o "ProxyCommand ncat --sctp 127.0.0.1 9999" -N -D 8080 localhost
-</div>
+</pre>
 
 To connect via ssh over our overlay.
 
@@ -247,17 +247,17 @@ And if we have ssh... we have anything!
 That is, we can create a SOCKS proxy to send anything over our overlay.
 For example, we can create a proxy:
 
-<div class="code-block">
+<pre>
 	$ ssh -o "ProxyCommand ncat --sctp 127.0.0.1 9999" -N -D 8080 localhost
-</div>
+</pre>
 
 And then configure your web browser of choice to use this proxy.
 
 Alternatively, one could also proxy a raw TCP connection on port `PORT` over SCTP and our overlay with:
 
-<div class="code-block">
+<pre>
 	$ ncat -l PORT -c "ncat --sctp 127.0.0.1 9999" --keep-open
-</div>
+</pre>
 
 ## Taking a step back
 
