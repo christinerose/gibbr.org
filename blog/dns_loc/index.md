@@ -24,9 +24,7 @@ A number of suggested uses are proposed in the RFC:
 RFC-1876 also describes algorithms for resolving locations for domain names or IP addresses with decreasing accuracy.
 It still refers to classful addressing, despite being published 3 years after CIDR[1], probably because the algorithm it was adapted from was published in 1989.
 
-An aside; `find.me.uk` can be used to get the location of any UK postcode. E.g.:
-
-	$ dig loc cb30fd.find.me.uk
+An aside: `find.me.uk` can be used to get the location of any UK postcode, e.g. `$ dig loc cb30fd.find.me.uk`.
 
 There are a few notable issues with the DNS LOC RR.
 
