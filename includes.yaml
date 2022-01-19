@@ -4,7 +4,6 @@ css: ../../style.css
 include-before:
 	<ul class="navbar" id="navbar">
 		<li><a href="/">Home</a></li>
-		<li><a href="/software.html">Software</a></li>
 		<li><a href="/blog/">Blog</a></li>
 	</ul>
 ---

@@ -28,12 +28,10 @@ An aside; `find.me.uk` can be used to get the location of any UK postcode. E.g.:
 
 	$ dig loc cb30fd.find.me.uk
 
-There are a few notable issues with the DNS LOC RR, distinct from other DNS RRs:
+There are a few notable issues with the DNS LOC RR.
 
-- There's no verification of LOC's, see:
-```
-$ dig loc ryan.gibb.xyz
-```
+- There's no verification of LOC's. See `$ dig loc ryan.gibb.xyz`.
+
 - The privacy and security implications.
 
 > High-precision LOC RR information could be used to plan a penetration of physical security, leading to potential denial-of-machine attacks. To avoid any appearance of suggesting this method to potential attackers, we declined the opportunity to name this RR "ICBM"[0].

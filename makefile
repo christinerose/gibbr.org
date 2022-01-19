@@ -7,5 +7,6 @@ all: $(HTML_FILES)
 clean:
 	rm -v $(HTML_FILES)
 
-%.html: %.md style.css makefile includes.yaml
+%.html: %.md makefile includes.yaml
 	$(MARKDOWN) $< --output $@
+
