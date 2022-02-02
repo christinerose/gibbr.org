@@ -12,8 +12,12 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="/style.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
@@ -42,8 +46,7 @@
 <li>Network management based using LOC RRs to map hosts and routers.</li>
 </ul>
 <p>RFC-1876 also describes algorithms for resolving locations for domain names or IP addresses with decreasing accuracy. It still refers to classful addressing, despite being published 3 years after CIDR[1], probably because the algorithm it was adapted from was published in 1989.</p>
-<p>An aside; <code>find.me.uk</code> can be used to get the location of any UK postcode. E.g.:</p>
-<pre><code>$ dig loc cb30fd.find.me.uk</code></pre>
+<p>An aside: <code>find.me.uk</code> can be used to get the location of any UK postcode, e.g. <code>$ dig loc cb30fd.find.me.uk</code>.</p>
 <p>There are a few notable issues with the DNS LOC RR.</p>
 <ul>
 <li><p>There’s no verification of LOC’s. See <code>$ dig loc ryan.gibb.xyz</code>.</p></li>

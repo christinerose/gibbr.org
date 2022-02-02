@@ -1,4 +1,3 @@
-
 ---
 pagetitle: "DNS LOC | Ryan Gibb"
 ---

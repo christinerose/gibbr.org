@@ -12,8 +12,12 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="/style.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
@@ -34,11 +38,11 @@
 <p>The protocol stack we’re concerned with is based off the <a href="https://en.wikipedia.org/wiki/Internet_protocol_suite">Internet Protocol suite</a>, also known as TCP/IP.</p>
 <p>This network stack is often referred to as an hourglass, with the Internet Protocol (IP) as the skinny waist.</p>
 <figure>
-<img src="images/diagrams/hourglass_cropped.svg" style="width:50.0%" alt="" /><figcaption><a href="https://iab.org/wp-content/IAB-uploads/2011/03/hourglass-london-ietf.pdf">Steve Deering. “Watching the Waist of the Protocol Hourglass”. In: IETF 51 London. 2001.</a></figcaption>
+<img src="images/diagrams/hourglass_cropped.svg" style="width:50.0%" alt="Steve Deering. “Watching the Waist of the Protocol Hourglass”. In: IETF 51 London. 2001." /><figcaption aria-hidden="true"><a href="https://iab.org/wp-content/IAB-uploads/2011/03/hourglass-london-ietf.pdf">Steve Deering. “Watching the Waist of the Protocol Hourglass”. In: IETF 51 London. 2001.</a></figcaption>
 </figure>
 <p>Packets of a protocol are encapsulated by the protocol below, for example:</p>
 <figure>
-<img src="images/diagrams/UDP_encapsulation.svg" alt="" /><figcaption><a href="https://commons.wikimedia.org/wiki/File:UDP_encapsulation.svg">Wikimedia UDP encapsulation.svg</a></figcaption>
+<img src="images/diagrams/UDP_encapsulation.svg" alt="Wikimedia UDP encapsulation.svg" /><figcaption aria-hidden="true"><a href="https://commons.wikimedia.org/wiki/File:UDP_encapsulation.svg">Wikimedia UDP encapsulation.svg</a></figcaption>
 </figure>
 <h2 id="motivation">Motivation</h2>
 <p>Ubiquitous Computing is a vision of the future of computing where devices are omnipresent and exist in many forms. The Internet of Things (IoT) is a modern interpretation of this which envisions many objects existing as Internet-connected smart devices; such as wearable devices, smart vehicles, and smart appliances like fridges, washing machines, and ovens. Many of these devices are physically mobile, which requires network support when moving location.</p>
@@ -57,12 +61,12 @@
 <p>As IP was not designed with mobility in mind most solutions to try retrofit mobility to IP somehow, such as the middleware platforms already discussed. This is symptomatic of a larger problem: the ossification of the Internet. It’s easier to build up (in the protocol stack) than to redesign it, especially when the protocol stack is as omnipresent and critical as the modern Internet. A radical change in IP’s addressing from the Identifier-Locator Network Protocol (ILNP) architecture provides a solution to this mobility problem by separating the semantics of IP addresses into their constituent parts: an identifier and a locator. An identifier uniquely identifies the node - within some scope - and the locator identifies the network in which the node resides, giving the node’s location in the Internet. See <a href="https://tools.ietf.org/html/rfc6740">RFC6740</a> for more detail.</p>
 <p>The overloading of IP address is solved with this Identifier-Locator addressing split. This also allows us to solve the entanglement of layers:</p>
 <figure>
-<img src="images/diagrams/ilnp_ipv6_names_cropped.svg" style="width:75.0%" alt="" /><figcaption><a href="https://dl.acm.org/doi/abs/10.1145/3341162.3349315">S. N. Bhatti and R. Yanagida. “Seamless internet connectivity for ubiquitous communication” In: PURBA UBICOMP. 2019</a></figcaption>
+<img src="images/diagrams/ilnp_ipv6_names_cropped.svg" style="width:75.0%" alt="S. N. Bhatti and R. Yanagida. “Seamless internet connectivity for ubiquitous communication” In: PURBA UBICOMP. 2019" /><figcaption aria-hidden="true"><a href="https://dl.acm.org/doi/abs/10.1145/3341162.3349315">S. N. Bhatti and R. Yanagida. “Seamless internet connectivity for ubiquitous communication” In: PURBA UBICOMP. 2019</a></figcaption>
 </figure>
 <p>Applications that use DNS to obtain IP addresses (conforming to <a href="https://tools.ietf.org/html/rfc1958#section-4">RFC1958</a>) will be backwards compatible with ILNPv6 with modifications to DNS <a href="https://tools.ietf.org/html/rfc6742">RFC6742</a>).</p>
 <p>ILNP can be implemented as an extension to IPv6, called ILNPv6. ILNP can also be implemented as an extension to IPv4 as ILNPv4, but this is not as elegant as ILNPv6 and will not be considered here. The upper 64 bits of an IPv6 address is already used as a routing prefix and is taken as the locator in ILNPv6. The lower 64 bits, the interface identifier in IPv6, is taken as the identifier. ILNPv6’s Identifier-Locator Vector (I-LV) corresponds to the IPv6 address. The syntax is identical but the semantics differ. That is, IPv6 addresses and ILNPv6 I-LVs look the same on the wire but are interpreted differently.</p>
 <figure>
-<img src="images/diagrams/ilnp_ipv6_addresses_cropped.svg" alt="" /><figcaption><a href="https://tools.ietf.org/html/rfc6741#section-3.1">RFC6741</a></figcaption>
+<img src="images/diagrams/ilnp_ipv6_addresses_cropped.svg" alt="RFC6741" /><figcaption aria-hidden="true"><a href="https://tools.ietf.org/html/rfc6741#section-3.1">RFC6741</a></figcaption>
 </figure>
 <p>So given an IPv6 address “2001:db8:1:2:3:4:5:6”, the ILNPv6 locator would be “2001:db8:1:2” and the identifier “3:4:5:6”.</p>
 <p>ILNPv6 supports mobility through dynamic binding of identifiers to locators, and ICMP locator update messages. The locator of a node can change while retaining its identifier and communication flows. Additionally, ILNPv6 supports seamless connectivity during a network transition with a soft handoff - making the new connection before breaking the old connection. Note that this does require hardware support for multiple connections on the same adaptor, such as through CDMA, or two physical network adapters.</p>
@@ -74,7 +78,7 @@
 <p>This overlay network was implemented in user space with Python due to time constraints of the project and difficulties associated with kernel programming.</p>
 <p>A simple transport protocol (STP) was created for demultiplexing received ILNPv6 packets by wrapping them with a port, similar to UDP.</p>
 <figure>
-<img src="images/diagrams/overlay_network_stack.svg" alt="" /><figcaption>overlay network protocol stack</figcaption>
+<img src="images/diagrams/overlay_network_stack.svg" alt="overlay network protocol stack" /><figcaption aria-hidden="true">overlay network protocol stack</figcaption>
 </figure>
 <p>Note that in our overlay network, for a node, an interface simply refers to a locator which the node is connected to, via configuration files. The node will have connected to the corresponding IP multicast address.</p>
 <h2 id="discovery-protocol">Discovery protocol</h2>
@@ -85,20 +89,20 @@
 <p>This protocol scales poorly - the number of messages scales quadratically with every additional network containing a node - but it is sufficient for our purposes.</p>
 <p>See an example operation of the protocol below. Node A is in network 1, node B in network 2, and node C in both networks.</p>
 <figure>
-<img src="images/diagrams/discovery_protocol_topology.svg" style="width:75.0%" alt="" /><figcaption>discovery protocol example topology</figcaption>
+<img src="images/diagrams/discovery_protocol_topology.svg" style="width:75.0%" alt="discovery protocol example topology" /><figcaption aria-hidden="true">discovery protocol example topology</figcaption>
 </figure>
 <figure>
-<img src="images/diagrams/discovery_protocol_sequence_diagram.svg" style="width:75.0%" alt="" /><figcaption>discovery protocol example sequence diagram</figcaption>
+<img src="images/diagrams/discovery_protocol_sequence_diagram.svg" style="width:75.0%" alt="discovery protocol example sequence diagram" /><figcaption aria-hidden="true">discovery protocol example sequence diagram</figcaption>
 </figure>
 <h2 id="locator-updates">Locator updates</h2>
 <p>Our overlay network supports mobility with locator update messages as part of the ILNPv6 layer. The mobile node (MN) sends a locator update over its old locator, and the corresponding node (CN) responds with an acknowledgement via the new locator - verifying a path exists between the new locator and CN exists.</p>
 <p>The discovery message sent by the MN on the new locator is simply for path discovery as the CN will not know how to route to 0:0:0:c with no node sending discovery messages from that locator. An alternative solution to this would have been to make nodes send packets to all connected interfaces if there is no mapping in the forwarding table.</p>
 <p>See an example of a MN moving from locator 0:0:0:a to locator 0:0:0:c, in a communication session with a CN in locator 0:0:0:b, below:</p>
 <figure>
-<img src="images/diagrams/locator_update_topology.svg" style="width:75.0%" alt="" /><figcaption>locator update example topology</figcaption>
+<img src="images/diagrams/locator_update_topology.svg" style="width:75.0%" alt="locator update example topology" /><figcaption aria-hidden="true">locator update example topology</figcaption>
 </figure>
 <figure>
-<img src="images/diagrams/locator_update_sequence_diagram.svg" style="width:75.0%" alt="" /><figcaption>locator update example sequence diagram</figcaption>
+<img src="images/diagrams/locator_update_sequence_diagram.svg" style="width:75.0%" alt="locator update example sequence diagram" /><figcaption aria-hidden="true">locator update example sequence diagram</figcaption>
 </figure>
 <h2 id="experiments">Experiments</h2>
 <p>To demonstrate the operation of the overlay network on resource-constrained IoT devices a Raspberry Pi testbed communicating via ethernet was used. Previous work in this area has been confined to workstation or server machines.</p>
