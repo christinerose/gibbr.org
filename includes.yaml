@@ -5,6 +5,6 @@ include-before:
 	<ul class="navbar" id="navbar">
 		<li><a href="/">Home</a></li>
 		<li><a href="/blog/">Blog</a></li>
-		<li><a href="/links">Links</a></li>
+		<li><a href="/links.html">Links</a></li>
 	</ul>
 ---
