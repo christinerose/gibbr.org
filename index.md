@@ -1,5 +1,5 @@
 ---
-pagetitle: "Ryan Gibb"
+pagetitle: "home | ryan.gibb.xyz"
 header-includes:
 	- <link rel="shortcut icon" href="/favicon.ico">
 	- <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css">
@@ -22,4 +22,3 @@ Home
 Find my CV [here](/resources/cv.pdf).
 
 Feel free to get in touch at [ryan@gibb.xyz](mailto:ryan@gibb.xyz).
-

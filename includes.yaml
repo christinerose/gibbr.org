@@ -3,8 +3,8 @@ header-includes: <link rel="shortcut icon" href="/favicon.ico">
 css: /style.css
 include-before:
 	<ul class="navbar" id="navbar">
-		<li><a href="/">Home</a></li>
-		<li><a href="/blog/">Blog</a></li>
-		<li><a href="/links.html">Links</a></li>
+		<li><a href="/">home</a></li>
+		<li><a href="/blog/">blog</a></li>
+		<li><a href="/links.html">links</a></li>
 	</ul>
 ---

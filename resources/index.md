@@ -1,5 +1,5 @@
 ---
-pagetitle: "Resources | Ryan Gibb"
+pagetitle: "resources | ryan.gibb.xyz"
 ---
 
 # Resources

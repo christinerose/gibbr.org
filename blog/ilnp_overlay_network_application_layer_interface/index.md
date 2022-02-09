@@ -1,5 +1,5 @@
 ---
-pagetitle: "ILNP overlay network application layer interface | Ryan Gibb"
+pagetitle: "ILNP overlay network application layer interface | ryan.gibb.xyz"
 ---
 
 # ILNP overlay network application layer interface
@@ -255,4 +255,3 @@ Some interesting reads that are related and tangentially related, respectively, 
 
 - On QUIC and SCTP: [https://lwn.net/Articles/745590/](https://lwn.net/Articles/745590/) </li>
 - On NAT traversal: [https://tailscale.com/blog/how-nat-traversal-works/](https://tailscale.com/blog/how-nat-traversal-works/)
-

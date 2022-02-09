@@ -1,5 +1,5 @@
 ---
-pagetitle: "DNS LOC | Ryan Gibb"
+pagetitle: "DNS LOC | ryan.gibb.xyz"
 ---
 
 # DNS LOC
@@ -40,4 +40,3 @@ There are a few notable issues with the DNS LOC RR.
 [0] - [RFC-1876 A Means for Expressing Location Information in the Domain Name System](https://datatracker.ietf.org/doc/html/rfc1876)\
 [1] - [RFC-1518-An Architecture for IP Address Allocation with CIDR](https://datatracker.ietf.org/doc/html/rfc1518)\
 [2] - [The weird and wonderful world of DNS LOC records](https://blog.cloudflare.com/the-weird-and-wonderful-world-of-dns-loc-records/)\
-
