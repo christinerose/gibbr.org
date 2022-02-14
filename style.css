@@ -36,10 +36,6 @@ a {
 	text-decoration: underline;
 	color: #0066cc;
 }
-h2 a {
-	text-decoration: none;
-	color: #262729;
-}
 
 figure {
 	text-align: center;
@@ -72,5 +68,19 @@ blockquote {
 	padding: 0 20px;
 	margin: 0 0 20px;
 	border-left: 10px solid #faf8f5;
+}
+
+.anchor {
+	text-decoration: none;
+	color: #262729;
+}
+
+.anchor::after {
+  content: ' #';
+  opacity: 0;
+}
+
+.anchor:hover::after {
+  opacity: 0.15;
 }
 

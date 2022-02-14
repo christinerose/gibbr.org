@@ -14,7 +14,7 @@
     ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="../../style.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -32,12 +32,12 @@
 <a href="/links.html">links</a>
 </li>
 </ul>
-<h1 id="ilnp-overlay-network-application-layer-interface">ILNP overlay network application layer interface</h1>
+<h1 id="ilnp-overlay-network-application-layer-interface"><a href="#ilnp-overlay-network-application-layer-interface" class="anchor" aria-hidden="true">ILNP overlay network application layer interface</a></h1>
 <p>2021-10-16</p>
 <p>My <a href="../network_layer_mobility">dissertation</a> involved implementing an <a href="../network_layer_mobility#ilnp">Identifier-Locator Network Protocol</a> (ILNP) <a href="../network_layer_mobility#overlay-network">overlay network</a> in Python which can be found at <a href="https://github.com/RyanGibb/ilnp-overlay-network">github.com/RyanGibb/ilnp-overlay-network</a>.</p>
 <p>As part of this, I wanted to add an application layer interface to the overlay to support existing applications. (To those who still want to know why I posit, why not?) That is, applications other than those written in python specifically for the overlay. This would also allow multiple applications to run over one overlay network stack. However, this wasn’t a priority for my dissertation as it wasn’t necessary to obtain experimental results.</p>
 <p>Since graduating I’ve found a few weekends to work on this and a solution will be explored in this blog post.</p>
-<h2 id="datagrams">Datagrams</h2>
+<h2 id="datagrams"><a href="#datagrams" class="anchor" aria-hidden="true">Datagrams</a></h2>
 <p>First up, how can we send a datagram over this overlay network?</p>
 <p>We already provide a Python socket interface with the skinny transport protocol (STP), which wraps an ILNP packet in a port for demultiplexing, very similar to UDP. But this requires importing <code>transport.py</code> and instantiating a whole overlay stack. We could support applications other than Python with some sort of inter-process communication (like Unix domain sockets), but this would only solve one of our problems. It would allow applications written in other languages to use our overlay, but it will still require writing applications specifically to use our overlay.</p>
 <p>Instead, to provide an interface that existing applications can use, we can use a local UDP port as a proxy into our overlay. This will require a program to instantiate the overlay stack and proxy data from the UDP port to the overlay. We’ll call this program <code>proxy.py</code>.</p>
@@ -51,7 +51,7 @@
 <p>Where a, b, and c can be any free port.</p>
 <p>We could have a separate listening port for every connection, which would allow any source port, but this would require double the number of ports and threads in use, as well as requiring keeping track of additional mappings between these listening ports and client ports. Having only one listening UDP socket greatly simplifies the design of the proxy.</p>
 <p>See <a href="https://github.com/RyanGibb/ilnp-overlay-network/blob/master/src">github.com/RyanGibb/ilnp-overlay-network/blob/master/src</a> for the implementation of <code>proxy.sh</code> and <code>proxy_create.py</code>.</p>
-<h2 id="does-it-work">Does it work?</h2>
+<h2 id="does-it-work"><a href="#does-it-work" class="anchor" aria-hidden="true">Does it work?</a></h2>
 <p>This is all great in theory, but does it work in practice?</p>
 <p>Unfortunately, I don’t have access to the Raspberry Pi testbed that I used for my dissertation’s <a href="../network_layer_mobility/#experiments">experiments</a> anymore. Luckily at the time of experimenting with this (but not at the time of writeup), I had access to my current laptop <code>ryan-laptop</code>, an old tower PC <code>ryan-pc</code>, and an old HP laptop <code>hp-laptop</code> being used as a server, all connected to the same network (important for multicast) using IEEE 801.11. I have <code>ryan-laptop</code> and <code>ryan-pc</code> running Arch Linux, and <code>hp-laptop</code> running Ubuntu Server 21.04.</p>
 <p>The only modifications required were a configuration change to the <code>mcast_interface</code>, and a one character <a href="https://github.com/RyanGibb/ilnp-overlay-network/commit/43eba661585d0fbd159c0e7e8777f095deb2d592">fix</a> (arguably more of a hack) to get the machines IP address on the <code>mcast_interface</code>.</p>
@@ -78,7 +78,7 @@ hello,
 world</code></pre>
 <p>We could replace netcat with any other application interfacing with a UDP socket as long as we know its source port. If we don’t have a predictable source port, we could just proxy it through netcat to provide one.</p>
 <p>Through this, we can have bidirectional datagram communication over our overlay network using a local UDP proxy.</p>
-<h2 id="streams">Streams</h2>
+<h2 id="streams"><a href="#streams" class="anchor" aria-hidden="true">Streams</a></h2>
 <p>Datagrams are great and all, but can we have a reliable ordered bytestream over our overlay?</p>
 <p>We could follow a similar approach to what we did with datagrams. That is, proxy TCP connections over our overlay. But this would not provide reliability; or rather this would only provide reliable delivery locally to our TCP proxy. Despite emphasising the lack of loss in our overlay, this was a lack of loss due to mobility. It doesn’t prevent loss due to congestion, link layer failures, or cosmic rays…</p>
 <p>In a similar way to how our skinny transport protocol emulates UDP, we could add a transport layer protocol emulating TCP that provides a reliable, ordered, bytestream to our overlay. But this is a lot of work.</p>
@@ -106,7 +106,7 @@ This value is used to set the dest port of the UDP header for the outgoing UDP-e
 
 Note that when connecting to a remote server, the client should set this to the port that the UDP tunneling sock on the peer server is listening to and the local UDP tunneling sock on the client also must be started. On the server, it would get the encap_port from the incoming packet’s source port.</code></pre>
 <p>As we want to intercept the SCTP UDP packets for proxying over our overlay, we won’t use the IANA-assigned 9899 port for these variables. Instead, we’ll use ncat to intercept outgoing SCTP UDP packets (sent to <code>udp_port</code>) proxying them over our overlay, and to forward received SCTP UDP packets to <code>encap_port</code>, where the kernel SCTP implementation will be listening. It’s worth noting that this will likely break any other applications using SCTP.</p>
-<h2 id="putting-it-all-together">Putting it all together</h2>
+<h2 id="putting-it-all-together"><a href="#putting-it-all-together" class="anchor" aria-hidden="true">Putting it all together</a></h2>
 <p>On both <code>ryan-laptop</code> and <code>ryan-pc</code> we configure the kernel SCTP implementation’s listening port and outgoing destination port:</p>
 <pre><code># UDP listening port
 $ sudo sysctl -w net.sctp.encap_port=10002
@@ -141,7 +141,7 @@ world</code></pre>
 <p>And then configure your web browser of choice to use this proxy.</p>
 <p>Alternatively, one could also proxy a raw TCP connection on port <code>PORT</code> over SCTP and our overlay with:</p>
 <pre><code>$ ncat -l PORT -c &quot;ncat --sctp 127.0.0.1 9999&quot; --keep-open</code></pre>
-<h2 id="taking-a-step-back">Taking a step back</h2>
+<h2 id="taking-a-step-back"><a href="#taking-a-step-back" class="anchor" aria-hidden="true">Taking a step back</a></h2>
 <p>Putting all the pieces together, the network stack looks something like:</p>
 <p><img src="bin.jpg" style="width:75.0%" /></p>
 <p>Just kidding. But not really. All these proxies and overlays obviously have performance implications.</p>
@@ -150,7 +150,7 @@ world</code></pre>
 <p>Here’s the actual network stack a SOCKS proxy over our overlay:</p>
 <p><img src="network_stack.svg" style="width:40.0%" /></p>
 <p>The various proxying and mappings are not depicted.</p>
-<h2 id="further-reading">Further Reading</h2>
+<h2 id="further-reading"><a href="#further-reading" class="anchor" aria-hidden="true">Further Reading</a></h2>
 <p>Some interesting reads that are related and tangentially related, respectively, to this project.</p>
 <ul>
 <li>On QUIC and SCTP: <a href="https://lwn.net/Articles/745590/">https://lwn.net/Articles/745590/</a>
