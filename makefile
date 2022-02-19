@@ -7,6 +7,6 @@ all: $(HTML_FILES)
 clean:
 	rm -v $(HTML_FILES)
 
-%.html: %.md makefile includes.yaml anchor-links.lua style.css
+%.html: %.md makefile includes.yaml anchor-links.lua
 	$(MARKDOWN) $< --output $@
 
