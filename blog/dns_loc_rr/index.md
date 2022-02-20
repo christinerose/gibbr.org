@@ -4,6 +4,8 @@ pagetitle: "DNS LOC | ryan.gibb.xyz"
 
 # DNS LOC
 
+2022-01-18
+
 The Domain Name System (DNS) has a little known 'LOC' resouce record (RR) defined in 1996 for encoding location information purportedly for hosts, networks, and subnets[0].
 
 It encodes:
