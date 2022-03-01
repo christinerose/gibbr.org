@@ -21,4 +21,4 @@ Home
 
 Find my CV [here](/resources/cv.pdf).
 
-Feel free to get in touch at [ryan@gibb.xyz](mailto:ryan@gibb.xyz).
+Feel free to get in touch at [ryan@gibb.xyz](mailto:ryan@gibb.xyz) or [\@ryan:gibbr.org](https://app.element.io/#/user/@ryan:gibbr.org).
