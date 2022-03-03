@@ -1,5 +1,5 @@
 ---
-pagetitle: "links | ryan.gibb.xyz"
+pagetitle: "links | gibbr.org"
 ---
 
 # Links

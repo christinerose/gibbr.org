@@ -1,5 +1,5 @@
 ---
-pagetitle: "blog | ryan.gibb.xyz"
+pagetitle: "blog | gibbr.org"
 ---
 
 # Blog

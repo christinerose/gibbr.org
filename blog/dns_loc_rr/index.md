@@ -1,5 +1,5 @@
 ---
-pagetitle: "DNS LOC | ryan.gibb.xyz"
+pagetitle: "DNS LOC | gibbr.org"
 ---
 
 # DNS LOC
@@ -29,7 +29,7 @@ An aside: `find.me.uk` can be used to get the location of any UK postcode, e.g. 
 
 There are a few notable issues with the DNS LOC RR.
 
-- There's no verification of LOC's. See `$ dig loc ryan.gibb.xyz`.
+- There's no verification of LOC's. See `$ dig loc gibbr.org`.
 
 - The privacy and security implications.
 

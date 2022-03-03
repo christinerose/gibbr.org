@@ -1,5 +1,5 @@
 ---
-pagetitle: "Cubes | ryan.gibb.xyz"
+pagetitle: "Cubes | gibbr.org"
 ---
 
 # Cubes
