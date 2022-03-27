@@ -15,7 +15,7 @@ A copy can be found [here](/resources/diss.pdf) (or [here](https://studres.cs.st
 First, some prerequisite networking knowledge.
 A network protocol stack is a view of how protocols are organised into layers.
 The [OSI model](https://en.wikipedia.org/wiki/OSI_model) describes named layers; including the physical, link, network, transport, and application layers.
-Note the OSI model and TCP/IP have [differing semantics](https://en.wikipedia.org/wiki/Internet_protocol_suite#Layer_names_and_number_of_layers_in_the_literature"), but this is beyond the scope of this blog post.
+Note the OSI model and TCP/IP have [differing semantics](https://en.wikipedia.org/wiki/Internet_protocol_suite#Layer_names_and_number_of_layers_in_the_literature), but this is beyond the scope of this blog post.
 The modularity of protocols in a network stack has many advantages, such as allowing the protocol used at a layer to be exchanged transparently.
 
 The protocol stack we're concerned with is based off the [Internet Protocol suite](https://en.wikipedia.org/wiki/Internet_protocol_suite), also known as TCP/IP.
