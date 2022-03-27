@@ -141,7 +141,7 @@ Note that in our overlay network, for a node, an interface simply refers to a lo
 ## Discovery protocol
 
 A discovery protocol was required for nodes to discover each other and to discover routing paths.
-It is inspired by the Pv6 Neighbour Discovery Protocol.
+It is inspired by the IPv6 Neighbour Discovery Protocol.
 Nodes send solicitations (requests for advertisements) and advertisements (responses to solicitations).
 Both solicitations and advertisements contain a node's hostname, set of valid locators, and identifier.
 This means that hostname resolution is included in our protocol, which was done to avoid the complications of a DNS deployment in our overlay.
