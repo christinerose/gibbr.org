@@ -373,4 +373,4 @@ Further work in this area includes:
 
 As mentioned at the start, see the [dissertation](../../resources/diss.pdf) on which this blog was based for a bit more nuance, and a lot more detail.
 
-If you spot any errors or have any questions feel free to get in touch at [ryan@gibb.xyz](mailto:ryan@gibb.xyz).
+If you spot any errors or have any questions feel free to get in touch at [ryan@gibbr.org](mailto:ryan@gibbr.org).
