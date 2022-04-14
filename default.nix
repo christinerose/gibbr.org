@@ -12,6 +12,6 @@ pkgs.stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out
-    rsync -a --exclude '*.md' --exclude 'result' . $out
+    rsync -a --exclude '*.md' --exclude 'result' --exclude '.*' . $out
   '';
 }
