@@ -30,4 +30,4 @@ However, I did find a [nice blog post series](https://devblogs.microsoft.com/com
 
 Maybe it's just an issue with my lack of understanding, but the fact that these machines are so hard to hack on is an indicator that they are hostile to development. The user doesn't really own their own machine. This is important for technology education - how are kids meant to learn anything if they can't explore their own technology. Hopefully, this will change as AR moves from industrial markets to consumer markets (see Apple's upcoming AR glasses).
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/cHmYd3KMBcM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://www.youtube.com/embed/cHmYd3KMBcM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
