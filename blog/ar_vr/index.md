@@ -17,7 +17,7 @@ Microsoft Windows was used for ease of development with [Unity](https://unity.co
 
 The [Oculus Quest 2](https://www.oculus.com/quest-2/) from Meta (formally Facebook) is a VR headset running an Android derivative.
 This means you can do cool stuff like run [Termux](https://www.reddit.com/r/cyberDeck/comments/fc5sfr/oculus_quest_termux_selfcontained_hmd_cyberdeck/) on it (an Android terminal emulator and unvirtualised Linux environment).
-It's nowhere near as good for productivity as something like what [SimulaVR](https://simulavr.com/) are doing, which features a neat [Haskell Wayland compositor](https://github.com/SimulaVR/Simula). 
+It's nowhere near as flexible as something like what [SimulaVR](https://simulavr.com/) are doing, which features a neat [Haskell Wayland compositor](https://github.com/SimulaVR/Simula).
 
 With access to the Oculus Quest 2, I was first able to explore the world of free games on the [Oculus store](https://www.oculus.com/experiences/quest/).
 
@@ -64,10 +64,11 @@ Recalling from memory, the development environment setup steps were something li
 
 Having started to [use](https://github.com/RyanGibb/nixos/) the [nix](https://nixos.org/) package manager recently this is exactly the dependency and reproducibility headache I'm trying to avoid.
 
-To its credit, the Visual Studio remote machine running over the local network worked very well once it was set up: enabling developer mode, pairing the device, and obtaining the IP address.
+To its credit, the Visual Studio remote machine execution over the local network worked very well once it was set up.
 The [device portal API](https://docs.microsoft.com/en-us/windows/mixed-reality/develop/advanced-concepts/device-portal-api-reference) also proved very useful in watching a real-time feed of the user's POV.
 
 This [article](https://docs.microsoft.com/en-us/learn/modules/learn-mrtk-tutorials/) proved the most useful in setting up the development environment.
+Navigating the Microsoft documentation proved challenging in itself.
 
 The modifications to the project were more significant than for the Quest 2 but mainly boiled down to getting things working the way the Microsoft Mixed Reality Toolkit (MRTK) wanted.
 
