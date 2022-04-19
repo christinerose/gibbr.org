@@ -72,6 +72,8 @@ Navigating the Microsoft documentation proved challenging in itself.
 
 The modifications to the project were more significant than for the Quest 2 but mainly boiled down to getting things working the way the Microsoft Mixed Reality Toolkit (MRTK) wanted.
 
+While this game isn't taking full advantage of the possibilties of AR, the main advantage I found was a reduced fear of smacking your head against the wall while dodging some red cubes.
+
 Many thanks to [Anil Madhavapeddy](https://anil.recoil.org/) for lending me this device.
 
 See the source code [here](https://github.com/RyanGibb/cubes/tree/ar).
