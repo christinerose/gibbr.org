@@ -78,15 +78,20 @@ blockquote {
 .anchor {
 	text-decoration: none;
 	color: #262729;
+	position: relative;
 }
 
-.anchor::after {
-  content: ' §';
-  opacity: 0;
+.anchor::before {
+	content: '#';
+	opacity: 0;
+	left: -1em;
+	padding-right: 1em;
+	position: absolute;
 }
 
-.anchor:hover::after {
-  opacity: 0.15;
+.anchor:hover::before {
+	opacity: 1;
+	color: #0066cc;
 }
 
 iframe {
