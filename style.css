@@ -1,5 +1,10 @@
+@font-face {
+	font-family: "Noto Sans";
+	src: url(fonts/noto-sans/NotoSans-Regular.ttf);
+}
+
 body {
-	font-family: -apple-system, sans-serif;
+	font-family: "Noto Sans";
 	max-width: 800px;
 	margin: auto;
 	font-size: 18px;
