@@ -12,7 +12,7 @@ It encodes:
 
 - Latitude
 - Longitude
-- Altidude
+- Altitude
 - Size of the referenced sphere
 - Horizontal and vertical precision
 
