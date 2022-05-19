@@ -98,3 +98,10 @@ iframe {
 	width: 100%;
 	aspect-ratio: 16/9;
 }
+
+h1:before, h1:after {
+  content: "";
+  display: block;
+  border-bottom: 1.5px solid;
+}
+
