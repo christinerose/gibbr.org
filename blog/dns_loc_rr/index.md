@@ -35,7 +35,7 @@ There are a few notable issues with the DNS LOC RR.
 
 > High-precision LOC RR information could be used to plan a penetration of physical security, leading to potential denial-of-machine attacks. To avoid any appearance of suggesting this method to potential attackers, we declined the opportunity to name this RR "ICBM"[0].
 
-- They have extremely limitted real-world usage for pratical purposes. trying to implement a visual traceroute would just not be possible, as no routers or networks have LOC records.
+- They have extremely limitted real-world usage for practical purposes. trying to implement a visual traceroute would just not be possible, as no routers or networks have LOC records.
 
 > CloudFlare handles millions of DNS records; of those just 743 are LOCs[2].
 
