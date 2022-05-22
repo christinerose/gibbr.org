@@ -60,24 +60,24 @@ sub item(@) {
 				}
 				printf("\t\t<pubDate>%s</pubDate>\n",$dt);
 			}
-		} # elsif ($sep >= 2) {
-		# 	next if (length($_) == 0);
-		# 	if ($linecnt++ == 0) {
-		# 		print "\t\t<description><![CDATA[";
-		# 		$excerpt = $_;
-		# 	} elsif ($linecnt < 9 || length($excerpt) < 500) {
-		# 		$excerpt .= " " . $_;
-		# 	} else {
-		# 		last;
-		# 	}
-		# }
+		} elsif ($sep >= 2) {
+			next if (length($_) == 0);
+			if ($linecnt++ == 0) {
+				print "\t\t<description><![CDATA[";
+				$excerpt = $_;
+			} elsif ($linecnt < 9 || length($excerpt) < 500) {
+				$excerpt .= " " . $_;
+			} else {
+				last;
+			}
+		}
 	}
-	# if ($linecnt > 0) {
-	# 	$excerpt =~ s/&/&amp;/g;
-	# 	$excerpt =~ s/</&lt;/g;
-	# 	$excerpt =~ s/>/&gt;/g;
-	# 	print $excerpt . "]]></description>\n"
-	# }
+	if ($linecnt > 0) {
+		$excerpt =~ s/&/&amp;/g;
+		$excerpt =~ s/</&lt;/g;
+		$excerpt =~ s/>/&gt;/g;
+		print $excerpt . "]]></description>\n"
+	}
 	print "\t</item>\n";
 
 	close(F) || die("Cannot close $f");
