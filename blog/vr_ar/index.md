@@ -1,5 +1,6 @@
 ---
 pagetitle: "Virtual and Augmented Reality | gibbr.org"
+date: "2022-04-18 00:00:00"
 ---
 
 # Virtual and Augmented Reality

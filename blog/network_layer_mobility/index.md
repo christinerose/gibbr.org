@@ -1,5 +1,6 @@
 ---
 pagetitle: "Network Layer Mobility | gibbr.org"
+date: "2021-05-10 00:00:00"
 ---
 
 # Network Layer Mobility

@@ -1,5 +1,6 @@
 ---
 pagetitle: "Cubes | gibbr.org"
+date: "2021-06-03 00:00:00"
 ---
 
 # Cubes

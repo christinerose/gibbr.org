@@ -8,6 +8,7 @@ pkgs.stdenv.mkDerivation {
   buildInputs = with pkgs; [
     rsync
     pandoc
+    perl
   ];
 
   installPhase = ''

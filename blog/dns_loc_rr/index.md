@@ -1,5 +1,6 @@
 ---
 pagetitle: "DNS LOC | gibbr.org"
+date: "2022-01-18 00:00:00"
 ---
 
 # DNS LOC
