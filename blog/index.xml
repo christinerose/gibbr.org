@@ -3,7 +3,7 @@
 <channel>
 	<title>Ryan Gibb's Blog</title>
 	<description>Ryan Gibb's Blog</description>
-	<lastBuildDate>Sun, 22 May 2022 10:12:10 GMT</lastBuildDate>
+	<lastBuildDate>Sun, 22 May 2022 10:15:07 GMT</lastBuildDate>
 	<link>https://gibbr.org/blog</link>
 	<atom:link href="https://gibbr.org/blog/index.xml" rel="self" type="application/rss+xml" />
 	<generator>mkdwnrss</generator>
@@ -11,37 +11,31 @@
 		<link>https://gibbr.org/blog/ar_terminal/index/</link>
 		<guid>https://gibbr.org/blog/ar_terminal/index/</guid>
 		<pubDate>Sun, 23 Jan 2022 00:00:00 GMT</pubDate>
-		<description><![CDATA[# Augmented Reality Terminal 2022-01-23 This blog post is about my project at Hack Cambridge Atlas 2022. See the associated devpost [here](https://devpost.com/software/augmented-reality-terminal). NB: I was quite sleep-deprived while writing this so excuse any clunking wording. &lt;hr&gt; AR and VR headsets today are more akin to gaming consoles than to desktops and latops. They are general purpose computers in that they can be programmed to do arbitrary tasks, but a hallmark of a flexible personal computer over which you have control is being able to develop new software on it, not just running software someone else has written. Take phones as an example, while we all carry around more computing power than it took NASA to reach the moon in our pocket we instead are all hacking on laptops (or desktops - respect) in this competition. Arguably this is due to the interface of the device (i.e. small screen), and it is possible to get a Linux environment like Termux on an Android device, but the principle stands.]]></description>
 	</item>
 	<item>
 		<link>https://gibbr.org/blog/cubes/index/</link>
 		<guid>https://gibbr.org/blog/cubes/index/</guid>
 		<pubDate>Thu, 03 Jun 2021 00:00:00 GMT</pubDate>
-		<description><![CDATA[# Cubes 2021-06-03 I was teaching myself Unity the week after the last exam for my undergrad and ended up creating this. It's an infinite runner with cubes created in unity. Play it [here](play/). The repo can be found at [github.com/RyanGibb/cubes](https://github.com/RyanGibb/cubes). ## Re-rooting To allow the game to be infinite, whilst also avoiding floating point errors, the game world is periodically 're-rooted'. This involves moving the player and all objects back a certain distance in one frame. Objects behind the player can be safely removed.]]></description>
 	</item>
 	<item>
 		<link>https://gibbr.org/blog/dns_loc_rr/index/</link>
 		<guid>https://gibbr.org/blog/dns_loc_rr/index/</guid>
 		<pubDate>Tue, 18 Jan 2022 00:00:00 GMT</pubDate>
-		<description><![CDATA[# DNS LOC 2022-01-18 The Domain Name System (DNS) has a little known 'LOC' resouce record (RR) defined in 1996 for encoding location information purportedly for hosts, networks, and subnets[0]. It encodes: - Latitude - Longitude - Altitude - Size of the referenced sphere - Horizontal and vertical precision A number of suggested uses are proposed in the RFC: - USENET - a distributed discussion system now ecplised by the World Wide Web - geographic flow maps. - A 'visual traceroute' application showing geographical flow of IP packet, presumably relying on router responding to both IP TTL timeouts and DNS LOC requests.]]></description>
 	</item>
 	<item>
 		<link>https://gibbr.org/blog/ilnp_overlay_network_application_layer_interface/index/</link>
 		<guid>https://gibbr.org/blog/ilnp_overlay_network_application_layer_interface/index/</guid>
 		<pubDate>Sat, 16 Oct 2021 00:00:00 GMT</pubDate>
-		<description><![CDATA[# ILNP overlay network application layer interface 2021-10-16 My [dissertation](../network_layer_mobility) involved implementing an [Identifier-Locator Network Protocol](../network_layer_mobility#ilnp) (ILNP) [overlay network](../network_layer_mobility#overlay-network) in Python which can be found at [github.com/RyanGibb/ilnp-overlay-network](https://github.com/RyanGibb/ilnp-overlay-network). As part of this, I wanted to add an application layer interface to the overlay to support existing applications. (To those who still want to know why I posit, why not?) That is, applications other than those written in python specifically for the overlay. This would also allow multiple applications to run over one overlay network stack. However, this wasn't a priority for my dissertation as it wasn't necessary to obtain experimental results.]]></description>
 	</item>
 	<item>
 		<link>https://gibbr.org/blog/network_layer_mobility/index/</link>
 		<guid>https://gibbr.org/blog/network_layer_mobility/index/</guid>
 		<pubDate>Mon, 10 May 2021 00:00:00 GMT</pubDate>
-		<description><![CDATA[# Network Layer Mobility 2021-05-10 This project blog post is adapted from my dissertation, titled "Ubiquitous Communication for the Internet of Things: An Identifier-Locator addressing split overlay network". A copy can be found [here](/resources/diss.pdf) (or [here](https://studres.cs.st-andrews.ac.uk/Library/ProjectLibrary/cs4099/2021/rtg2-Final_Report.pdf) for St Andrews folk), and the associated implementation can be found at [github.com/RyanGibb/ilnp-overlay-network](https://github.com/RyanGibb/ilnp-overlay-network). ## Network stack First, some prerequisite networking knowledge. A network protocol stack is a view of how protocols are organised into layers. The [OSI model](https://en.wikipedia.org/wiki/OSI_model) describes named layers; including the physical, link, network, transport, and application layers.]]></description>
 	</item>
 	<item>
 		<link>https://gibbr.org/blog/vr_ar/index/</link>
 		<guid>https://gibbr.org/blog/vr_ar/index/</guid>
 		<pubDate>Mon, 18 Apr 2022 00:00:00 GMT</pubDate>
-		<description><![CDATA[# Virtual and Augmented Reality 2022-04-18 I've been interested in virtual reality (VR) and augmented reality (AR) recently as the use case for the system(s) I'm working on in my MPhil project. This blog post will cover my development experience in porting my [cubes](../cubes/) game to both VR and AR, and give a small demo for the latter. Microsoft Windows was used for ease of development with [Unity](https://unity.com/) and as it's a hard requirement for the AR headset made by Microsoft. ## VR ![](./quest2.jpg){width=50%} The [Oculus Quest 2](https://www.oculus.com/quest-2/) from Meta (formally Facebook) is a VR headset running an Android derivative.]]></description>
 	</item>
 </channel>
 </rss>
