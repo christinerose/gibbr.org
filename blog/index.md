@@ -1,8 +1,19 @@
 ---
 pagetitle: "blog | gibbr.org"
+header-includes:
+	- <link rel="shortcut icon" href="/favicon.ico">
+	- <link rel="stylesheet" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 ---
 
-# Blog
+<h1>
+Blog
+<span style="float: right; margin: 0">
+	<a href="./index.xml"
+		style="float: left; margin: 0 0 0 0;">
+		<i class="fa fa-rss"></i>
+	</a>
+</span>
+</h1>
 
 - 2022-04-18 [Virtual and Augmented Reality](vr_ar)
 - 2022-01-18 [DNS LOC](dns_loc_rr)
