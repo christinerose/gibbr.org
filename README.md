@@ -15,7 +15,7 @@ $ nix-build
 
 Or to create HTML files from markdown files in the working repo:
 ```
-$ nix-shell  --run make
+$ nix-shell --run make
 ```
 
 ## Generic
