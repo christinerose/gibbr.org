@@ -1,8 +1,5 @@
 ---
 pagetitle: "home | gibbr.org"
-header-includes:
-	- <link rel="shortcut icon" href="/favicon.ico">
-	- <link rel="stylesheet" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 ---
 
 <h1>
@@ -10,11 +7,11 @@ Home
 <span style="float: right; margin: 0">
 	<a href="https://www.linkedin.com/in/ryan-gibb"
 		style="float: left; margin: 0 0.5em 0 0;">
-		<i class="fa fa-linkedin"></i>
+		<img src="/fonts/linkedin.svg" alt="Linkedin" height="50em">
 	</a>
 	<a href="https://github.com/RyanGibb"
 		style="float: left; margin: 0 0 0 0;">
-		<i class="fa fa-github"></i>
+		<img src="/fonts/github-square.svg" alt="Github" height="50em">
 	</a>
 </span>
 </h1>

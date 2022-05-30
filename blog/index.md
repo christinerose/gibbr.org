@@ -1,8 +1,5 @@
 ---
 pagetitle: "blog | gibbr.org"
-header-includes:
-	- <link rel="shortcut icon" href="/favicon.ico">
-	- <link rel="stylesheet" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 ---
 
 <h1>
@@ -10,7 +7,7 @@ Blog
 <span style="float: right; margin: 0">
 	<a href="./index.xml"
 		style="float: left; margin: 0 0 0 0;">
-		<i class="fa fa-rss"></i>
+		<img src="/fonts/rss-square.svg" alt="RSS" height="50em">
 	</a>
 </span>
 </h1>
