@@ -2,8 +2,7 @@
 pagetitle: "links | gibbr.org"
 ---
 
-# Links
-
+<h1> Links </h1>
 
 - [HFT in the Banana Land](https://sniperinmahwah.wordpress.com/2016/01/26/hft-in-the-banana-land/)
 - [Routes to Rights: Internet architecture and values in times of ossification and commercialization](https://dl.acm.org/doi/pdf/10.1145/3220561)

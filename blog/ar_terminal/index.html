@@ -14,11 +14,11 @@
     ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="../../style.css" />
+  <link rel="shortcut icon" href="/favicon.ico">
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
 <ul class="navbar" id="navbar">
@@ -32,20 +32,64 @@
 <a href="/links.html">links</a>
 </li>
 </ul>
-<h1 id="augmented-reality-terminal"><a href="#augmented-reality-terminal" class="anchor" aria-hidden="true">Augmented Reality Terminal</a></h1>
+<h1 id="augmented-reality-terminal"><a
+href="#augmented-reality-terminal" class="anchor"
+aria-hidden="true">Augmented Reality Terminal</a></h1>
 <p>2022-01-23</p>
-<p>This blog post is about my project at Hack Cambridge Atlas 2022. See the associated devpost <a href="https://devpost.com/software/augmented-reality-terminal">here</a>.</p>
-<p>NB: I was quite sleep-deprived while writing this so excuse any clunking wording.</p>
+<p>This blog post is about my project at Hack Cambridge Atlas 2022. See
+the associated devpost <a
+href="https://devpost.com/software/augmented-reality-terminal">here</a>.</p>
+<p>NB: I was quite sleep-deprived while writing this so excuse any
+clunking wording.</p>
 <hr>
-<p>AR and VR headsets today are more akin to gaming consoles than to desktops and latops.</p>
-<p>They are general purpose computers in that they can be programmed to do arbitrary tasks, but a hallmark of a flexible personal computer over which you have control is being able to develop new software on it, not just running software someone else has written.</p>
-<p>Take phones as an example, while we all carry around more computing power than it took NASA to reach the moon in our pocket we instead are all hacking on laptops (or desktops - respect) in this competition. Arguably this is due to the interface of the device (i.e. small screen), and it is possible to get a Linux environment like Termux on an Android device, but the principle stands.</p>
-<p>AR and VR headsets aren’t limited by this interface constraint. Arguably, they could provide a better interface with infinite virtual monitors!</p>
-<p>Dedicated <a href="https://simulavr.com/blog/kickstarter-pricing/">Virtual Reality Computers</a> are possible, but their cost is rough 10x their mass-market peers. We could instead leverage existing hardware to support our vision. The minimum requirement of being able to develop software, and something that you can do a heck of a lot of on its own, is a terminal interface.</p>
-<p>The justification for using the AR with the Hololens 2 is that it doesn’t separate you from the real world, harking back to Mark Weiser’s ideas of ‘embodied virtuality rather than ’virtual reality’. VR headsets like the Oculus Quest 2 do have passthrough, but it’s really janky.</p>
-<p>Now being a Microsoft product the Hololens 2 runs Windows 10. I’ve been primarily using Linux machines for a while, and only using Linux machines or a *nix environment for development for longer than that. So this product involved majestically fighting with weird Microsoft C linker issues to build the <a href="https://github.com/microsoft/terminal">windows terminal</a>. I got some responses from some very helpful and very experienced people in the realm of the Windows Terminal and Hololens, but I gave up after about 12 hours of this, and instead fell to my backup plan: using a <a href="https://www.srcf.net/">SRCF</a> shell in a box through the Hololense browser.</p>
-<p>However, I did find a <a href="https://devblogs.microsoft.com/commandline/windows-command-line-backgrounder/">nice blog post series</a> in the Windows Terminal (one of the few features of the Windows OS which I quite like).</p>
-<p>Maybe it’s just an issue with my lack of understanding, but the fact that these machines are so hard to hack on is an indicator that they are hostile to development. The user doesn’t really own their own machine. This is important for technology education - how are kids meant to learn anything if they can’t explore their own technology. Hopefully, this will change as AR moves from industrial markets to consumer markets (see Apple’s upcoming AR glasses).</p>
+<p>AR and VR headsets today are more akin to gaming consoles than to
+desktops and latops.</p>
+<p>They are general purpose computers in that they can be programmed to
+do arbitrary tasks, but a hallmark of a flexible personal computer over
+which you have control is being able to develop new software on it, not
+just running software someone else has written.</p>
+<p>Take phones as an example, while we all carry around more computing
+power than it took NASA to reach the moon in our pocket we instead are
+all hacking on laptops (or desktops - respect) in this competition.
+Arguably this is due to the interface of the device (i.e. small screen),
+and it is possible to get a Linux environment like Termux on an Android
+device, but the principle stands.</p>
+<p>AR and VR headsets aren’t limited by this interface constraint.
+Arguably, they could provide a better interface with infinite virtual
+monitors!</p>
+<p>Dedicated <a
+href="https://simulavr.com/blog/kickstarter-pricing/">Virtual Reality
+Computers</a> are possible, but their cost is rough 10x their
+mass-market peers. We could instead leverage existing hardware to
+support our vision. The minimum requirement of being able to develop
+software, and something that you can do a heck of a lot of on its own,
+is a terminal interface.</p>
+<p>The justification for using the AR with the Hololens 2 is that it
+doesn’t separate you from the real world, harking back to Mark Weiser’s
+ideas of ‘embodied virtuality rather than ’virtual reality’. VR headsets
+like the Oculus Quest 2 do have passthrough, but it’s really janky.</p>
+<p>Now being a Microsoft product the Hololens 2 runs Windows 10. I’ve
+been primarily using Linux machines for a while, and only using Linux
+machines or a *nix environment for development for longer than that. So
+this product involved majestically fighting with weird Microsoft C
+linker issues to build the <a
+href="https://github.com/microsoft/terminal">windows terminal</a>. I got
+some responses from some very helpful and very experienced people in the
+realm of the Windows Terminal and Hololens, but I gave up after about 12
+hours of this, and instead fell to my backup plan: using a <a
+href="https://www.srcf.net/">SRCF</a> shell in a box through the
+Hololense browser.</p>
+<p>However, I did find a <a
+href="https://devblogs.microsoft.com/commandline/windows-command-line-backgrounder/">nice
+blog post series</a> in the Windows Terminal (one of the few features of
+the Windows OS which I quite like).</p>
+<p>Maybe it’s just an issue with my lack of understanding, but the fact
+that these machines are so hard to hack on is an indicator that they are
+hostile to development. The user doesn’t really own their own machine.
+This is important for technology education - how are kids meant to learn
+anything if they can’t explore their own technology. Hopefully, this
+will change as AR moves from industrial markets to consumer markets (see
+Apple’s upcoming AR glasses).</p>
 <iframe src="https://www.youtube.com/embed/cHmYd3KMBcM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </body>

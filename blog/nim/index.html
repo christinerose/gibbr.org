@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Nim | gibbr.org</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<ul class="navbar" id="navbar">
+<li>
+<a href="/">home</a>
+</li>
+<li>
+<a href="/blog/">blog</a>
+</li>
+<li>
+<a href="/links.html">links</a>
+</li>
+</ul>
+<h1 id="nim"><a href="#nim" class="anchor"
+aria-hidden="true">Nim</a></h1>
+<p>I recently attended a talk by Simon Peyton Jones titled “Immutability
+changes everything: 40 years of functional programming” which roughly
+chronologed Simon’s research career. In this talk Simon described how he
+originally became interested in Computer Science through two problems:
+the Angry Bank Customer and Nim.</p>
+<h2 id="angry-bank-customer"><a href="#angry-bank-customer"
+class="anchor" aria-hidden="true">Angry Bank Customer</a></h2>
+<p>Consider the scenario: you’re a overworked bank teller who, every
+week, has the same angry customer. This customer demands to withdraw a
+varying amount of money each week, and becomes irate if you cannot hand
+them their desired amount immediately. How, aside from more diplomatic
+means, can you satisfy this customer?</p>
+<p>You decide to prepare piles of cash such that you can make up his
+desired amount by grabbing a combination. Starting with a £1 pile and a
+£2 pile, you can make up to £3. So you add a pile of £4. Which this you
+can make any number up to £7 (e.g. 5=4+1, 6=4+2, 7=4+3), so you add a £8
+pile, a £16 pile, a £32 pile. Before you know it, you’ve reinvented the
+binary numeral system.</p>
+<p>While this is a relatively straightforward example, the second
+problem poses a more challenging statement also relying on base-2.</p>
+<h2 id="nim-1"><a href="#nim-1" class="anchor"
+aria-hidden="true">Nim</a></h2>
+<h2 id="s6-ah-computing-project"><a href="#s6-ah-computing-project"
+class="anchor" aria-hidden="true">S6 AH Computing Project</a></h2>
+<p>I went to school in Scotland, where as part of Senior Phase 6
+Advanced Higher Computing Project</p>
+<p>The reason why my ears perked up at the mention of Nim was because
+this was the game I chose to implement for my Advanced Higher Computing
+Project.</p>
+<p>But you only have</p>
+<p>S6 AH Computing Proiject</p>
+<p>Nim - Honestly don’t remember where I found this game, but I thought
+it was interesting.</p>
+<p>And once you know the trick, building a perfect AI opponent is
+trivial.</p>
+<p>Haven’t thought about this in years, apart from adding a repo and
+trying and failure to compile it (an interesting exercise in
+reproducibility)</p>
+<p>Inane requirements - like writing out the entire program in pseuocode
+beforehand and using a strict waterful methodology</p>
+<p>I had been taught Vb, had friend’s learning Python &amp; JAva, but I
+really only knew how to code in the Visual Studio IDE. I had enough
+foresight to want to move away from Visual Basic, and C# was a natural
+choice due to IDE support and feature parity (same IR)
+https://en.wikipedia.org/wiki/Comparison_of_C_Sharp_and_Visual_Basic_.NET</p>
+<p>This started my prefered way of learning programming languages: just
+start building something and figure things out from there. Normally this
+means getting stuck and consulting stack overflow or preferable the
+documentation. I view programming as kind of like riding a bike - it’s
+all well and good to read a textbook on how to do it but to do it in
+reality you need to practive</p>
+<p>needless to say some of these were completed</p>
+<pre><code>private void AITurn() {
+    int nim_sum = 0x0;
+    int[] Stacks_binary_values = new int[number_of_stacks];
+    for (int i = 0; i &lt; number_of_stacks; i++) {
+        Stacks_binary_values[i] = Convert.ToByte(Stacks[i].Text);
+        nim_sum = nim_sum ^ Stacks_binary_values[i];stacks binary values
+    }
+    if (nim_sum == 0x0 || random.NextDouble() &gt; AIdifficulty) {
+        int stack_index = random.Next(number_of_stacks);
+        Stacks[stack_index].Text = random.Next(int.Parse(Stacks[stack_index].Text)-1).ToString();
+        if (Stacks[stack_index].Text == &quot;0&quot;) {
+            Stacks[stack_index].Hide();
+            Disks[stack_index].Hide();
+        }
+        current_stack = stack_index + 1;
+    } else {
+        for (int i = 0; i &lt; number_of_stacks; i++) {
+            if ((nim_sum ^ Stacks_binary_values[i]) &lt; Stacks_binary_values[i]) {
+                Stacks_binary_values[i] = nim_sum ^ Stacks_binary_values[i];
+                Stacks[i].Text = Convert.ToString(Stacks_binary_values[i]);
+                if (Stacks[i].Text == &quot;0&quot;) {
+                    Stacks[i].Hide();
+                    Disks[i].Hide();
+                }
+                current_stack = i + 1;
+                break;
+            }
+        }
+    }
+    TurnTaken();
+}</code></pre>
+<h2 id="computing-education"><a href="#computing-education"
+class="anchor" aria-hidden="true">Computing Education</a></h2>
+<p>Now what’s the point of this article? What do you want people to take
+away?</p>
+</body>
+</html>
