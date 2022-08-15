@@ -4,6 +4,7 @@ pagetitle: "links | gibbr.org"
 
 <h1> Links </h1>
 
+- [Functors, Applicatives, And Monads In Pictures](https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html)
 - [HFT in the Banana Land](https://sniperinmahwah.wordpress.com/2016/01/26/hft-in-the-banana-land/)
 - [Routes to Rights: Internet architecture and values in times of ossification and commercialization](https://dl.acm.org/doi/pdf/10.1145/3220561)
 - [Whither Sockets?](https://queue.acm.org/detail.cfm?id=1538949)
