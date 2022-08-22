@@ -1,26 +1,33 @@
 {
   description = "A flake for building https://gibbr.org";
 
-  outputs = { self, nixpkgs }: {
+  inputs.flake-utils.url = "github:numtide/flake-utils";
 
-    defaultPackage.x86_64-linux =
-      with import nixpkgs { system = "x86_64-linux"; };
-      stdenv.mkDerivation {
-        name = "gibbr.org";
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem
+      (system:
+        let pkgs = nixpkgs.legacyPackages.${system}; in
+        {
+          defaultPackage = pkgs.stdenv.mkDerivation {
+            name = "gibbr.org";
 
-        src = self;
+            src = self;
 
-        buildInputs = [
-          rsync
-          pandoc
-          perl
-        ];
+            buildInputs = [
+              pkgs.rsync
+              pkgs.pandoc
+            ];
 
-        installPhase = ''
-          mkdir -p $out
-          rsync -a --exclude '*.md' --exclude 'result' --exclude '.*' . $out
-        '';
-      };
-
-  };
+            installPhase = ''
+              mkdir -p $out
+              rsync -a --exclude '*.md' --exclude 'result' --exclude '.*' . $out
+            '';
+          };
+          devShells.default = pkgs.mkShell {
+              buildInputs = [
+                pkgs.pandoc
+              ];
+          };
+        }
+      );
 }
