@@ -34,11 +34,6 @@
 </ul>
 <h1 id="nim"><a href="#nim" class="anchor"
 aria-hidden="true">Nim</a></h1>
-<figure>
-<img src="dalle2.png" style="width:50.0%" alt="" />
-<figcaption aria-hidden="true"><a href="#fn1" class="footnote-ref"
-id="fnref1" role="doc-noteref"><sup>1</sup></a></figcaption>
-</figure>
 <p>I recently had the good fortune to attended a talk by Simon Peyton
 Jones titled “Immutability changes everything: 40 years of functional
 programming” chronologing Simon’s career researching lazy functional
@@ -49,32 +44,67 @@ Research Cambridge to work at Epic Games on a new programming language
 dubbed ‘<a
 href="https://discourse.haskell.org/t/an-epic-future-for-spj/3573">Verse</a>’.
 In this talk Simon described how he originally became interested in
-Computer Science through two problems: the Angry Bank Customer and
-Nim.</p>
-<h2 id="angry-bank-customer"><a href="#angry-bank-customer"
-class="anchor" aria-hidden="true">Angry Bank Customer</a></h2>
-<p>Consider the scenario: you’re a overworked bank teller who, every
-week, has the same angry customer. This customer demands to withdraw a
-varying amount of money each week, and becomes irate if you cannot hand
-them their desired amount immediately. How, aside from more diplomatic
-means, can you satisfy this customer?</p>
-<p>You decide to prepare piles of cash such that you can make up his
-desired amount by grabbing a combination. But how much should you put in
-each pile? Starting with a £1 pile and a £2 pile, you can make any
-number up to £3.</p>
-<p>Then you add a pile of £4.</p>
-<p>Which this you can make any number up to £7 (e.g. 5=4+1, 6=4+2,
-7=4+3), so you add a £8 pile, a £16 pile, a £32 pile. Before you know
-it, you’ve reinvented the binary numeral system.</p>
-<p>This problem naturally leads us to powers of 2, but Num poses a more
-challenging statement also reliant on base-2.</p>
-<h2 id="nim-1"><a href="#nim-1" class="anchor"
-aria-hidden="true">Nim</a></h2>
+Computer Science: through a game called Nim.</p>
+<figure>
+<img src="dalle2.png" style="width:50.0%" alt="" />
+<figcaption aria-hidden="true"><a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a></figcaption>
+</figure>
+<h3 id="playing-the-game"><a href="#playing-the-game" class="anchor"
+aria-hidden="true">Playing the game</a></h3>
 <p>You and your oponent face a number of stacks of coins on a table. On
 your turn, you can take any number greater than 1 coins from exactly one
-stack. Whoever takes the last coin wins.</p>
-<h2 id="s6-ah-computing-project"><a href="#s6-ah-computing-project"
-class="anchor" aria-hidden="true">S6 AH Computing Project</a></h2>
+stack. Whoever takes the last coin wins (playing a <em>normal</em>, as
+oppsed to <em>misère game</em>, game).</p>
+<p>Let’s take a very simple example with two coins in one pile, and
+three in the other.</p>
+<p><img src="nim1.svg" style="width:30.0%" /></p>
+<p>If you take all of one pile:</p>
+<p><img src="nim2.svg" style="width:30.0%" /></p>
+<p>Then your opponent can take all but one from the other, leaving you
+to lose:</p>
+<p><img src="nim3.svg" style="width:30.0%" /></p>
+<p>Let’s rethink…</p>
+<p>Instead, if you take one from the pile of three to make the piles
+equal:</p>
+<p><img src="nim4.svg" style="width:30.0%" /></p>
+<p>If your opponent takes all of one pile, fortunes are yours! You can
+just take all of the remaining pile. But let’s imagine they’re a little
+more canny and they only take one from a pile:</p>
+<p><img src="nim5.svg" style="width:30.0%" /></p>
+<p>It seemed to have worked last time, so let’s repeat our trick of
+making the piles equal:</p>
+<p><img src="nim5.svg" style="width:30.0%" /></p>
+<p>Your opponent will be forced to take one coin:</p>
+<p><img src="nim6.svg" style="width:30.0%" /></p>
+<p>And then fortunes are yours!</p>
+<p><img src="nim7.svg" style="width:30.0%" /></p>
+<p>You will be left with two piles, from which you’ll be forced to take
+one.</p>
+<p>Your opponent will take the last and win the game again.</p>
+<p>However, if you take two from the pile initially, the roles will be
+revered for this exact scenario and fortunes are yours!</p>
+<h3 id="a-recipe-for-success"><a href="#a-recipe-for-success"
+class="anchor" aria-hidden="true">A recipe for success</a></h3>
+<p>Nim is a solved game for an arbitrary number of stacks with a
+<em>binary digital sum</em>. That is, a sum – ignoring carrying – of the
+binary values for every stack size. Another word for this operation is
+exclusve or (⊕). For stacks A size 5, B size 2, and C size 3, this is
+equal to A⊕B⊕C:</p>
+<pre>
+A⊕B⊕C
+= 5<sub>10</sub>⊕2<sub>10</sub>⊕3<sub>10</sub>
+= 1012<sub>2</sub>⊕0102<sub>2</sub>⊕0112<sub>2</sub>
+=1112<sub>2</sub>⊕0112<sub>2</sub>
+=1002<sub>2</sub>
+=4<sub>10</sub>
+</pre>
+<p>The key to nim is to always finish your turn with a num sum of 0,
+which is always possible if the nim-sum is not zero before the start of
+your turn.</p>
+<h3 id="reflections-on-history"><a href="#reflections-on-history"
+class="anchor" aria-hidden="true">Reflections on history</a></h3>
+<p>I actually</p>
 <p>I went to school in Scotland, where as part of Senior Phase 6
 Advanced Higher Computing Project</p>
 <p>The reason why my ears perked up at the mention of Nim was because
