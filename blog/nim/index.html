@@ -12,6 +12,69 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../style.css" />
@@ -34,148 +97,133 @@
 </ul>
 <h1 id="nim"><a href="#nim" class="anchor"
 aria-hidden="true">Nim</a></h1>
-<p>I recently had the good fortune to attended a talk by Simon Peyton
-Jones titled “Immutability changes everything: 40 years of functional
-programming” chronologing Simon’s career researching lazy functional
-programming languages. At the University of Glasgow he was a major
-contributor to haskell, and remains a lead developer of the Glasgow
-Haskell Compiler to this day. He’s recently moved from Microsoft
-Research Cambridge to work at Epic Games on a new programming language
-dubbed ‘<a
+<p>Name is a game that is very close and dear to my heart, despite not
+having played it in over 5 years. I recently had the good fortune to
+attended a talk by Simon Peyton Jones titled “Immutability changes
+everything: 40 years of functional programming” which chronologic
+Simon’s life and research career. Simon is a self-described one trick
+pony, where that trick is functional programming. However, this trick is
+taking him from being a major instigator in Haskell - he remains a lead
+developer of the Glasgow Haskell Compiler to this day - to Microsoft
+research, and more recently to Epic Games working on a new programming
+language dubbed ‘<a
 href="https://discourse.haskell.org/t/an-epic-future-for-spj/3573">Verse</a>’.
-In this talk Simon described how he originally became interested in
-Computer Science: through a game called Nim.</p>
+An initial spark for this journey was the game Nim.</p>
 <figure>
-<img src="dalle2.png" style="width:50.0%" alt="" />
-<figcaption aria-hidden="true"><a href="#fn1" class="footnote-ref"
-id="fnref1" role="doc-noteref"><sup>1</sup></a></figcaption>
+<img src="dalle2.png" style="width:50.0%" alt="[^0]" />
+<figcaption aria-hidden="true">[^0]</figcaption>
 </figure>
-<h3 id="playing-the-game"><a href="#playing-the-game" class="anchor"
-aria-hidden="true">Playing the game</a></h3>
-<p>You and your oponent face a number of stacks of coins on a table. On
-your turn, you can take any number greater than 1 coins from exactly one
-stack. Whoever takes the last coin wins (playing a <em>normal</em>, as
-oppsed to <em>misère game</em>, game).</p>
-<p>Let’s take a very simple example with two coins in one pile, and
-three in the other.</p>
+<p>[^0] Generated by <a href="https://openai.com/dall-e-2/">DALL.E
+2</a></p>
+<h3 id="the-game"><a href="#the-game" class="anchor"
+aria-hidden="true">The game</a></h3>
+<p>Picture the scene: opponent opponent stare each other down across
+stacks of gold doubloons on the table. You place a wager, you’ll each
+take turns taking 1 or more coins from a single pile, and whoever takes
+the last coin wins.</p>
+<p>Let’s think through your strategy…</p>
+<p>To start with a very simple scenario consider two stacks; one with 2
+coins, and one with 3 coins.</p>
 <p><img src="nim1.svg" style="width:30.0%" /></p>
 <p>If you take all of one pile:</p>
 <p><img src="nim2.svg" style="width:30.0%" /></p>
-<p>Then your opponent can take all but one from the other, leaving you
-to lose:</p>
+<p>Then your opponent can take all off the other, leaving you
+penniless:</p>
 <p><img src="nim3.svg" style="width:30.0%" /></p>
 <p>Let’s rethink…</p>
 <p>Instead, if you take one from the pile of three to make the piles
 equal:</p>
 <p><img src="nim4.svg" style="width:30.0%" /></p>
-<p>If your opponent takes all of one pile, fortunes are yours! You can
-just take all of the remaining pile. But let’s imagine they’re a little
-more canny and they only take one from a pile:</p>
+<p>Then if your opponent takes all of either pile, you can just take the
+remaining pile. But let’s imagine they are slightly more canny and they
+only take one from a pile:</p>
 <p><img src="nim5.svg" style="width:30.0%" /></p>
 <p>It seemed to have worked last time, so let’s repeat our trick of
 making the piles equal:</p>
-<p><img src="nim5.svg" style="width:30.0%" /></p>
+<p>Oki<img src="nim5.svg" style="width:30.0%" /></p>
 <p>Your opponent will be forced to take one coin:</p>
 <p><img src="nim6.svg" style="width:30.0%" /></p>
 <p>And then fortunes are yours!</p>
 <p><img src="nim7.svg" style="width:30.0%" /></p>
-<p>You will be left with two piles, from which you’ll be forced to take
-one.</p>
-<p>Your opponent will take the last and win the game again.</p>
-<p>However, if you take two from the pile initially, the roles will be
-revered for this exact scenario and fortunes are yours!</p>
-<h3 id="a-recipe-for-success"><a href="#a-recipe-for-success"
-class="anchor" aria-hidden="true">A recipe for success</a></h3>
-<p>Nim is a solved game for an arbitrary number of stacks with a
-<em>binary digital sum</em>. That is, a sum – ignoring carrying – of the
-binary values for every stack size. Another word for this operation is
-exclusve or (⊕). For stacks A size 5, B size 2, and C size 3, this is
+<h3 id="a-strategy"><a href="#a-strategy" class="anchor"
+aria-hidden="true">A strategy</a></h3>
+<p>Nim is a solved game for an arbitrary number of stacks. We can use a
+a <em>binary digital sum</em>, denoted the ‘’nim-sum’ to come up with an
+optimal strategy. That is, a sum – ignoring carrying – of the binary
+values for every stack size. Another word for this operation is
+‘exclusve or’ (⊕). For stacks A size 5, B size 2, and C size 3, this is
 equal to A⊕B⊕C:</p>
 <pre>
 A⊕B⊕C
-= 5<sub>10</sub>⊕2<sub>10</sub>⊕3<sub>10</sub>
-= 1012<sub>2</sub>⊕0102<sub>2</sub>⊕0112<sub>2</sub>
-=1112<sub>2</sub>⊕0112<sub>2</sub>
-=1002<sub>2</sub>
+=5<sub>10</sub>⊕2<sub>10</sub>⊕3<sub>10</sub>
+=101<sub>2</sub>⊕010<sub>2</sub>⊕011<sub>2</sub>
+=111<sub>2</sub>⊕011<sub>2</sub>
+=100<sub>2</sub>
 =4<sub>10</sub>
 </pre>
-<p>The key to nim is to always finish your turn with a num sum of 0,
-which is always possible if the nim-sum is not zero before the start of
-your turn.</p>
-<h3 id="reflections-on-history"><a href="#reflections-on-history"
-class="anchor" aria-hidden="true">Reflections on history</a></h3>
-<p>I actually</p>
-<p>I went to school in Scotland, where as part of Senior Phase 6
-Advanced Higher Computing Project</p>
-<p>The reason why my ears perked up at the mention of Nim was because
-this was the game I chose to implement for my Advanced Higher Computing
-Project.</p>
-<p>But you only have</p>
-<p>S6 AH Computing Proiject</p>
-<p>Nim - Honestly don’t remember where I found this game, but I thought
-it was interesting.</p>
-<p>And once you know the trick, building a perfect AI opponent is
-trivial.</p>
-<p>Haven’t thought about this in years, apart from adding a repo and
-trying and failure to compile it (an interesting exercise in
-reproducibility)</p>
-<p>Inane requirements - like writing out the entire program in pseuocode
-beforehand and using a strict waterful methodology</p>
-<p>I had been taught Vb, had friend’s learning Python &amp; JAva, but I
-really only knew how to code in the Visual Studio IDE. I had enough
-foresight to want to move away from Visual Basic, and C# was a natural
-choice due to IDE support and feature parity (same IR)
-https://en.wikipedia.org/wiki/Comparison_of_C_Sharp_and_Visual_Basic_.NET</p>
-<p>This started my prefered way of learning programming languages: just
-start building something and figure things out from there. Normally this
-means getting stuck and consulting stack overflow or preferable the
-documentation. I view programming as kind of like riding a bike - it’s
-all well and good to read a textbook on how to do it but to do it in
-reality you need to practive</p>
-<p>needless to say some of these were completed</p>
-<pre><code>private void AITurn() {
-    int nim_sum = 0x0;
-    int[] Stacks_binary_values = new int[number_of_stacks];
-    for (int i = 0; i &lt; number_of_stacks; i++) {
-        Stacks_binary_values[i] = Convert.ToByte(Stacks[i].Text);
-        nim_sum = nim_sum ^ Stacks_binary_values[i];stacks binary values
-    }
-    if (nim_sum == 0x0 || random.NextDouble() &gt; AIdifficulty) {
-        int stack_index = random.Next(number_of_stacks);
-        Stacks[stack_index].Text = random.Next(int.Parse(Stacks[stack_index].Text)-1).ToString();
-        if (Stacks[stack_index].Text == &quot;0&quot;) {
-            Stacks[stack_index].Hide();
-            Disks[stack_index].Hide();
-        }
-        current_stack = stack_index + 1;
-    } else {
-        for (int i = 0; i &lt; number_of_stacks; i++) {
-            if ((nim_sum ^ Stacks_binary_values[i]) &lt; Stacks_binary_values[i]) {
-                Stacks_binary_values[i] = nim_sum ^ Stacks_binary_values[i];
-                Stacks[i].Text = Convert.ToString(Stacks_binary_values[i]);
-                if (Stacks[i].Text == &quot;0&quot;) {
-                    Stacks[i].Hide();
-                    Disks[i].Hide();
-                }
-                current_stack = i + 1;
-                break;
-            }
-        }
-    }
-    TurnTaken();
-}</code></pre>
-<h2 id="computing-education"><a href="#computing-education"
-class="anchor" aria-hidden="true">Computing Education</a></h2>
-<p>Now what’s the point of this article? What do you want people to take
-away?</p>
-<section class="footnotes footnotes-end-of-document"
-role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1" role="doc-endnote"><p>Generated by <a
-href="https://openai.com/dall-e-2/">DALL.E 2</a><a href="#fnref1"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
+<p>The key to Nim is to always finish your turn with a num-sum of 0.
+This is always possible as long as the nim-sum isn’t 0 at the start of
+your turn. The the nim-sum will always be less than the value of the
+largest stack, so you can take the decimal value of the Nim sum from
+this (or another) stack - which will result in a nim-sum of zero. If the
+nim-sum is already zero, taking any coin will make that no longer the
+case.</p>
+<p>The player who can win the game will be the player with a zero
+nim-sum on their last turn, which is predicated on them having a zero
+nim-sum (and their opponent always having a non-zero nim-sum) on their
+turn from the beginning. You will note, that this makes the outcome of
+the game entirely deterministic on the initially state of the board and
+whoever has the first turn.</p>
+<h3 id="some-reflections"><a href="#some-reflections" class="anchor"
+aria-hidden="true">Some reflections</a></h3>
+<p>Now at the start of this I alluded to the fact that I was already
+familiar with this Game. In fact, as part of my S6[^2] advanced higher
+computing project I implemented the game Nim.</p>
+<p>[^2] S6 meaning senior phase 6, as I just found out.</p>
+<p>As part of this I implemented a crude AI opponent which played
+optimally using the nim-sum with some probability based on a
+difficulty:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="dt">void</span> <span class="fu">AITurn</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> nim_sum <span class="op">=</span> <span class="bn">0x0</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span><span class="op">[]</span> Stacks_binary_values <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span>number_of_stacks<span class="op">];</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> number_of_stacks<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        Stacks_binary_values<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> Convert<span class="op">.</span><span class="fu">ToByte</span><span class="op">(</span>Stacks<span class="op">[</span>i<span class="op">].</span><span class="fu">Text</span><span class="op">);</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        nim_sum <span class="op">=</span> nim_sum <span class="op">^</span> Stacks_binary_values<span class="op">[</span>i<span class="op">];</span>stacks binary values</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>nim_sum <span class="op">==</span> <span class="bn">0x0</span> <span class="op">||</span> random<span class="op">.</span><span class="fu">NextDouble</span><span class="op">()</span> <span class="op">&gt;</span> AIdifficulty<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> stack_index <span class="op">=</span> random<span class="op">.</span><span class="fu">Next</span><span class="op">(</span>number_of_stacks<span class="op">);</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        Stacks<span class="op">[</span>stack_index<span class="op">].</span><span class="fu">Text</span> <span class="op">=</span> random<span class="op">.</span><span class="fu">Next</span><span class="op">(</span><span class="dt">int</span><span class="op">.</span><span class="fu">Parse</span><span class="op">(</span>Stacks<span class="op">[</span>stack_index<span class="op">].</span><span class="fu">Text</span><span class="op">)-</span><span class="dv">1</span><span class="op">).</span><span class="fu">ToString</span><span class="op">();</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>Stacks<span class="op">[</span>stack_index<span class="op">].</span><span class="fu">Text</span> <span class="op">==</span> <span class="st">&quot;0&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            Stacks<span class="op">[</span>stack_index<span class="op">].</span><span class="fu">Hide</span><span class="op">();</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            Disks<span class="op">[</span>stack_index<span class="op">].</span><span class="fu">Hide</span><span class="op">();</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        current_stack <span class="op">=</span> stack_index <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> number_of_stacks<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>            <span class="kw">if</span> <span class="op">((</span>nim_sum <span class="op">^</span> Stacks_binary_values<span class="op">[</span>i<span class="op">])</span> <span class="op">&lt;</span> Stacks_binary_values<span class="op">[</span>i<span class="op">])</span> <span class="op">{</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                Stacks_binary_values<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> nim_sum <span class="op">^</span> Stacks_binary_values<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                Stacks<span class="op">[</span>i<span class="op">].</span><span class="fu">Text</span> <span class="op">=</span> Convert<span class="op">.</span><span class="fu">ToString</span><span class="op">(</span>Stacks_binary_values<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>                <span class="kw">if</span> <span class="op">(</span>Stacks<span class="op">[</span>i<span class="op">].</span><span class="fu">Text</span> <span class="op">==</span> <span class="st">&quot;0&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                    Stacks<span class="op">[</span>i<span class="op">].</span><span class="fu">Hide</span><span class="op">();</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>                    Disks<span class="op">[</span>i<span class="op">].</span><span class="fu">Hide</span><span class="op">();</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                current_stack <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                <span class="kw">break</span><span class="op">;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">TurnTaken</span><span class="op">();</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>At the time I only really knew how to program in Visual Studio, and
+wanting to move away from visual basic C# was the natural choice. I
+believe they even use the same intermediate representation.</p>
+<p>The source code and binary (but build instructions are left as an
+exercise for the reader) of this game can be found <a
+href="https://github.com/RyanGibb/nim">here</a>.</p>
+<p>Reflecting on this project, while it had some inane requirements -
+like writing out the entire program in pseuocode beforehand and using a
+strict waterful methodology, all of which was done retrospectivly of
+course - but it really got me to consider studying computer science
+further, which led me to where I am today.</p>
 </body>
 </html>
