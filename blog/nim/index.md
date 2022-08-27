@@ -75,7 +75,7 @@ Where subscript numbers denote base.
 
 The key to Nim is to always finish your turn with a num-sum of 0.
 This is always possible as long as the nim-sum isn't 0 at the start of your turn.
-The the nim-sum will always be less than the value of the largest stack, so you can take the decimal value of the Nim sum from this (or another) stack - which will result in a nim-sum of zero.
+The nim-sum will always be less than the value of the largest stack, so you can take the decimal value of the nim-sum from this (or another) stack - which will result in a nim-sum of zero.
 If the nim-sum is already zero, taking any coin will make that no longer the case.
 
 The player who can win the game will be the player with a zero nim-sum on their last turn, which is predicated on them having a zero nim-sum (and their opponent always having a non-zero nim-sum) on their turn from the beginning.
@@ -84,8 +84,8 @@ You will note, that this makes the outcome of the game entirely deterministic on
 A more formal proof can be found [here](https://en.wikipedia.org/wiki/Nim#Proof_of_the_winning_formula).
 
 ### Some reflections
-Now at the start of this I alluded to the fact that I was already familiar with this Game.
-In fact, as part of my S6[^1] advanced higher computing project I implemented the game Nim.
+At the start of this blog post I alluded to the fact that I was already familiar with this game.
+In fact, as my S6[^1] advanced higher computing project I implemented the game Nim.
 
 [^1]: S6 meaning senior phase 6, as I just found out.
 
@@ -129,4 +129,5 @@ I believe they even use the same intermediate representation.
 
 The source code and binary (but build instructions are left as an exercise for the reader) of this game can be found [here](https://github.com/RyanGibb/nim).
 
-Reflecting on this project, while it had some inane requirements - like writing out the entire program in pseuocode beforehand and using a strict waterful methodology, all of which was done retrospectivly of course - but it really got me to consider studying computer science further, which led me to where I am today.
+Reflecting on this project, while it had some inane requirements - like writing out the entire program in pseuocode beforehand and using a strict waterful methodology, all of which was done retrospectivly of course - it really got me to consider studying computer science further, which led me to where I am today.
+
