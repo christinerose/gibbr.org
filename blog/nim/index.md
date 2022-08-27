@@ -44,15 +44,15 @@ But let's imagine they are slightly more canny and they only take one from a pil
 
 It seemed to have worked last time, so let's repeat our trick of making the piles equal:
 
-Oki![](nim5.svg){width=30%}
+![](nim6.svg){width=30%}
 
 Your opponent will be forced to take one coin:
 
-![](nim6.svg){width=30%}
+![](nim7.svg){width=30%}
 
 And then fortunes are yours!
 
-![](nim7.svg){width=30%}
+![](nim8.svg){width=30%}
 
 ### A strategy
 
