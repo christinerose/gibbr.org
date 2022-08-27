@@ -74,10 +74,10 @@ A⊕B⊕C
 The key to Nim is to always finish your turn with a num-sum of 0.
 This is always possible as long as the nim-sum isn't 0 at the start of your turn.
 The the nim-sum will always be less than the value of the largest stack, so you can take the decimal value of the Nim sum from this (or another) stack - which will result in a nim-sum of zero.
-
 If the nim-sum is already zero, taking any coin will make that no longer the case.
 
-#TODO describe an intuition of why this is correct
+The player who can win the game will be the player with a zero nim-sum on their last turn, which is predicated on them having a zero nim-sum (and their opponent always having a non-zero nim-sum) on their turn from the beginning.
+You will note, that this makes the outcome of the game entirely deterministic on the initially state of the board and whoever has the first turn.
 
 ### Some reflections
 Now at the start of this I alluded to the fact that I was already familiar with this Game.
@@ -125,6 +125,4 @@ I believe they even use the same intermediate representation.
 
 The source code and binary (but build instructions are left as an exercise for the reader) of this game can be found [here](https://github.com/RyanGibb/nim).
 
-Reflecting on this project, while it had some inane requirements - like writing out the entire program in pseuocode beforehand and using a strict waterful methodology, all of which was done retrospectivly of course - It really got me to consider studying computer science further, which led me to where I am today.
-
-#TODO some kind of coherent conclusion
+Reflecting on this project, while it had some inane requirements - like writing out the entire program in pseuocode beforehand and using a strict waterful methodology, all of which was done retrospectivly of course - but it really got me to consider studying computer science further, which led me to where I am today.
