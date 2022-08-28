@@ -6,7 +6,7 @@ date: "2022-08-27 00:00:00"
 I recently had the good fortune to attended a talk by Simon Peyton Jones titled "Immutability changes everything: 40 years of functional programming" which chronologic Simon's life and research career.
 Simon is a self-described one trick pony, where that trick is functional programming.
 However, this trick has taken him from being a major instigator in Haskell - he remains a lead developer of the Glasgow Haskell Compiler to this day - to Microsoft research, and more recently to Epic Games working on a new programming language dubbed '[Verse](https://discourse.haskell.org/t/an-epic-future-for-spj/3573)'.
-The initial spark for this journey was the game Nim.
+In this talk Simon described how he first got interested in Computer Science through a problem posed to him: the game Nim.
 
 ![[^0]](dalle2.png){width=50% min-width=5cm}
 
