@@ -67,6 +67,10 @@ pre {
 	border-color: #bfbfbf;
 }
 
+.sourceCode {
+	overflow: auto;
+}
+
 img {
 	width: 100%;
 	display: block;
