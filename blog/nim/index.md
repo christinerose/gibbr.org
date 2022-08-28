@@ -3,7 +3,6 @@ pagetitle: "Nim | gibbr.org"
 date: "2022-08-27 00:00:00"
 ---
 # Nim
-Name is a game that is very close and dear to my heart, despite not having played it in over 5 years.
 I recently had the good fortune to attended a talk by Simon Peyton Jones titled "Immutability changes everything: 40 years of functional programming" which chronologic Simon's life and research career.
 Simon is a self-described one trick pony, where that trick is functional programming.
 However, this trick has taken him from being a major instigator in Haskell - he remains a lead developer of the Glasgow Haskell Compiler to this day - to Microsoft research, and more recently to Epic Games working on a new programming language dubbed '[Verse](https://discourse.haskell.org/t/an-epic-future-for-spj/3573)'.
@@ -84,8 +83,8 @@ You will note, that this makes the outcome of the game entirely deterministic on
 A more formal proof can be found [here](https://en.wikipedia.org/wiki/Nim#Proof_of_the_winning_formula).
 
 ### Some reflections
-At the start of this blog post I alluded to the fact that I was already familiar with this game.
-In fact, as my S6[^1] advanced higher computing project I implemented the game Nim.
+This talk was not my first encounter with Nim.
+In fact, as my S6[^1] advanced higher computing project I implemented this game.
 
 [^1]: S6 meaning senior phase 6, as I just found out.
 
