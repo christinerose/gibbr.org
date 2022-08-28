@@ -80,7 +80,7 @@ If the nim-sum is already zero, taking any coin will make that no longer the cas
 The player who can win the game will be the player with a zero nim-sum on their last turn, which is predicated on them having a zero nim-sum (and their opponent always having a non-zero nim-sum) on their turn from the beginning.
 You will note, that this makes the outcome of the game entirely deterministic on the initially state of the board and whoever has the first turn.
 
-A more formal proof can be found [here](https://en.wikipedia.org/wiki/Nim#Proof_of_the_winning_formula).
+A formal verison of this hand-waving inductive proof can be found [here](https://en.wikipedia.org/wiki/Nim#Proof_of_the_winning_formula).
 
 ### Some reflections
 This talk was not my first encounter with Nim.
