@@ -95,7 +95,7 @@ private void AITurn() {
     int[] Stacks_binary_values = new int[number_of_stacks];
     for (int i = 0; i < number_of_stacks; i++) {
         Stacks_binary_values[i] = Convert.ToByte(Stacks[i].Text);
-        nim_sum = nim_sum ^ Stacks_binary_values[i];stacks binary values
+        nim_sum = nim_sum ^ Stacks_binary_values[i];
     }
     if (nim_sum == 0x0 || random.NextDouble() > AIdifficulty) {
         int stack_index = random.Next(number_of_stacks);
@@ -126,7 +126,7 @@ private void AITurn() {
 At the time I only really knew how to program in Visual Studio, and wanting to move away from visual basic C# was the natural choice.
 I believe they even use the same intermediate representation.
 
-The source code and binary (but build instructions are left as an exercise for the reader) of this game can be found [here](https://github.com/RyanGibb/nim).
+The source code and binary of this game can be found [here](https://github.com/RyanGibb/nim) (but build instructions are left as an exercise for the reader).
 
 Reflecting on this project, while it had some inane requirements - like writing out the entire program in pseuocode beforehand and using a strict waterful methodology, all of which was done retrospectivly of course - it really got me to consider studying computer science further, which led me to where I am today.
 

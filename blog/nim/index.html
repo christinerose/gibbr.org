@@ -188,7 +188,7 @@ difficulty:</p>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span><span class="op">[]</span> Stacks_binary_values <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span>number_of_stacks<span class="op">];</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> number_of_stacks<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        Stacks_binary_values<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> Convert<span class="op">.</span><span class="fu">ToByte</span><span class="op">(</span>Stacks<span class="op">[</span>i<span class="op">].</span><span class="fu">Text</span><span class="op">);</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        nim_sum <span class="op">=</span> nim_sum <span class="op">^</span> Stacks_binary_values<span class="op">[</span>i<span class="op">];</span>stacks binary values</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        nim_sum <span class="op">=</span> nim_sum <span class="op">^</span> Stacks_binary_values<span class="op">[</span>i<span class="op">];</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>nim_sum <span class="op">==</span> <span class="bn">0x0</span> <span class="op">||</span> random<span class="op">.</span><span class="fu">NextDouble</span><span class="op">()</span> <span class="op">&gt;</span> AIdifficulty<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> stack_index <span class="op">=</span> random<span class="op">.</span><span class="fu">Next</span><span class="op">(</span>number_of_stacks<span class="op">);</span></span>
@@ -217,9 +217,9 @@ difficulty:</p>
 <p>At the time I only really knew how to program in Visual Studio, and
 wanting to move away from visual basic C# was the natural choice. I
 believe they even use the same intermediate representation.</p>
-<p>The source code and binary (but build instructions are left as an
-exercise for the reader) of this game can be found <a
-href="https://github.com/RyanGibb/nim">here</a>.</p>
+<p>The source code and binary of this game can be found <a
+href="https://github.com/RyanGibb/nim">here</a> (but build instructions
+are left as an exercise for the reader).</p>
 <p>Reflecting on this project, while it had some inane requirements -
 like writing out the entire program in pseuocode beforehand and using a
 strict waterful methodology, all of which was done retrospectivly of
