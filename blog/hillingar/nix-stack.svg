@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="66.190155mm"
+   height="74.025276mm"
+   viewBox="0 0 66.190155 74.025276"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <rect
+       x="228.54237"
+       y="247.38429"
+       width="248.34534"
+       height="33.230267"
+       id="rect216725" />
+    <rect
+       x="228.99133"
+       y="116.91536"
+       width="249.16751"
+       height="81.461937"
+       id="rect189413" />
+    <rect
+       x="265.22009"
+       y="38.300453"
+       width="185.81183"
+       height="61.696869"
+       id="rect183951" />
+    <rect
+       x="228.99133"
+       y="116.91536"
+       width="251.07333"
+       height="44.055801"
+       id="rect174979" />
+    <rect
+       x="154.97211"
+       y="88.732201"
+       width="265.39572"
+       height="81.352806"
+       id="rect124217" />
+    <rect
+       x="420.36783"
+       y="170.08501"
+       width="265.39572"
+       height="81.352806"
+       id="rect117545" />
+    <rect
+       x="154.97211"
+       y="88.732201"
+       width="265.39572"
+       height="81.352806"
+       id="rect83312" />
+    <rect
+       x="228.99133"
+       y="116.91536"
+       width="249.16751"
+       height="81.461937"
+       id="rect189413-3" />
+    <rect
+       x="228.54237"
+       y="247.38429"
+       width="248.34534"
+       height="33.230267"
+       id="rect216725-6" />
+    <rect
+       x="228.99133"
+       y="116.91536"
+       width="249.16751"
+       height="81.461937"
+       id="rect189413-5" />
+    <rect
+       x="228.54237"
+       y="247.38429"
+       width="248.34534"
+       height="33.230267"
+       id="rect216725-62" />
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(-66.898135,-31.682766)">
+    <rect
+       style="fill:#7eb9e3;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect173567"
+       width="65.925568"
+       height="21.553471"
+       x="67.030434"
+       y="84.022278" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text174977"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect174979);fill:#000000;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text183949"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect183951);fill:#000000;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,6.4431425,53.088422)"
+       id="text189411"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect189413);fill:#000000;fill-opacity:1;stroke:none"
+       x="26.039989"
+       y="0"><tspan
+         x="322.63522"
+         y="153.31102"
+         id="tspan278071">Nix</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,6.7794682,31.329816)"
+       id="text216723"
+       style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect216725);fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="253.92944"
+         y="259.5164"
+         id="tspan278073">A pure, functional, build system</tspan></text>
+    <rect
+       style="fill:#7eb9e3;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect173567-7"
+       width="65.925568"
+       height="21.553471"
+       x="67.030426"
+       y="57.918671" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,6.4431349,26.984814)"
+       id="text189411-5"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect189413-3);fill:#000000;fill-opacity:1;stroke:none"
+       x="26.039989"
+       y="0"><tspan
+         x="277.77522"
+         y="153.31102"
+         id="tspan278075">Nixpkgs</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,6.7794609,5.2262075)"
+       id="text216723-3"
+       style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect216725-6);fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="242.00947"
+         y="259.5164"
+         id="tspan278077">A package repository build with Nix</tspan></text>
+    <rect
+       style="fill:#7eb9e3;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect173567-9"
+       width="65.925568"
+       height="21.553471"
+       x="67.030426"
+       y="31.815058" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,6.4431378,0.8811997)"
+       id="text189411-1"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect189413-5);fill:#000000;fill-opacity:1;stroke:none"
+       x="26.039989"
+       y="0"><tspan
+         x="296.03522"
+         y="153.31102"
+         id="tspan278079">NixOS</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,6.7794638,-20.877406)"
+       id="text216723-2"
+       style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect216725-62);fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="249.05611"
+         y="259.5164"
+         id="tspan278081">A Linux distribution based on Nix</tspan></text>
+  </g>
+</svg>
