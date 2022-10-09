@@ -107,3 +107,7 @@ iframe {
 	width: 100%;
 	aspect-ratio: 16/9;
 }
+
+.footnote-ref, .footnote-back {
+	text-decoration: none;
+}
