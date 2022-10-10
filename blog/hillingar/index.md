@@ -4,37 +4,41 @@ date: "2022-08-27 00:00:00"
 ---
 # Hillingar
 
-> An arctic mirage [^0]
-
-[^0]: [W. H. Lehn, ‘The Novaya Zemlya effect: An arctic mirage’, J. Opt. Soc. Am., JOSA, vol. 69, no. 5, pp. 776–781, May 1979, doi: 10.1364/JOSA.69.000776](https://home.cc.umanitoba.ca/~lehn/_Papers_for_Download/NZ79.pdf).
+> An arctic mirage^[<a href="https://home.cc.umanitoba.ca/~lehn/_Papers_for_Download/NZ79.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> W. H. Lehn, ‘The Novaya Zemlya effect: An arctic mirage’, J. Opt. Soc. Am., JOSA, vol. 69, no. 5, pp. 776–781, May 1979, doi: 10.1364/JOSA.69.000776.]
 
 As part of my masters thesis I've been hosting an authoritative DNS server at `ns1.gibbr.org`.
-And as part of my masters thesis procrastination, I've been running it on a NixOS [^1] machine.
-Deploying a DNS server using NixOS is as simple as:
+More can be read in the dissertation^[[MPhil dissertation section 2.2 Internet Architecture](../../resources/mphil-diss.pdf#sec-internet-arch)], but DNS is one of the fundamental building blocks of the modern Internet.
+And as part of my masters thesis procrastination, I've been running it on a NixOS machine.
+Using NixOS, deploying a DNS server is as simple as:
 ```nix
-services.bind = {
-  enable = true;
-  zones."gibbr.org" = {
-    master = true;
-    file = "gibbr.org.zone";
+{
+  services.bind = {
+    enable = true;
+    zones."gibbr.org" = {
+      master = true;
+      file = "gibbr.org.zone";
+    };
   };
-};
+}
 ```
 
-[^1]: [nixos.org](https://nixos.org)
+Which we can then query with
+```sh
+$ dig gibbr.org @ns1.gibbr.org +short
+45.77.205.198
+```
+
+Setting up a glue record with our registrar pointing `ns1.gibbr.org` to the IP address of our DNS-hosting machine allows anyone to use our authoritative server via their resolver.
 
 As you might notice, however, this is running the venerable bind written in C.
-Instead, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution [^2].
+As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution^[<a href="https://anil.recoil.org/papers/2007-eurosys-melange.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> A. Madhavapeddy, A. Ho, T. Deegan, D. Scott, and R. Sohan, ‘Melange: Creating a “Functional” Internet’, p. 14.].
 One such language is OCaml.
 
-[^2]: https://anil.recoil.org/papers/2007-eurosys-melange.pdf
 
-The MirageOS project is a deployment method for these OCaml programs [^3].
+The MirageOS project is a deployment method for these OCaml programs^[<a href="https://anil.recoil.org/papers/2013-asplos-mirage.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> A. Madhavapeddy et al., ‘Unikernels: library operating systems for the cloud’, SIGARCH Comput. Archit. News, vol. 41, no. 1, pp. 461–472, Mar. 2013, doi: 10.1145/2490301.2451167.].
 Instead of running them as a traditional Unix process, we instead create a specialised 'unikernel' operating system to run the application which allows dead code elimination improving security with smaller attack surfaces, and improved efficiency.
 
-[^3]: https://anil.recoil.org/papers/2013-asplos-mirage.pdf
-
-However, to deploy a Mirage unikernel on NixOS one has to use the imperative deployment methodologies native to the OCaml ecosystem with tools such as `opam` and `dune`, eliminating the benefit of reproducible systems that Nix gives us.
+However, to deploy a Mirage unikernel on NixOS one has to use the imperative deployment methodologies native to the OCaml ecosystem, eliminating the benefit of reproducible systems that Nix gives us.
 This blog post will explore how we enabled reproducible deployments of Mirage unikernels with Nix.
 
 # Nix
@@ -42,9 +46,47 @@ This blog post will explore how we enabled reproducible deployments of Mirage un
 At this point the curious reader might be wondering, what on earth is 'NixOS'.
 To understand NixOS, we first have to understand the deployment system it was build on: Nix.
 
-![](./nix-snowflake.svg){width=60% min-width=5cm}
+![ ^[Credits to Tim Cuthbertson] ](./nix-snowflake.svg){width=60% min-width=5cm}
 
-Nix was created as a deployment system to 
+Nix was created as a deployment system to manage 
+
+
+
+Nix store
+
+
+
+Nix derivation:
+```nix
+{ stdenv }:
+
+stdenv.mkDerivation {
+  name = "hello";
+  src = self;
+  buildPhase = "gcc -o hello ./hello.c";
+  installPhase = ''
+    mkdir -p $out/bin
+    install -t $out/bin hello"
+  '';
+};
+```
+
+Which will create `.drv` JSON-like file descripting how to build a derivation with inputs and deps
+
+
+build system
+Nix can be thought of as a coarse grained build system
+
+
+
+
+https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf A. Mokhov, N. Mitchell, and S. P. Jones, ‘Build systems à la carte: Theory and practice’, Journal of Functional Programming, vol. 30, ed 2020, doi: 10.1017/S0956796820000088.
+
+https://edolstra.github.io/pubs/nspfssd-lisa2004-final.pdf E. Dolstra, M. de Jonge, and E. Visser, ‘Nix: A Safe and Policy-Free System for Software Deployment’, p. 14, 2004.
+
+https://edolstra.github.io/pubs/nixos-jfp-final.pdf E. Dolstra, ‘NixOS: A Purely Functional Linux Distribution’, 2010.
+
+
 
 
 
@@ -56,9 +98,19 @@ Even the compiler, being code itself, is a dependency.
 Nix, by default, gives us sandboxes builds in isolation so all dependencies - implicit or explicit - are captured, to ensure reproducibility.
 
 
+
+
+
+After speaking to Jules I realised next is actually a language, next packages is a package repository created using the next language, and there is a package and the command line tool is used as a package manager. Nix SOS is a operating system built with the same principles
+
+
+
+
 // Nix tech details to build a vocabulary
 
 Nix
+
+
 
 DSL
 
@@ -113,6 +165,8 @@ binary cache for sharing build results
 #### NixOS
 
 On top of this is build NixOS - an OS that uses the Nix language to manage the system configuration.
+
+^[[nixos.org](https://nixos.org)]
 
 That's really neat because traditionally this is just done through like random command line things and maybe you do something and forget how to do it and you can't repeat it for another machine easily or even, just like using someone else's software.
 
@@ -185,15 +239,17 @@ More detail can be read at a series of blog posts by Eelco on the topic [^7].
 
 
 
+
 ### Deploying unikernels
 
 Why couldn't we just write a NixOS module to deploy a unikernel?
 Well, first we need to support building unikernels with Nix.
 This blog post will explore how to do that to provide easy deployability of Mirage unikernels.
 
+
 ### MirageOS
 
-![](./mirage.svg){width=50% min-width=5cm}
+![ ^[Thanks to Takayuki Imada] ](./mirage.svg){width=50% min-width=5cm}
 
 
 // what?
@@ -289,6 +345,12 @@ NP hard problem?
 
 
 There is an `opam-nix` project which ports opam projects to Nix.
+(
+Opam2nix
+Depends on binary of itself at build time: not very Nixy
+Not as minimal - (LOC stats) probably a function of the `nix` DSL's suitability in creating packages/derivations
+)
+
 But it doesn't have the support for what we need.
 The Mirage unikernels quite often need to be cross-compiled: compiled to run on a machine other than the machine you're building it on.
 A target they use is solo5, which isn't a different mircoarchitecture, but it uses a difrert GLIBC which requires cross compilation.
@@ -374,7 +436,8 @@ https://hannes.robur.coop/Posts/VMM
 
 
 
-thanks to:
+##### Thanks To
+
 - Lucas for OCaml ecosystem
 - Balsoft for getting me to speed with the `opam-nix` project and working with me on the opam monorepo workflow integration
 - Anil for proposing the project
@@ -383,11 +446,9 @@ thanks to:
 
 This worked was completed as part of an internship with Tarides. A copy of this blog post can be found on Tarides website.
 
----
 
-Opam2nix
-Depends on binary of itself at build time: not very Nixy
-Not as minimal - (LOC stats) probably a function of the `nix` DSL's suitability in creating packages/derivations
 
-After speaking to Jules I realised next is actually a language, next packages is a package repository created using the next language, and there is a package and the command line tool is used as a package manager. Nix SOS is a operating system built with the same principles
-Nix is teaming Unix with functional programming bracket reference tweak blog post bracket. 
+#### Further Reading
+
+In addition to the footnotes:
+- 
