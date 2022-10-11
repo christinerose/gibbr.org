@@ -1,4 +1,4 @@
-MARKDOWN = pandoc --from markdown+auto_identifiers -s includes.yaml --lua-filter=anchor-links.lua
+MARKDOWN = pandoc --from markdown+auto_identifiers -s includes.yaml --lua-filter=anchor-links.lua --citeproc
 MD_FILES = $(shell find . -type f -name '*.md' | grep -v README.md)
 RSS_FILE = $(shell find blog/*/ -type f -name 'index.md')
 HTML_FILES = $(patsubst %.md,%.html,$(MD_FILES))
