@@ -131,13 +131,13 @@ style="width:70.0%" alt="" />
 <figcaption aria-hidden="true"><a href="#fn1" class="footnote-ref"
 id="fnref1" role="doc-noteref"><sup>1</sup></a></figcaption>
 </figure>
-<p>As part of my masters thesis I’ve been hosting an authoritative DNS
+<p>As part of my master’s thesis, I’ve been hosting an authoritative DNS
 server at <code>ns1.gibbr.org</code>. More can be read in the
 dissertation<a href="#fn2" class="footnote-ref" id="fnref2"
 role="doc-noteref"><sup>2</sup></a>, but DNS is one of the fundamental
-building blocks of the modern Internet. And as part of my masters thesis
-procrastination, I’ve been running it on a NixOS machine. Using NixOS,
-deploying a DNS server is as simple as:</p>
+building blocks of the modern Internet. And as part of my master’s
+thesis procrastination, I’ve been running it on a NixOS machine. Using
+NixOS, deploying a DNS server is as simple as:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode nix"><code class="sourceCode nix"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">services</span>.<span class="va">bind</span> <span class="op">=</span> <span class="op">{</span></span>
@@ -170,8 +170,8 @@ href="#ref-madhavapeddyUnikernelsLibraryOperating2013a"
 role="doc-biblioref">[3]</a></span>. Instead of running them as a
 traditional Unix process, we instead create a specialised ‘unikernel’
 operating system to run the application, which allows dead code
-elimination improving security with smaller attack surfaces, and
-improved efficiency.</p>
+elimination improving security with smaller attack surfaces and improved
+efficiency.</p>
 <p>However, to deploy a Mirage unikernel with NixOS one has to use the
 imperative deployment methodologies native to the OCaml ecosystem,
 eliminating the benefit of reproducible systems that Nix gives us. This
@@ -186,8 +186,8 @@ alt="Nix snowflake" />
 class="footnote-ref" id="fnref3"
 role="doc-noteref"><sup>3</sup></a></figcaption>
 </figure>
-<p>At this point the curious reader might be wondering, what on earth is
-‘Nix’?</p>
+<p>At this point, the curious reader might be wondering, what on earth
+is ‘Nix’?</p>
 <p>Nix is a deployment system that uses cryptographic hashes to compute
 unique paths for components (i.e. a dependency) which are stored in a
 read-only directory, the Nix store, at
@@ -199,15 +199,15 @@ multiple user environments<span class="citation"
 data-cites="dolstraNixSafePolicyFree2004a"><a
 href="#ref-dolstraNixSafePolicyFree2004a"
 role="doc-biblioref">[4]</a></span>.</p>
-<p>Nix uses a declarative domain specific language (DSL), also called
+<p>Nix uses a declarative domain-specific language (DSL), also called
 ‘Nix’, to build and configure software. The snippet used to deploy the
 DNS server is in fact a Nix expression. This example doesn’t demonstrate
-it but Nix is turing complete, being inspired by Haskell. Nix does not,
+it but Nix is Turing complete, being inspired by Haskell. Nix does not,
 however, have a type system.</p>
 <p>We used the DSL to write derivations for software, which describes
-how to build said software with inputs components and a build script.
+how to build said software with input components and a build script.
 This Nix expression is then ‘instantiated’ to create ‘store derivations’
-(<code>.drv</code> files), which is the low level representation of how
+(<code>.drv</code> files), which is the low-level representation of how
 to build a single component. This store derivation is ‘realised’ into a
 built artefact, hereafter referred to as ‘building’.</p>
 <p>Possibly the simplest Nix derivation uses bash to create a single
@@ -222,7 +222,7 @@ class="sourceCode nix"><code class="sourceCode nix"><span id="cb3-1"><a href="#c
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="va">args</span> <span class="op">=</span> <span class="op">[</span> <span class="st">&quot;-c&quot;</span> <span class="st">&#39;&#39;echo &quot;Hello, World!&quot; &gt; $out&#39;&#39;</span> <span class="op">];</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Note that <code>derivation</code> is a function that we’re calling
-with one argument that is a set of attributes.</p>
+with one argument which is a set of attributes.</p>
 <p>We can instantiate this Nix derivation expression to create a store
 derivation:</p>
 <pre><code>$ nix-instantiate default.nix
@@ -264,7 +264,7 @@ this derivation will be built:
 building &#39;/nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv&#39;...
 /nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello</code></pre>
 <p>Nix realisations (hereafter referred to as builds) are done in
-isolation to ensure reproducibility. Projects often reply on interacting
+isolation to ensure reproducibility. Projects often rely on interacting
 with package managers to make sure all dependencies are available, and
 may implicitly rely on system configuration at build time. To prevent
 this, every Nix derivation is built in isolation, without network access
@@ -278,7 +278,7 @@ data-cites="dolstraNixSafePolicyFree2004a"><a
 href="#ref-dolstraNixSafePolicyFree2004a"
 role="doc-biblioref">[4]</a></span>.</p>
 </blockquote>
-<!-- There's analogies to functional program verses imperative programming, but applied to system management and software builds/deployment. -->
+<!-- There are analogies to functional program versus imperative programming, but applied to system management and software builds/deployment. -->
 <h4 id="nixpkgs"><a href="#nixpkgs" class="anchor"
 aria-hidden="true">Nixpkgs<a href="#fn4" class="footnote-ref"
 id="fnref4" role="doc-noteref"><sup>4</sup></a></a></h4>
@@ -291,16 +291,16 @@ derivation. We can use packages from Nixpkgs as inputs to a Nix
 derivation, as we’ve done with <code>bash</code>.</p>
 <p>There is also a command line package manager installing packages from
 Nixpkgs, which is why people often refer to Nix as a package manager.
-While Nix, and Therefor nix package management, is primarily
+While Nix, and Therefore nix package management, is primarily
 source-based – since derivations describe how to build software from
 source – binary deployment is an optimization of this. Since packages
-are build in isolation and entirely determined by their inputs, binaries
+are built in isolation and entirely determined by their inputs, binaries
 can be transparently deployed by downloading them from a remote server
 instead of building the derivation locally.</p>
 <h4 id="nixos"><a href="#nixos" class="anchor"
 aria-hidden="true">NixOS</a></h4>
 <p>NixOS<a href="#fn5" class="footnote-ref" id="fnref5"
-role="doc-noteref"><sup>5</sup></a> is a linux distribution built with
+role="doc-noteref"><sup>5</sup></a> is a Linux distribution built with
 Nix from a modular, purely functional specification<span
 class="citation" data-cites="dolstraNixOSPurelyFunctional2010"><a
 href="#ref-dolstraNixOSPurelyFunctional2010"
@@ -308,15 +308,15 @@ role="doc-biblioref">[5]</a></span>. It has no traditional filesystem
 hierarchy (FSH) – like <code>/bin</code>, <code>/lib</code>,
 <code>/usr</code> – but instead stores all components in
 <code>/nix/store</code>. The configuration of the system is managed by
-Nix, with configuration files being build from modular Nix expressions.
+Nix, with configuration files being built from modular Nix expressions.
 NixOS modules are just that – small bits of configuration written in Nix
 that can be composed to build a full NixOS system. For example, the
-expression used to deploy a DNS server is a NixOS module. The system
+expression used to deploy a DNS server is a NixOS module. The system is
 built from this configuration like a Nix derivation is built.</p>
-<p>NixOS to minimises global mutable state that – without knowing it –
-you might reply on being set up in a certain way. For example you might
-follow some instructions to run a serious of shell commands and edit
-some files in a certain way to get a piece of software working, but then
+<p>NixOS minimises global mutable state that – without knowing it – you
+might rely on being set up in a certain way. For example, you might
+follow some instructions to run a series of shell commands and edit some
+files in a certain way to get a piece of software working, but then
 forgot and fail to document the process. Nix forces you to encode this
 in a reproducible way, which is extremely useful for replicating
 software configurations and deployments, aiming to solve the ‘It works
@@ -329,17 +329,17 @@ the cons for me.</p>
 class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.
 This makes it trivial to reproduce my system – a collection of various
 configurations, services, and hacks – on another machine. I use it to
-manager servers, workstations, and more. Compared to my previous
-approach of maintaining a git repository of dotfiles, this is much more
-modular, reproducible, and flexible. And if you want to deploy some new
-piece of software or service, it can be as easy as changing a single
-line in your system configuration.</p>
+manage servers, workstations, and more. Compared to my previous approach
+of maintaining a git repository of dotfiles, this is much more modular,
+reproducible, and flexible. And if you want to deploy some new piece of
+software or service, it can be as easy as changing a single line in your
+system configuration.</p>
 <p>Despite these advantages, the reason I switched to NixOS from Arch
 Linux was simpler; NixOS allows rollbacks. As Arch packages
 bleeding-edge software with rolling updates it would frequently happen
 that some new version of something I was using would break due to a bug.
 Arch has one global coherent package set, like Nixpkgs, except you can
-use multiple instance of nixpkgs (i.e. channels) at once as the Nix
+use multiple instances of Nixpkgs (i.e. channels) at once as the Nix
 store allows multiple versions of a dependency to be stored at once,
 whereas Arch just doesn’t support partial upgrades. So the options were
 to wait for the bug to be fixed, or manually rollback all the updated
@@ -349,10 +349,10 @@ tools on top of pacman to improve this, the straw that broke the caml’s
 back was when I was updating the Linux kernel, something went wrong, and
 the machine crashed. I had to reinstall the kernel from a live USB to
 fix the issue, which is not something you want to have to do to your
-main workstation when you may have a pressuring concerns like an
-upcoming deadline. Nix’s atomic upgrades mean this wouldn’t have been an
-issue in the first place. And every new system configuration creates a
-GRUB entry, so you can boot previous systems from your UEFI/BIOS.</p>
+main workstation when you may have pressuring concerns like an upcoming
+deadline. Nix’s atomic upgrades mean this wouldn’t have been an issue in
+the first place. And every new system configuration creates a GRUB
+entry, so you can boot previous systems from your UEFI/BIOS.</p>
 <p>The blog post ‘Nix – taming Unix with functional programming’ by
 Valentin Gagarin at Tweag<a href="#fn7" class="footnote-ref" id="fnref7"
 role="doc-noteref"><sup>7</sup></a> gives an interesting summary of Nix
@@ -363,12 +363,12 @@ style="width:50.0%" /></p>
 <h4 id="flakes"><a href="#flakes" class="anchor"
 aria-hidden="true">Flakes</a></h4>
 <p>We also use Nix flakes for this project. Without going into too much
-depth, for our purposes they enable hermetic evaluation of nix
-expressions, and provide a standard way to compose Nix projects.
+depth, for our purposes, they enable hermetic evaluation of nix
+expressions and provide a standard way to compose Nix projects.
 <!-- One of the reasons for improving Nix project composing is that there's some discussion around the sustainability of the Nixpkgs monorepo workflow^[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741]. -->
 Integrated with flakes there is also a new <code>nix</code> command
 aimed at improving the UI of Nix. More detail about flakes can be read
-at a series of blog posts by Eelco on the topic<a href="#fn8"
+in a series of blog posts by Eelco on the topic<a href="#fn8"
 class="footnote-ref" id="fnref8"
 role="doc-noteref"><sup>8</sup></a>.</p>
 <h2 id="mirageos"><a href="#mirageos" class="anchor"
@@ -674,7 +674,7 @@ href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 href="../../resources/mphil-diss.pdf#sec-internet-arch">’Spatial Name
 System’section 2.2 Internet Architecture</a><a href="#fnref2"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>As ‘nix’ means snow in latin. Credits
+<li id="fn3" role="doc-endnote"><p>As ‘nix’ means snow in Latin. Credits
 to Tim Cuthbertson.<a href="#fnref3" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn4" role="doc-endnote"><p> <a
