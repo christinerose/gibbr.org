@@ -209,11 +209,9 @@ how to build said software with inputs components and a build script.
 This Nix expression is then ‘instantiated’ to create ‘store derivations’
 (<code>.drv</code> files), which is the low level representation of how
 to build a single component. This store derivation is ‘realised’ into a
-built artefact. Note that most nix tooling does these two steps at
-once.</p>
+built artefact, hereafter referred to as ‘building’.</p>
 <p>Possibly the simplest Nix derivation uses bash to create a single
-file containing `Hello, World!’<a href="#fn4" class="footnote-ref"
-id="fnref4" role="doc-noteref"><sup>4</sup></a>:</p>
+file containing <code>Hello, World!</code>:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode nix"><code class="sourceCode nix"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="va">pkgs</span> <span class="op">?</span> <span class="bu">import</span> &lt;nixpkgs&gt; <span class="op">{</span>  <span class="op">}</span> <span class="op">}</span>:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -221,23 +219,20 @@ class="sourceCode nix"><code class="sourceCode nix"><span id="cb3-1"><a href="#c
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">name</span> <span class="op">=</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">system</span> <span class="op">=</span> <span class="bu">builtins</span>.currentSystem<span class="op">;</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">builder</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">${</span>nixpkgs.bash<span class="sc">}</span><span class="st">/bin/bash&quot;</span><span class="op">;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="va">args</span> <span class="op">=</span> <span class="op">[</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;-c&quot;</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;&#39;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="st">    echo &quot;Hello World!&quot; &gt; $out</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &#39;&#39;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">];</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>Which we can instantiate this expression to create a store
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="va">args</span> <span class="op">=</span> <span class="op">[</span> <span class="st">&quot;-c&quot;</span> <span class="st">&#39;&#39;echo &quot;Hello, World!&quot; &gt; $out&#39;&#39;</span> <span class="op">];</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Note that <code>derivation</code> is a function that we’re calling
+with one argument that is a set of attributes.</p>
+<p>We can instantiate this Nix derivation expression to create a store
 derivation:</p>
 <pre><code>$ nix-instantiate default.nix
-/nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
-$ cat /nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
+/nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv
+$ nix show-derivation /nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv
 {
-  &quot;/nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv&quot;: {
+  &quot;/nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv&quot;: {
     &quot;outputs&quot;: {
       &quot;out&quot;: {
-        &quot;path&quot;: &quot;/nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello&quot;
+        &quot;path&quot;: &quot;/nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello&quot;
       }
     },
     &quot;inputSrcs&quot;: [],
@@ -248,32 +243,33 @@ $ cat /nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
     },
     &quot;system&quot;: &quot;x86_64-linux&quot;,
     &quot;builder&quot;: &quot;/nix/store/2r9n7fz1rxq088j6mi5s7izxdria6d5f-bash-5.1-p16/bin/bash&quot;,
-    &quot;args&quot;: [
-      &quot;-c&quot;,
-      &quot;echo \&quot;Hello World!\&quot; &gt; $out\n&quot;
-    ],
+    &quot;args&quot;: [ &quot;-c&quot;, &quot;echo \&quot;Hello, World!\&quot; &gt; $out&quot; ],
     &quot;env&quot;: {
       &quot;builder&quot;: &quot;/nix/store/2r9n7fz1rxq088j6mi5s7izxdria6d5f-bash-5.1-p16/bin/bash&quot;,
       &quot;name&quot;: &quot;hello&quot;,
-      &quot;out&quot;: &quot;/nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello&quot;,
+      &quot;out&quot;: &quot;/nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello&quot;,
       &quot;system&quot;: &quot;x86_64-linux&quot;
     }
   }
 }</code></pre>
-<p>And realise the store derivation to a build artefact:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> nix-store <span class="at">--realise</span> /nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat /nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> World!</span></code></pre></div>
-<p>Nix builds are also done in isolation to ensure reproducibility.
-Projects often reply on interacting with system or language package
-managers to make sure all build and runtime dependencies are available.
-Projects may implicitly rely on system configuration at build or
-runtime. Even using a different compiler version may likely result in a
-different binary. To prevent this, every Nix derivation is built in
-isolation, with only other Nix derivations as inputs. A build can’t
-access things outside in the wider file system or have network access.
-From the original Nix paper:</p>
+<p>And build the store derivation:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> nix-store <span class="at">--realise</span> /nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat /nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello,</span> World!</span></code></pre></div>
+<p>Most nix tooling does these two steps together:</p>
+<pre><code>nix-build default.nix
+this derivation will be built:
+  /nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
+building &#39;/nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv&#39;...
+/nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello</code></pre>
+<p>Nix realisations (hereafter referred to as builds) are done in
+isolation to ensure reproducibility. Projects often reply on interacting
+with package managers to make sure all dependencies are available, and
+may implicitly rely on system configuration at build time. To prevent
+this, every Nix derivation is built in isolation, without network access
+or access to the global file system, with only other Nix derivations as
+inputs.</p>
 <blockquote>
 <p>The name Nix is derived from the Dutch word niks, meaning nothing;
 build actions do not see anything that has not been explicitly declared
@@ -282,104 +278,98 @@ data-cites="dolstraNixSafePolicyFree2004a"><a
 href="#ref-dolstraNixSafePolicyFree2004a"
 role="doc-biblioref">[4]</a></span>.</p>
 </blockquote>
-<!-- [@nix]: <a href="https://edolstra.github.io/pubs/nspfssd-lisa2004-final.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> E. Dolstra, M. de Jonge, and E. Visser, ‘Nix: A Safe and Policy-Free System for Software Deployment’, p. 14, 2004. -->
 <!-- There's analogies to functional program verses imperative programming, but applied to system management and software builds/deployment. -->
-<p>An example of</p>
-<p>An example of a nix derivation for this website that uses a library
-function <code>mkDerivation</code> where the <code>buildPhase</code> is
-implicitly <code>make</code> is:</p>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode nix"><code class="sourceCode nix"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="va">pkgs</span> <span class="op">?</span> <span class="bu">import</span> &lt;nixpkgs&gt; <span class="op">{</span>  <span class="op">}</span> <span class="op">}</span>:</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>pkgs.stdenv.mkDerivation <span class="op">{</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">name</span> <span class="op">=</span> <span class="st">&quot;gibbr.org&quot;</span><span class="op">;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">src</span> <span class="op">=</span> <span class="ss">./.</span><span class="op">;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="va">buildInputs</span> <span class="op">=</span> <span class="kw">with</span> pkgs<span class="op">;</span> <span class="op">[</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    rsync</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    pandoc</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">];</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="va">installPhase</span> <span class="op">=</span> <span class="st">&#39;&#39;</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="st">    mkdir -p $out</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">    rsync -a --exclude &#39;*.md&#39; --exclude &#39;result&#39; . $out</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">  &#39;&#39;</span><span class="op">;</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>Which could be build with</p>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gibbr.org</span> $ nix build</span></code></pre></div>
 <h4 id="nixpkgs"><a href="#nixpkgs" class="anchor"
-aria-hidden="true">Nixpkgs</a></h4>
-<p>With the Nix language a huge number of derivations have been created
-to package software with Nix.</p>
-<p>Nixpkgs</p>
-<p>big monorepo<a href="#fn5" class="footnote-ref" id="fnref5"
-role="doc-noteref"><sup>5</sup></a></p>
-<p>source based, but binary cache for sharing build results</p>
+aria-hidden="true">Nixpkgs<a href="#fn4" class="footnote-ref"
+id="fnref4" role="doc-noteref"><sup>4</sup></a></a></h4>
+<p>You may have noticed a reference to <code>nixpkgs</code> in the above
+derivation. As every input to a Nix derivation also has to be a Nix
+derivation, one can imagine the tedium involved in creating a Nix
+derivation for every dependency of your project. However, Nixpkgs is a
+large repository of software packaged in Nix, where a package is a Nix
+derivation. We can use packages from Nixpkgs as inputs to a Nix
+derivation, as we’ve done with <code>bash</code>.</p>
+<p>There is also a command line package manager installing packages from
+Nixpkgs, which is why people often refer to Nix as a package manager.
+While Nix, and Therefor nix package management, is primarily
+source-based – since derivations describe how to build software from
+source – binary deployment is an optimization of this. Since packages
+are build in isolation and entirely determined by their inputs, binaries
+can be transparently deployed by downloading them from a remote server
+instead of building the derivation locally.</p>
 <h4 id="nixos"><a href="#nixos" class="anchor"
 aria-hidden="true">NixOS</a></h4>
-<p>Nix tries to minimise global mutable state that without knowing it
-you might reply on being set up in a certain way. The benefit you get
-from Nix is that you’re forced to encode this in a reproducibile way,
-but that can also be frustrating at times because it can make it harder
-to get off the ground. pinning all inputs, in the absence of any
-non-determinism at build time guaranteing reproducibility.</p>
-<p>https://edolstra.github.io/pubs/nixos-jfp-final.pdf E. Dolstra,
-‘NixOS: A Purely Functional Linux Distribution’, 2010.</p>
-<p>On top of this is build NixOS - an OS that uses the Nix language to
-manage the system configuration.</p>
-<p><a href="#fn6" class="footnote-ref" id="fnref6"
-role="doc-noteref"><sup>6</sup></a></p>
-<p>That’s really neat because traditionally this is just done through
-like random command line things and maybe you do something and forget
-how to do it and you can’t repeat it for another machine easily or even,
-just like using someone else’s software.</p>
-<p>If you want to deploy some software it can be as easy as changing a
+<p>NixOS<a href="#fn5" class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a> is a linux distribution built with
+Nix from a modular, purely functional specification<span
+class="citation" data-cites="dolstraNixOSPurelyFunctional2010"><a
+href="#ref-dolstraNixOSPurelyFunctional2010"
+role="doc-biblioref">[5]</a></span>. It has no traditional filesystem
+hierarchy (FSH) – like <code>/bin</code>, <code>/lib</code>,
+<code>/usr</code> – but instead stores all components in
+<code>/nix/store</code>. The configuration of the system is managed by
+Nix, with configuration files being build from modular Nix expressions.
+NixOS modules are just that – small bits of configuration written in Nix
+that can be composed to build a full NixOS system. For example, the
+expression used to deploy a DNS server is a NixOS module. The system
+built from this configuration like a Nix derivation is built.</p>
+<p>NixOS to minimises global mutable state that – without knowing it –
+you might reply on being set up in a certain way. For example you might
+follow some instructions to run a serious of shell commands and edit
+some files in a certain way to get a piece of software working, but then
+forgot and fail to document the process. Nix forces you to encode this
+in a reproducible way, which is extremely useful for replicating
+software configurations and deployments, aiming to solve the ‘It works
+on my machine’ problem. Docker is often used to fix this configuration
+problem, but nix aims to be more reproducible (restricting network
+access). This can be frustrating at times because it can make it harder
+to get off the ground with a project, but I’ve found the benefits outway
+the cons for me.</p>
+<p>My own NixOS configuration is publicly available<a href="#fn6"
+class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.
+This makes it trivial to reproduce my system – a collection of various
+configurations, services, and hacks – on another machine. I use it to
+manager servers, workstations, and more. Compared to my previous
+approach of maintaining a git repository of dotfiles, this is much more
+modular, reproducible, and flexible. And if you want to deploy some new
+piece of software or service, it can be as easy as changing a single
 line in your system configuration.</p>
-<p>The reason I actually switched was because Arch kept breaking on my.
-(no partial upgrades and manual rollbacks from pacman cache)</p>
-<p>But the tipping point was I was upgrading my laptop and it crashed or
-shut down or lost some powers or something and then the kernel was like,
-it was upgrading the kernel and that’s like the most basic part of the
-machine. I that crashed during that. So like the kernel was malfarmed so
-I had to reinstall the kernel which is just not something you ought to
-do when you have a deadline or something so that like atomic upgrades
-and rollback rollback ability ability to evacuation systems.</p>
-<p>GRUB stuff</p>
-<p>source based - w/o binary cache it’s like gentoo</p>
-<p>Instead of trying to describe Nix from scratch I’ll instead point you
-in the direction of the excellent blog post ‘Nix – taming Unix with
-functional programming’ by Valentin Gagarin at Tweag <a href="#fn7"
-class="footnote-ref" id="fnref7"
-role="doc-noteref"><sup>7</sup></a>.</p>
-<p>Nix wra</p>
-<p>If any of the detivtion’s inputs change, the hash will change, and
-the path will change. So this.captures deep traces of inputs (as each
-input is also a deticaiton with a hash base on its inputs).</p>
-<p>Using Nix and Nixpkgs, this approach has been extended to manage an
-entire Linux operating system. Nixos System configurations</p>
-<p>While Mirage was part of my masters thesis, Nix was part of my
-masters thesis procrastination.</p>
-<p>Nix is a declarative, functional, language for describing a system
-configuration. reproducible</p>
-<p>It was good supprt for derivations…</p>
-<p>to install a package you write a Nix expression that descibes a
-system with that pakage instaled</p>
-<p>// ecosystem</p>
+<p>Despite these advantages, the reason I switched to NixOS from Arch
+Linux was simpler; NixOS allows rollbacks. As Arch packages
+bleeding-edge software with rolling updates it would frequently happen
+that some new version of something I was using would break due to a bug.
+Arch has one global coherent package set, like Nixpkgs, except you can
+use multiple instance of nixpkgs (i.e. channels) at once as the Nix
+store allows multiple versions of a dependency to be stored at once,
+whereas Arch just doesn’t support partial upgrades. So the options were
+to wait for the bug to be fixed, or manually rollback all the updated
+packages by inspecting the pacman (the Arch package manager) log and
+reinstalling the old versions from the local cache. While there may be
+tools on top of pacman to improve this, the straw that broke the caml’s
+back was when I was updating the Linux kernel, something went wrong, and
+the machine crashed. I had to reinstall the kernel from a live USB to
+fix the issue, which is not something you want to have to do to your
+main workstation when you may have a pressuring concerns like an
+upcoming deadline. Nix’s atomic upgrades mean this wouldn’t have been an
+issue in the first place. And every new system configuration creates a
+GRUB entry, so you can boot previous systems from your UEFI/BIOS.</p>
+<p>The blog post ‘Nix – taming Unix with functional programming’ by
+Valentin Gagarin at Tweag<a href="#fn7" class="footnote-ref" id="fnref7"
+role="doc-noteref"><sup>7</sup></a> gives an interesting summary of Nix
+and NixOS.</p>
 <p>To summarise the parts of the Nix ecosystem that we’ve discussed:</p>
 <p><img src="./nix-stack.svg" data-min-width="5cm"
 style="width:50.0%" /></p>
-<p>other things: store DSL hydra NixOps</p>
-<p>package manager (command line tool)</p>
 <h4 id="flakes"><a href="#flakes" class="anchor"
 aria-hidden="true">Flakes</a></h4>
-<p>// flakes</p>
 <p>We also use Nix flakes for this project. Without going into too much
 depth, for our purposes they enable hermetic evaluation of nix
-expressions and provide a standard way to compose Nix projects. More
-detail can be read at a series of blog posts by Eelco on the topic<a
-href="#fn8" class="footnote-ref" id="fnref8"
+expressions, and provide a standard way to compose Nix projects.
+<!-- One of the reasons for improving Nix project composing is that there's some discussion around the sustainability of the Nixpkgs monorepo workflow^[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741]. -->
+Integrated with flakes there is also a new <code>nix</code> command
+aimed at improving the UI of Nix. More detail about flakes can be read
+at a series of blog posts by Eelco on the topic<a href="#fn8"
+class="footnote-ref" id="fnref8"
 role="doc-noteref"><sup>8</sup></a>.</p>
 <h2 id="mirageos"><a href="#mirageos" class="anchor"
 aria-hidden="true">MirageOS</a></h2>
@@ -441,8 +431,11 @@ directly, often invokes a build system like <code>make</code>. But Nix
 can also be considered a build system too<span class="citation"
 data-cites="mokhovBuildSystemsCarte2018"><a
 href="#ref-mokhovBuildSystemsCarte2018"
-role="doc-biblioref">[5]</a></span>. It takes a build graph and
+role="doc-biblioref">[6]</a></span>. It takes a build graph and
 computes.</p>
+<p>If any of the detivtion’s inputs change, the hash will change, and
+the path will change. So this.captures deep traces of inputs (as each
+input is also a deticaiton with a hash base on its inputs).</p>
 <p>Nix can also be thought as a coarse grained build system</p>
 <p>and low level stuff? [1] E. Dolstra, The purely functional software
 deployment model. S.l.: s.n., 2006. chapter 10</p>
@@ -602,6 +595,8 @@ aria-hidden="true">Further Reading</a></h4>
 <h2 id="in-addition-to-the-footnotes"><a
 href="#in-addition-to-the-footnotes" class="anchor"
 aria-hidden="true">In addition to the footnotes:</a></h2>
+<p>If you spot any errors, or have any questions, please get in touch at
+<a href="mailto:ryan@gibbr.org">ryan@gibbr.org</a>.</p>
 <h4 class="unnumbered" id="references"><a href="#references"
 class="anchor" aria-hidden="true">References</a></h4>
 <div id="refs" class="references csl-bib-body" role="doc-bibliography">
@@ -649,9 +644,15 @@ administration</em>, Nov. 2004, pp. 79–92 [Online]. Available: <a
 href="https://edolstra.github.io/pubs/nspfssd-lisa2004-final.pdf">https://edolstra.github.io/pubs/nspfssd-lisa2004-final.pdf</a>.
 [Accessed: Oct. 11, 2022]</div>
 </div>
+<div id="ref-dolstraNixOSPurelyFunctional2010" class="csl-entry"
+role="doc-biblioentry">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">E.
+Dolstra, <span>“<span>NixOS</span>: <span>A Purely Functional Linux
+Distribution</span>,”</span> 2010. </div>
+</div>
 <div id="ref-mokhovBuildSystemsCarte2018" class="csl-entry"
 role="doc-biblioentry">
-<div class="csl-left-margin">[5] </div><div class="csl-right-inline">A.
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">A.
 Mokhov, N. Mitchell, and S. Peyton Jones, <span>“Build systems à la
 carte,”</span> <em>Proc. ACM Program. Lang.</em>, vol. 2, pp. 1–29, Jul.
 2018, doi: <a
@@ -676,16 +677,16 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3" role="doc-endnote"><p>As ‘nix’ means snow in latin. Credits
 to Tim Cuthbertson.<a href="#fnref3" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p><a
-href="https://scrive.github.io/nix-workshop/04-derivations/04-raw-derivation.html#raw-derivation">Scrive
-Nix Workshop - Raw Derivation</a><a href="#fnref4" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p> <a
+href="https://github.com/nixos/nixpkgs">github.com/nixos/nixpkgs</a> <a
+href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5" role="doc-endnote"><p><a
-href="https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741">https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741</a><a
-href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6" role="doc-endnote"><p><a
-href="https://nixos.org">nixos.org</a><a href="#fnref6"
+href="https://nixos.org">nixos.org</a><a href="#fnref5"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p> <a
+href="https://github.com/RyanGibb/nixos">github.com/RyanGibb/nixos</a>
+<a href="#fnref6" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
 <li id="fn7" role="doc-endnote"><p><a
 href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
 href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>

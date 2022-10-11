@@ -66,10 +66,9 @@ Nix does not, however, have a type system.
 
 We used the DSL to write derivations for software, which describes how to build said software with inputs components and a build script.
 This Nix expression is then 'instantiated' to create 'store derivations' (`.drv` files), which is the low level representation of how to build a single component.
-This store derivation is 'realised' into a built artefact.
-Note that most nix tooling does these two steps at once.
+This store derivation is 'realised' into a built artefact, hereafter referred to as 'building'.
 
-Possibly the simplest Nix derivation uses bash to create a single file containing `Hello, World!'^[[Scrive Nix Workshop - Raw Derivation](https://scrive.github.io/nix-workshop/04-derivations/04-raw-derivation.html#raw-derivation)]:
+Possibly the simplest Nix derivation uses bash to create a single file containing `Hello, World!`:
 ```nix
 { pkgs ? import <nixpkgs> {  } }:
 
@@ -77,25 +76,21 @@ builtins.derivation {
   name = "hello";
   system = builtins.currentSystem;
   builder = "${nixpkgs.bash}/bin/bash";
-  args = [
-    "-c"
-    ''
-    echo "Hello World!" > $out
-    ''
-  ];
+  args = [ "-c" ''echo "Hello, World!" > $out'' ];
 }
 ```
+Note that `derivation` is a function that we're calling with one argument that is a set of attributes.
 
-Which we can instantiate this expression to create a store derivation:
+We can instantiate this Nix derivation expression to create a store derivation:
 ```
 $ nix-instantiate default.nix
-/nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
-$ cat /nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
+/nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv
+$ nix show-derivation /nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv
 {
-  "/nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv": {
+  "/nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv": {
     "outputs": {
       "out": {
-        "path": "/nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello"
+        "path": "/nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello"
       }
     },
     "inputSrcs": [],
@@ -106,167 +101,96 @@ $ cat /nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
     },
     "system": "x86_64-linux",
     "builder": "/nix/store/2r9n7fz1rxq088j6mi5s7izxdria6d5f-bash-5.1-p16/bin/bash",
-    "args": [
-      "-c",
-      "echo \"Hello World!\" > $out\n"
-    ],
+    "args": [ "-c", "echo \"Hello, World!\" > $out" ],
     "env": {
       "builder": "/nix/store/2r9n7fz1rxq088j6mi5s7izxdria6d5f-bash-5.1-p16/bin/bash",
       "name": "hello",
-      "out": "/nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello",
+      "out": "/nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello",
       "system": "x86_64-linux"
     }
   }
 }
 ```
 
-And realise the store derivation to a build artefact:
+And build the store derivation:
 ```sh
-$ nix-store --realise /nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
-/nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello
-$ cat /nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello
-Hello World!
+$ nix-store --realise /nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv
+/nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello
+$ cat /nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello
+Hello, World!
 ```
 
+Most nix tooling does these two steps together:
+```
+nix-build default.nix
+this derivation will be built:
+  /nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv
+building '/nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv'...
+/nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello
+```
 
-
-Nix builds are also done in isolation to ensure reproducibility.
-Projects often reply on interacting with system or language package managers to make sure all build and runtime dependencies are available.
-Projects may implicitly rely on system configuration at build or runtime.
-Even using a different compiler version may likely result in a different binary.
-To prevent this, every Nix derivation is built in isolation, with only other Nix derivations as inputs.
-A build can't access things outside in the wider file system or have network access.
-From the original Nix paper:
+Nix realisations (hereafter referred to as builds) are done in isolation to ensure reproducibility.
+Projects often reply on interacting with package managers to make sure all dependencies are available, and may implicitly rely on system configuration at build time.
+To prevent this, every Nix derivation is built in isolation, without network access or access to the global file system, with only other Nix derivations as inputs.
 
 > The name Nix is derived from the Dutch word niks, meaning nothing; build actions do not see anything that has not been explicitly declared as an input[@dolstraNixSafePolicyFree2004a].
 
-
-
-<!-- [@nix]: <a href="https://edolstra.github.io/pubs/nspfssd-lisa2004-final.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> E. Dolstra, M. de Jonge, and E. Visser, ‘Nix: A Safe and Policy-Free System for Software Deployment’, p. 14, 2004. -->
-
 <!-- There's analogies to functional program verses imperative programming, but applied to system management and software builds/deployment. -->
 
-An example of 
+#### Nixpkgs^[ [github.com/nixos/nixpkgs](https://github.com/nixos/nixpkgs) ]
 
-An example of a nix derivation for this website that uses a library function `mkDerivation` where the `buildPhase` is implicitly `make` is:
-```nix
-{ pkgs ? import <nixpkgs> {  } }:
+You may have noticed a reference to `nixpkgs` in the above derivation.
+As every input to a Nix derivation also has to be a Nix derivation, one can imagine the tedium involved in creating a Nix derivation for every dependency of your project.
+However, Nixpkgs is a large repository of software packaged in Nix, where a package is a Nix derivation.
+We can use packages from Nixpkgs as inputs to a Nix derivation, as we've done with `bash`.
 
-pkgs.stdenv.mkDerivation {
-  name = "gibbr.org";
-
-  src = ./.;
-
-  buildInputs = with pkgs; [
-    rsync
-    pandoc
-  ];
-
-  installPhase = ''
-    mkdir -p $out
-    rsync -a --exclude '*.md' --exclude 'result' . $out
-  '';
-}
-```
-
-Which could be build with
-```bash
-gibbr.org $ nix build
-```
-
-#### Nixpkgs
-
-With the Nix language a huge number of derivations have been created to package software with Nix.
-
-Nixpkgs
-
-big monorepo^[[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741)]
-
-
-source based, but
-binary cache for sharing build results
+There is also a command line package manager installing packages from Nixpkgs, which is why people often refer to Nix as a package manager.
+While Nix, and Therefor nix package management, is primarily source-based -- since derivations describe how to build software from source -- binary deployment is an optimization of this.
+Since packages are build in isolation and entirely determined by their inputs, binaries can be transparently deployed by downloading them from a remote server instead of building the derivation locally.
 
 #### NixOS
 
+NixOS^[[nixos.org](https://nixos.org)] is a linux distribution built with Nix from a modular, purely functional specification[@dolstraNixOSPurelyFunctional2010].
+It has no traditional filesystem hierarchy (FSH) -- like `/bin`, `/lib`, `/usr` -- but instead stores all components in `/nix/store`.
+The configuration of the system is managed by Nix, with configuration files being build from modular Nix expressions.
+NixOS modules are just that -- small bits of configuration written in Nix that can be composed to build a full NixOS system.
+For example, the expression used to deploy a DNS server is a NixOS module.
+The system built from this configuration like a Nix derivation is built.
 
-Nix tries to minimise global mutable state that without knowing it you might reply on being set up in a certain way. The benefit you get from Nix is that you're forced to encode this in a reproducibile way, but that can also be frustrating at times because it can make it harder to get off the ground. pinning all inputs, in the absence of any non-determinism at build time guaranteing reproducibility.
+NixOS to minimises global mutable state that -- without knowing it -- you might reply on being set up in a certain way.
+For example you might follow some instructions to run a serious of shell commands and edit some files in a certain way to get a piece of software working, but then forgot and fail to document the process.
+Nix forces you to encode this in a reproducible way, which is extremely useful for replicating software configurations and deployments, aiming to solve the 'It works on my machine' problem.
+Docker is often used to fix this configuration problem, but nix aims to be more reproducible (restricting network access).
+This can be frustrating at times because it can make it harder to get off the ground with a project, but I've found the benefits outway the cons for me.
 
+My own NixOS configuration is publicly available^[ [github.com/RyanGibb/nixos](https://github.com/RyanGibb/nixos) ].
+This makes it trivial to reproduce my system -- a collection of various configurations, services, and hacks -- on another machine.
+I use it to manager servers, workstations, and more.
+Compared to my previous approach of maintaining a git repository of dotfiles, this is much more modular, reproducible, and flexible.
+And if you want to deploy some new piece of software or service, it can be as easy as changing a single line in your system configuration.
 
+Despite these advantages, the reason I switched to NixOS from Arch Linux was simpler; NixOS allows rollbacks.
+As Arch packages bleeding-edge software with rolling updates it would frequently happen that some new version of something I was using would break due to a bug.
+Arch has one global coherent package set, like Nixpkgs, except you can use multiple instance of nixpkgs (i.e. channels) at once as the Nix store allows multiple versions of a dependency to be stored at once, whereas Arch just doesn't support partial upgrades.
+So the options were to wait for the bug to be fixed, or manually rollback all the updated packages by inspecting the pacman (the Arch package manager) log and reinstalling the old versions from the local cache.
+While there may be tools on top of pacman to improve this, the straw that broke the caml's back was when I was updating the Linux kernel, something went wrong, and the machine crashed.
+I had to reinstall the kernel from a live USB to fix the issue, which is not something you want to have to do to your main workstation when you may have a pressuring concerns like an upcoming deadline.
+Nix's atomic upgrades mean this wouldn't have been an issue in the first place.
+And every new system configuration creates a GRUB entry, so you can boot previous systems from your UEFI/BIOS.
 
-https://edolstra.github.io/pubs/nixos-jfp-final.pdf E. Dolstra, ‘NixOS: A Purely Functional Linux Distribution’, 2010.
-
-
-On top of this is build NixOS - an OS that uses the Nix language to manage the system configuration.
-
-^[[nixos.org](https://nixos.org)]
-
-That's really neat because traditionally this is just done through like random command line things and maybe you do something and forget how to do it and you can't repeat it for another machine easily or even, just like using someone else's software.
-
-If you want to deploy some software it can be as easy as changing a line in your system configuration.
-
-
-
-The reason I actually switched was because Arch kept breaking on my.
-(no partial upgrades and manual rollbacks from pacman cache)
-
-
-But the tipping point was I was upgrading my laptop and it crashed or shut down or lost some powers or something and then the kernel was like, it was upgrading the kernel and that's like the most basic part of the machine. I that crashed during that. So like the kernel was malfarmed so I had to reinstall the kernel which is just not something you ought to do when you have a deadline or something so that like atomic upgrades and rollback rollback ability ability to evacuation systems.
-
-GRUB stuff
-
-
-
-source based
-- w/o binary cache it's like gentoo
-
-
-
-
-Instead of trying to describe Nix from scratch I'll instead point you in the direction of the excellent blog post 'Nix – taming Unix with functional programming' by Valentin Gagarin at Tweag ^[[tweag.io/blog/2022-07-14-taming-unix-with-nix](https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/)].
-
-
-Nix wra
-
-
-If any of the detivtion's inputs change, the hash will change, and the path will change. So this.captures deep traces of inputs (as each input is also a deticaiton with a hash base on its inputs).
-
-Using Nix and Nixpkgs, this approach has been extended to manage an entire Linux operating system.
-Nixos
-System configurations
-
-
-
-While Mirage was part of my masters thesis, Nix was part of my masters thesis procrastination.
-
-Nix is a declarative, functional, language for describing a system configuration.
-reproducible
-
-It was good supprt for derivations... 
-
-to install a package you write a Nix expression that descibes a system with that pakage instaled
-
-// ecosystem
+The blog post 'Nix – taming Unix with functional programming' by Valentin Gagarin at Tweag^[[tweag.io/blog/2022-07-14-taming-unix-with-nix](https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/)] gives an interesting summary of Nix and NixOS.
 
 To summarise the parts of the Nix ecosystem that we've discussed:
 
 ![](./nix-stack.svg){width=50% min-width=5cm}
 
-
-other things:
-store
-DSL
-hydra
-NixOps
-
-package manager (command line tool)
-
 #### Flakes
 
-// flakes
-
 We also use Nix flakes for this project.
-Without going into too much depth, for our purposes they enable hermetic evaluation of nix expressions and provide a standard way to compose Nix projects.
-More detail can be read at a series of blog posts by Eelco on the topic^[[tweag.io/blog/2020-05-25-flakes](https://www.tweag.io/blog/2020-05-25-flakes/)].
+Without going into too much depth, for our purposes they enable hermetic evaluation of nix expressions, and provide a standard way to compose Nix projects.
+<!-- One of the reasons for improving Nix project composing is that there's some discussion around the sustainability of the Nixpkgs monorepo workflow^[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741]. -->
+Integrated with flakes there is also a new `nix` command aimed at improving the UI of Nix.
+More detail about flakes can be read at a series of blog posts by Eelco on the topic^[[tweag.io/blog/2020-05-25-flakes](https://www.tweag.io/blog/2020-05-25-flakes/)].
 
 ## MirageOS
 
@@ -346,6 +270,8 @@ could do version solving in nix
 The build script in a Nix derivation, if it doesn't invoke a compiler directly, often invokes a build system like `make`.
 But Nix can also be considered a build system too[@mokhovBuildSystemsCarte2018].
 It takes a build graph and computes.
+
+If any of the detivtion's inputs change, the hash will change, and the path will change. So this.captures deep traces of inputs (as each input is also a deticaiton with a hash base on its inputs).
 
 Nix can also be thought as a coarse grained build system 
 
@@ -562,5 +488,7 @@ This worked was completed as part of an internship with Tarides. A copy of this 
 
 In addition to the footnotes:
 - 
+
+If you spot any errors, or have any questions, please get in touch at [ryan@gibbr.org](mailto:ryan@gibbr.org).
 
 #### References
