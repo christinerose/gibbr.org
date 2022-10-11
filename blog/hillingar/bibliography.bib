@@ -1,0 +1,92 @@
+
+@inproceedings{dolstraNixSafePolicyFree2004a,
+  title = {Nix: {{A Safe}} and {{Policy-Free System}} for {{Software Deployment}}},
+  shorttitle = {Nix},
+  booktitle = {Proceedings of the 18th {{USENIX}} Conference on {{System}} Administration},
+  author = {Dolstra, Eelco and de Jonge, Merijn and Visser, Eelco},
+  options = {useprefix=true},
+  date = {2004-11-19},
+  series = {{{LISA}} '04},
+  pages = {79--92},
+  publisher = {{USENIX Association}},
+  location = {{USA}},
+  url = {https://edolstra.github.io/pubs/nspfssd-lisa2004-final.pdf},
+  urldate = {2022-10-11},
+  abstract = {Existing systems for software deployment are neither safe nor sufficiently flexible. Primary safety issues are the inability to enforce reliable specification of component dependencies, and the lack of support for multiple versions or variants of a component. This renders deployment operations such as upgrading or deleting components dangerous and unpredictable. A deployment system must also be flexible (i.e., policy-free) enough to support both centralised and local package management, and to allow a variety of mechanisms for transferring components. In this paper we present Nix, a deployment system that addresses these issues through a simple technique of using cryptographic hashes to compute unique paths for component instances.},
+  file = {/home/ryan/library/zotero/storage/AEPKCWV9/Dolstra et al. - 2004 - Nix A Safe and Policy-Free System for Software De.pdf}
+}
+
+@article{lehnNovayaZemlyaEffect1979b,
+  title = {The {{Novaya Zemlya}} Effect: {{An}} Arctic Mirage},
+  shorttitle = {The {{Novaya Zemlya}} Effect},
+  author = {Lehn, W. H.},
+  date = {1979-05-01},
+  journaltitle = {Journal of the Optical Society of America},
+  shortjournal = {J. Opt. Soc. Am.},
+  volume = {69},
+  number = {5},
+  pages = {776},
+  issn = {0030-3941},
+  doi = {10.1364/JOSA.69.000776},
+  url = {https://home.cc.umanitoba.ca/~lehn/_Papers_for_Download/NZ79.pdf},
+  urldate = {2022-10-11},
+  langid = {english},
+  file = {/home/ryan/library/zotero/storage/I46M7MVB/Lehn - 1979 - The Novaya Zemlya effect An arctic mirage.pdf}
+}
+
+@article{madhavapeddyMelangeCreatingFunctional2007a,
+  title = {Melange: Creating a "Functional" Internet},
+  shorttitle = {Melange},
+  author = {Madhavapeddy, Anil and Ho, Alex and Deegan, Tim and Scott, David and Sohan, Ripduman},
+  date = {2007-03-21},
+  journaltitle = {ACM SIGOPS Operating Systems Review},
+  shortjournal = {SIGOPS Oper. Syst. Rev.},
+  volume = {41},
+  number = {3},
+  pages = {101--114},
+  issn = {0163-5980},
+  doi = {10.1145/1272998.1273009},
+  url = {https://anil.recoil.org/papers/2007-eurosys-melange.pdf},
+  urldate = {2022-10-11},
+  abstract = {Most implementations of critical Internet protocols are written in type-unsafe languages such as C or C++ and are regularly vulnerable to serious security and reliability problems. Type-safe languages eliminate many errors but are not used to due to the perceived performance overheads. We combine two techniques to eliminate this performance penalty in a practical fashion: strong static typing and generative meta-programming. Static typing eliminates run-time type information by checking safety at compile-time and minimises dynamic checks. Meta-programming uses a single specification to abstract the low-level code required to transmit and receive packets. Our domain-specific language, MPL, describes Internet packet protocols and compiles into fast, zero-copy code for both parsing and creating these packets. MPL is designed for implementing quirky Internet protocols ranging from the low-level: Ethernet, IPv4, ICMP and TCP; to the complex application-level: SSH, DNS and BGP; and even file-system protocols such as 9P. We report on fully-featured SSH and DNS servers constructed using MPL and our OCaml framework Melange, and measure greater throughput, lower latency, better flexibility and more succinct source code than their C equivalents OpenSSH and BIND. Our quantitative analysis shows that the benefits of MPL-generated code overcomes the additional overheads of automatic garbage collection and dynamic bounds checking. Qualitatively, the flexibility of our approach shows that dramatic optimisations are easily possible.},
+  file = {/home/ryan/library/zotero/storage/LU4NTGVH/Madhavapeddy et al. - 2007 - Melange creating a functional internet.pdf}
+}
+
+@article{madhavapeddyUnikernelsLibraryOperating2013a,
+  title = {Unikernels: Library Operating Systems for the Cloud},
+  shorttitle = {Unikernels},
+  author = {Madhavapeddy, Anil and Mortier, Richard and Rotsos, Charalampos and Scott, David and Singh, Balraj and Gazagnaire, Thomas and Smith, Steven and Hand, Steven and Crowcroft, Jon},
+  date = {2013-03-16},
+  journaltitle = {ACM SIGARCH Computer Architecture News},
+  shortjournal = {SIGARCH Comput. Archit. News},
+  volume = {41},
+  number = {1},
+  pages = {461--472},
+  issn = {0163-5964},
+  doi = {10.1145/2490301.2451167},
+  url = {https://anil.recoil.org/papers/2013-asplos-mirage.pdf},
+  urldate = {2022-10-11},
+  abstract = {We present unikernels, a new approach to deploying cloud services via applications written in high-level source code. Unikernels are single-purpose appliances that are compile-time specialised into standalone kernels, and sealed against modification when deployed to a cloud platform. In return they offer significant reduction in image sizes, improved efficiency and security, and should reduce operational costs. Our Mirage prototype compiles OCaml code into unikernels that run on commodity clouds and offer an order of magnitude reduction in code size without significant performance penalty. The architecture combines static type-safety with a single address-space layout that can be made immutable via a hypervisor extension. Mirage contributes a suite of type-safe protocol libraries, and our results demonstrate that the hypervisor is a platform that overcomes the hardware compatibility issues that have made past library operating systems impractical to deploy in the real-world.},
+  keywords = {functional programming,hypervisor,microkernel},
+  file = {/home/ryan/library/zotero/storage/AZD5NF55/Madhavapeddy et al. - 2013 - Unikernels library operating systems for the clou.pdf}
+}
+
+@article{mokhovBuildSystemsCarte2018,
+  title = {Build Systems à La Carte},
+  author = {Mokhov, Andrey and Mitchell, Neil and Peyton Jones, Simon},
+  date = {2018-07-30},
+  journaltitle = {Proceedings of the ACM on Programming Languages},
+  shortjournal = {Proc. ACM Program. Lang.},
+  volume = {2},
+  pages = {1--29},
+  issn = {2475-1421},
+  doi = {10.1145/3236774},
+  url = {https://dl.acm.org/doi/10.1145/3236774},
+  urldate = {2022-10-11},
+  abstract = {Build systems are awesome, terrifying -- and unloved. They are used by every developer around the world, but are rarely the object of study. In this paper we offer a systematic, and executable, framework for developing and comparing build systems, viewing them as related points in landscape rather than as isolated phenomena. By teasing apart existing build systems, we can recombine their components, allowing us to prototype new build systems with desired properties.},
+  issue = {ICFP},
+  langid = {english},
+  file = {/home/ryan/library/zotero/storage/3N26ND46/Mokhov et al. - 2018 - Build systems à la carte.pdf}
+}
+
+

@@ -1,13 +1,16 @@
 ---
 pagetitle: "Hillingar | gibbr.org"
 date: "2022-10-10 00:00:00"
+bibliography: blog/hillingar/bibliography.bib
+citation-style: blog/hillingar/ieee-with-url.csl
+link-citations: true
 ---
 
 # Hillingar: building Mirage unikernels with Nix
 
 2022-10-10
 
-> An arctic mirage^[<a href="https://home.cc.umanitoba.ca/~lehn/_Papers_for_Download/NZ79.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> W. H. Lehn, ‘The Novaya Zemlya effect: An arctic mirage’, J. Opt. Soc. Am., JOSA, vol. 69, no. 5, pp. 776–781, May 1979, doi: 10.1364/JOSA.69.000776.]
+> An arctic mirage[@lehnNovayaZemlyaEffect1979b]
 
 ![ ^[Generated with [Stable Diffusion](https://stability.ai/blog/stable-diffusion-public-release) and [GIMP](https://www.gimp.org/)] ](./hillingar2-caml.png){width=70% min-width=5cm}
 
@@ -36,11 +39,11 @@ $ dig gibbr.org @ns1.gibbr.org +short
 Setting up a glue record with our registrar pointing `ns1.gibbr.org` to the IP address of our DNS-hosting machine allows anyone to use our authoritative server via their resolver.
 
 As you might notice, however, this is running the venerable bind written in C.
-As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution^[<a href="https://anil.recoil.org/papers/2007-eurosys-melange.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> A. Madhavapeddy, A. Ho, T. Deegan, D. Scott, and R. Sohan, ‘Melange: Creating a “Functional” Internet’, p. 14.].
+As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution[@madhavapeddyMelangeCreatingFunctional2007a].
 One such language is OCaml.
 
-The MirageOS project is a deployment method for these OCaml programs^[<a href="https://anil.recoil.org/papers/2013-asplos-mirage.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> A. Madhavapeddy et al., ‘Unikernels: library operating systems for the cloud’, SIGARCH Comput. Archit. News, vol. 41, no. 1, pp. 461–472, Mar. 2013, doi: 10.1145/2490301.2451167.].
-Instead of running them as a traditional Unix process, we instead create a specialised 'unikernel' operating system to run the application which allows dead code elimination improving security with smaller attack surfaces, and improved efficiency.
+The MirageOS project is a deployment method for these OCaml programs[@madhavapeddyUnikernelsLibraryOperating2013a].
+Instead of running them as a traditional Unix process, we instead create a specialised 'unikernel' operating system to run the application, which allows dead code elimination improving security with smaller attack surfaces, and improved efficiency.
 
 However, to deploy a Mirage unikernel with NixOS one has to use the imperative deployment methodologies native to the OCaml ecosystem, eliminating the benefit of reproducible systems that Nix gives us.
 This blog post will explore how we enabled reproducible deployments of Mirage unikernels with Nix.
@@ -54,7 +57,7 @@ At this point the curious reader might be wondering, what on earth is 'Nix'?
 Nix is a deployment system that uses cryptographic hashes to compute unique paths for components (i.e. a dependency) which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
 <!-- We replace references to a component with this absolute path, or symlink into the nix store for the system path, for example. -->
 This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades and downgrades, and 
-multiple user environments[^nix].
+multiple user environments[@dolstraNixSafePolicyFree2004a].
 
 Nix uses a declarative domain specific language (DSL), also called 'Nix', to build and configure software.
 The snippet used to deploy the DNS server is in fact a Nix expression.
@@ -135,11 +138,11 @@ To prevent this, every Nix derivation is built in isolation, with only other Nix
 A build can't access things outside in the wider file system or have network access.
 From the original Nix paper:
 
-> The name Nix is derived from the Dutch word niks, meaning nothing; build actions do not see anything that has not been explicitly declared as an input[^nix].
+> The name Nix is derived from the Dutch word niks, meaning nothing; build actions do not see anything that has not been explicitly declared as an input[@dolstraNixSafePolicyFree2004a].
 
 
 
-[^nix]: <a href="https://edolstra.github.io/pubs/nspfssd-lisa2004-final.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> E. Dolstra, M. de Jonge, and E. Visser, ‘Nix: A Safe and Policy-Free System for Software Deployment’, p. 14, 2004.
+<!-- [@nix]: <a href="https://edolstra.github.io/pubs/nspfssd-lisa2004-final.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> E. Dolstra, M. de Jonge, and E. Visser, ‘Nix: A Safe and Policy-Free System for Software Deployment’, p. 14, 2004. -->
 
 <!-- There's analogies to functional program verses imperative programming, but applied to system management and software builds/deployment. -->
 
@@ -341,7 +344,7 @@ could do version solving in nix
 
 
 The build script in a Nix derivation, if it doesn't invoke a compiler directly, often invokes a build system like `make`.
-But Nix can also be considered a build system too^[<a href="https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf"><img class="inline" src="../../fonts/external-link.svg"></a> A. Mokhov, N. Mitchell, and S. P. Jones, ‘Build systems à la carte: Theory and practice’, Journal of Functional Programming, vol. 30, ed 2020, doi: 10.1017/S0956796820000088.].
+But Nix can also be considered a build system too[@mokhovBuildSystemsCarte2018].
 It takes a build graph and computes.
 
 Nix can also be thought as a coarse grained build system 
@@ -559,3 +562,5 @@ This worked was completed as part of an internship with Tarides. A copy of this 
 
 In addition to the footnotes:
 - 
+
+#### References
