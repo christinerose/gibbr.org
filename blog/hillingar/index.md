@@ -15,7 +15,7 @@ link-citations: true
 ![ ^[Generated with [Stable Diffusion](https://stability.ai/blog/stable-diffusion-public-release) and [GIMP](https://www.gimp.org/)] ](./hillingar2-caml.png){width=70% min-width=5cm}
 
 As part of my master's thesis, I've been hosting an authoritative DNS server at `ns1.gibbr.org`.
-More can be read in the dissertation^[['Spatial Name System'section 2.2 Internet Architecture](../../resources/mphil-diss.pdf#sec-internet-arch)], but DNS is one of the fundamental building blocks of the modern Internet.
+More can be read in the dissertation^[['Spatial Name System' section 2.2 Internet Architecture](../../resources/mphil-diss.pdf#sec-internet-arch)], but DNS is one of the fundamental building blocks of the modern Internet.
 And as part of my master's thesis procrastination, I've been running it on a NixOS machine.
 Using NixOS, deploying a DNS server is as simple as:
 ```nix
@@ -137,11 +137,11 @@ To prevent this, every Nix derivation is built in isolation, without network acc
 
 <!-- There are analogies to functional program versus imperative programming, but applied to system management and software builds/deployment. -->
 
-#### Nixpkgs^[ [github.com/nixos/nixpkgs](https://github.com/nixos/nixpkgs) ]
+#### Nixpkgs
 
 You may have noticed a reference to `nixpkgs` in the above derivation.
 As every input to a Nix derivation also has to be a Nix derivation, one can imagine the tedium involved in creating a Nix derivation for every dependency of your project.
-However, Nixpkgs is a large repository of software packaged in Nix, where a package is a Nix derivation.
+However, Nixpkgs^[ [github.com/nixos/nixpkgs](https://github.com/nixos/nixpkgs) ] is a large repository of software packaged in Nix, where a package is a Nix derivation.
 We can use packages from Nixpkgs as inputs to a Nix derivation, as we've done with `bash`.
 
 There is also a command line package manager installing packages from Nixpkgs, which is why people often refer to Nix as a package manager.
@@ -194,48 +194,22 @@ More detail about flakes can be read in a series of blog posts by Eelco on the t
 
 ## MirageOS
 
-![ ^[Credits to Takayuki Imada] ](./mirage.svg){width=50% min-width=5cm}
+![ ^[Credits to Takayuki Imada] ](./mirage-logo.svg){width=50% min-width=5cm}
 
+As mentioned, MirageOS is a library operating system that creates unikernels that contains low-level operating system code and high-level application code bundled into one kernel and one address space.
+<!-- security, performance, speed -->
+It was the first such 'unikernel creation framework', but it comes from a long lineage of OS research such as the exokernel library OS architecture.
+You can remove a bunch of dead codes because there's no interface between the application and the open on the operating system.
+Mirage unikernels are written in the typesafe high-level functional programming language OCaml.
+OCaml is a functional programming language, but it's a bit more practical than others (like Haskell) supporting imperative programming too.
 
-// what?
-What on earth is a unikernel I hear you cry?
+![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach[@madhavapeddyUnikernelsLibraryOperating2013a] ](./mirage-diagram.svg){width=50% min-width=5cm}
 
-A unikernel is a operating system kernel that contains low level operating system code and high level application code bundled into one.
-There is no kernel or user space - they are one and the same.
+Mirage was created to run on hypervisors in the cloud, but there is ongoing work towards porting it to run on bare metal for IoT applications.
+<!-- But hw support tricky. -->
 
-Puts all of the code like in one big blob and then it's all secure and safe. And you can remove a bunch of dead codes because there's no interface between the application and the open on the operating system. There's no interface between the application and the operating system has been fine.
+## Deploying Mirage unikernels
 
-#### OCaml
-
-Mirage is written in OCaml.
-
-OCaml is a functional programming language, but it a bit more practical than others (like haskell) supporting imperative programming too.
-
-
-
-
-
-is a small perfor
-
-Mirage was the first 'unikernel' creation framework, but it comes from a long linage of OS OS research such as the library OS nemesis (?)
-
-// why?
-
-
-security, performance, speed
-
-it's quite good for networking or highly networked applications as these tend to be quite performant and security concious.
-
-It was originally created to run on hypervisors in the cloud.
-But there is work towards porting it to run on bare metal for IoT applications.
-But hw support tricky.
-
-
-
-
-
-
-## Deploying unikernels
 
 Why couldn't we just write a NixOS module to deploy a unikernel?
 Well, first we need to support building unikernels with Nix.
@@ -281,7 +255,7 @@ chapter 10
 
 
 
-### Building unikernels
+
 
 
 - due to nix not dealing with well with multiple versions, we need opam’s solver
@@ -292,7 +266,7 @@ chapter 10
 
 
 NixOS modules
-https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix
+<!-- https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix -->
 
 https://nixos.wiki/wiki/NixOS_modules
 
@@ -410,7 +384,7 @@ what are the benefits?:
 
 
 
-### Conclusion
+## Conclusion
 
 Nix and Mirage
 both brining some kind of functional paradigm to OSes
@@ -482,13 +456,15 @@ Please open an issue (or message the #nix slack channel) if you encounter any is
 
 This worked was completed as part of an internship with Tarides. A copy of this blog post can be found on Tarides website.
 
-
-
-#### Further Reading
-
-In addition to the footnotes:
-- 
+---
 
 If you spot any errors, or have any questions, please get in touch at [ryan@gibbr.org](mailto:ryan@gibbr.org).
 
+---
+
 #### References
+
+<div id="refs"></div>
+
+
+<div id="footnotes"></div>

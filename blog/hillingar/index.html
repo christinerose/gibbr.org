@@ -280,15 +280,16 @@ role="doc-biblioref">[4]</a></span>.</p>
 </blockquote>
 <!-- There are analogies to functional program versus imperative programming, but applied to system management and software builds/deployment. -->
 <h4 id="nixpkgs"><a href="#nixpkgs" class="anchor"
-aria-hidden="true">Nixpkgs<a href="#fn4" class="footnote-ref"
-id="fnref4" role="doc-noteref"><sup>4</sup></a></a></h4>
+aria-hidden="true">Nixpkgs</a></h4>
 <p>You may have noticed a reference to <code>nixpkgs</code> in the above
 derivation. As every input to a Nix derivation also has to be a Nix
 derivation, one can imagine the tedium involved in creating a Nix
-derivation for every dependency of your project. However, Nixpkgs is a
-large repository of software packaged in Nix, where a package is a Nix
-derivation. We can use packages from Nixpkgs as inputs to a Nix
-derivation, as we’ve done with <code>bash</code>.</p>
+derivation for every dependency of your project. However, Nixpkgs<a
+href="#fn4" class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a> is a large repository of software
+packaged in Nix, where a package is a Nix derivation. We can use
+packages from Nixpkgs as inputs to a Nix derivation, as we’ve done with
+<code>bash</code>.</p>
 <p>There is also a command line package manager installing packages from
 Nixpkgs, which is why people often refer to Nix as a package manager.
 While Nix, and Therefore nix package management, is primarily
@@ -374,39 +375,38 @@ role="doc-noteref"><sup>8</sup></a>.</p>
 <h2 id="mirageos"><a href="#mirageos" class="anchor"
 aria-hidden="true">MirageOS</a></h2>
 <figure>
-<img src="./mirage.svg" data-min-width="5cm" style="width:50.0%"
+<img src="./mirage-logo.svg" data-min-width="5cm" style="width:50.0%"
 alt="" />
 <figcaption aria-hidden="true"><a href="#fn9" class="footnote-ref"
 id="fnref9" role="doc-noteref"><sup>9</sup></a></figcaption>
 </figure>
-<p>// what? What on earth is a unikernel I hear you cry?</p>
-<p>A unikernel is a operating system kernel that contains low level
-operating system code and high level application code bundled into one.
-There is no kernel or user space - they are one and the same.</p>
-<p>Puts all of the code like in one big blob and then it’s all secure
-and safe. And you can remove a bunch of dead codes because there’s no
-interface between the application and the open on the operating system.
-There’s no interface between the application and the operating system
-has been fine.</p>
-<h4 id="ocaml"><a href="#ocaml" class="anchor"
-aria-hidden="true">OCaml</a></h4>
-<p>Mirage is written in OCaml.</p>
-<p>OCaml is a functional programming language, but it a bit more
-practical than others (like haskell) supporting imperative programming
-too.</p>
-<p>is a small perfor</p>
-<p>Mirage was the first ‘unikernel’ creation framework, but it comes
-from a long linage of OS OS research such as the library OS nemesis
-(?)</p>
-<p>// why?</p>
-<p>security, performance, speed</p>
-<p>it’s quite good for networking or highly networked applications as
-these tend to be quite performant and security concious.</p>
-<p>It was originally created to run on hypervisors in the cloud. But
-there is work towards porting it to run on bare metal for IoT
-applications. But hw support tricky.</p>
-<h2 id="deploying-unikernels"><a href="#deploying-unikernels"
-class="anchor" aria-hidden="true">Deploying unikernels</a></h2>
+<p>As mentioned, MirageOS is a library operating system that creates
+unikernels that contains low-level operating system code and high-level
+application code bundled into one kernel and one address space.
+<!-- security, performance, speed --> It was the first such ‘unikernel
+creation framework’, but it comes from a long lineage of OS research
+such as the exokernel library OS architecture. You can remove a bunch of
+dead codes because there’s no interface between the application and the
+open on the operating system. Mirage unikernels are written in the
+typesafe high-level functional programming language OCaml. OCaml is a
+functional programming language, but it’s a bit more practical than
+others (like Haskell) supporting imperative programming too.</p>
+<figure>
+<img src="./mirage-diagram.svg" data-min-width="5cm" style="width:50.0%"
+alt="Contrasting software layers in existing VM appliances vs. unikernel’s standalone kernel compilation approach[3]" />
+<figcaption aria-hidden="true">Contrasting software layers in existing
+VM appliances vs. unikernel’s standalone kernel compilation
+approach<span class="citation"
+data-cites="madhavapeddyUnikernelsLibraryOperating2013a"><a
+href="#ref-madhavapeddyUnikernelsLibraryOperating2013a"
+role="doc-biblioref">[3]</a></span></figcaption>
+</figure>
+<p>Mirage was created to run on hypervisors in the cloud, but there is
+ongoing work towards porting it to run on bare metal for IoT
+applications. <!-- But hw support tricky. --></p>
+<h2 id="deploying-mirage-unikernels"><a
+href="#deploying-mirage-unikernels" class="anchor"
+aria-hidden="true">Deploying Mirage unikernels</a></h2>
 <p>Why couldn’t we just write a NixOS module to deploy a unikernel?
 Well, first we need to support building unikernels with Nix. This blog
 post will explore how to do that to provide easy deployability of Mirage
@@ -439,8 +439,6 @@ input is also a deticaiton with a hash base on its inputs).</p>
 <p>Nix can also be thought as a coarse grained build system</p>
 <p>and low level stuff? [1] E. Dolstra, The purely functional software
 deployment model. S.l.: s.n., 2006. chapter 10</p>
-<h3 id="building-unikernels"><a href="#building-unikernels"
-class="anchor" aria-hidden="true">Building unikernels</a></h3>
 <ul>
 <li>due to nix not dealing with well with multiple versions, we need
 opam’s solver</li>
@@ -452,7 +450,7 @@ yesterday!)</li>
 github.com/RyanGibb/hillingar</li>
 </ul>
 <p>NixOS modules
-https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix</p>
+<!-- https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix --></p>
 <p>https://nixos.wiki/wiki/NixOS_modules</p>
 <p>So Mirage is this thing. It’s written in OCaml and uses all the OCaml
 tooling. In fact a lot of that tooling, like opam, was created for the
@@ -544,8 +542,8 @@ https://github.com/tarides/opam-monorepo/issues/331</p>
 modules - reproducible builds with system dependencies (depexts in opam
 parlance) - as well as allow composing multiple language environments -
 we can benefit from nix cross compilation support (?)</p>
-<h3 id="conclusion"><a href="#conclusion" class="anchor"
-aria-hidden="true">Conclusion</a></h3>
+<h2 id="conclusion"><a href="#conclusion" class="anchor"
+aria-hidden="true">Conclusion</a></h2>
 <p>Nix and Mirage both brining some kind of functional paradigm to OSes
 but top down vs bottom up</p>
 <p>Future work: - use opam monorepo’s solver - binary caching of opam
@@ -590,15 +588,12 @@ integration</li>
 </ul>
 <p>This worked was completed as part of an internship with Tarides. A
 copy of this blog post can be found on Tarides website.</p>
-<h4 id="further-reading"><a href="#further-reading" class="anchor"
-aria-hidden="true">Further Reading</a></h4>
-<h2 id="in-addition-to-the-footnotes"><a
-href="#in-addition-to-the-footnotes" class="anchor"
-aria-hidden="true">In addition to the footnotes:</a></h2>
+<hr />
 <p>If you spot any errors, or have any questions, please get in touch at
 <a href="mailto:ryan@gibbr.org">ryan@gibbr.org</a>.</p>
-<h4 class="unnumbered" id="references"><a href="#references"
-class="anchor" aria-hidden="true">References</a></h4>
+<hr />
+<h4 id="references"><a href="#references" class="anchor"
+aria-hidden="true">References</a></h4>
 <div id="refs" class="references csl-bib-body" role="doc-bibliography">
 <div id="ref-lehnNovayaZemlyaEffect1979b" class="csl-entry"
 role="doc-biblioentry">
@@ -662,6 +657,9 @@ href="https://dl.acm.org/doi/10.1145/3236774">https://dl.acm.org/doi/10.1145/323
 [Accessed: Oct. 11, 2022]</div>
 </div>
 </div>
+<div id="footnotes">
+
+</div>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
@@ -671,8 +669,8 @@ href="https://stability.ai/blog/stable-diffusion-public-release">Stable
 Diffusion</a> and <a href="https://www.gimp.org/">GIMP</a><a
 href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2" role="doc-endnote"><p><a
-href="../../resources/mphil-diss.pdf#sec-internet-arch">’Spatial Name
-System’section 2.2 Internet Architecture</a><a href="#fnref2"
+href="../../resources/mphil-diss.pdf#sec-internet-arch">‘Spatial Name
+System’ section 2.2 Internet Architecture</a><a href="#fnref2"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3" role="doc-endnote"><p>As ‘nix’ means snow in Latin. Credits
 to Tim Cuthbertson.<a href="#fnref3" class="footnote-back"
