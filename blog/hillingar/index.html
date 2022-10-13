@@ -423,9 +423,9 @@ the desire to deploy Mirage unikernels on a NixOS machine, what’s
 stopping us from doing just that? Well, to support deploying a mirage
 unikernel, such as for a DNS server, we would need to write a NixOS
 module for it.</p>
-<p>A heavily paired-down<a href="#fn13" class="footnote-ref"
-id="fnref13" role="doc-noteref"><sup>13</sup></a> version of the bind
-NixOS module is:</p>
+<p>A paired-down<a href="#fn13" class="footnote-ref" id="fnref13"
+role="doc-noteref"><sup>13</sup></a> version of the bind NixOS module
+is:</p>
 <div class="sourceCode" id="cb7"><pre
 class="sourceCode nix"><code class="sourceCode nix"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="va">config</span><span class="op">,</span> <span class="va">lib</span><span class="op">,</span> <span class="va">pkgs</span><span class="op">,</span> <span class="op">...</span> <span class="op">}</span>:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -463,11 +463,49 @@ we can write a NixOS module to deploy it.</p>
 <h2 id="building-mirage-unikernels"><a
 href="#building-mirage-unikernels" class="anchor"
 aria-hidden="true">Building Mirage unikernels</a></h2>
-<p>Nixpkgs has a large number of dependencies packaged<a href="#fn14"
-class="footnote-ref" id="fnref14"
-role="doc-noteref"><sup>14</sup></a></p>
+<p>Mirage uses the package manager for OCaml <code>opam</code>.
+Dependencies in <code>opam</code>, as is common in programming language
+package managers, has a file which specifies dependencies and their
+version constraints. For example<a href="#fn14" class="footnote-ref"
+id="fnref14" role="doc-noteref"><sup>14</sup></a></p>
+<pre><code>depends: [
+  &quot;arp&quot; { ?monorepo &amp; &gt;= &quot;3.0.0&quot; &amp; &lt; &quot;4.0.0&quot; }
+  &quot;ethernet&quot; { ?monorepo &amp; &gt;= &quot;3.0.0&quot; &amp; &lt; &quot;4.0.0&quot; }
+  &quot;lwt&quot; { ?monorepo }
+  &quot;mirage&quot; { build &amp; &gt;= &quot;4.2.0&quot; &amp; &lt; &quot;4.3.0&quot; }
+  &quot;mirage-bootvar-solo5&quot; { ?monorepo &amp; &gt;= &quot;0.6.0&quot; &amp; &lt; &quot;0.7.0&quot; }
+  &quot;mirage-clock-solo5&quot; { ?monorepo &amp; &gt;= &quot;4.2.0&quot; &amp; &lt; &quot;5.0.0&quot; }
+  &quot;mirage-crypto-rng-mirage&quot; { ?monorepo &amp; &gt;= &quot;0.8.0&quot; &amp; &lt; &quot;0.11.0&quot; }
+  &quot;mirage-logs&quot; { ?monorepo &amp; &gt;= &quot;1.2.0&quot; &amp; &lt; &quot;2.0.0&quot; }
+  &quot;mirage-net-solo5&quot; { ?monorepo &amp; &gt;= &quot;0.8.0&quot; &amp; &lt; &quot;0.9.0&quot; }
+  &quot;mirage-random&quot; { ?monorepo &amp; &gt;= &quot;3.0.0&quot; &amp; &lt; &quot;4.0.0&quot; }
+  &quot;mirage-runtime&quot; { ?monorepo &amp; &gt;= &quot;4.2.0&quot; &amp; &lt; &quot;4.3.0&quot; }
+  &quot;mirage-solo5&quot; { ?monorepo &amp; &gt;= &quot;0.9.0&quot; &amp; &lt; &quot;0.10.0&quot; }
+  &quot;mirage-time&quot; { ?monorepo }
+  &quot;mirageio&quot; { ?monorepo }
+  &quot;ocaml&quot; { build &amp; &gt;= &quot;4.08.0&quot; }
+  &quot;ocaml-solo5&quot; { build &amp; &gt;= &quot;0.8.1&quot; &amp; &lt; &quot;0.9.0&quot; }
+  &quot;opam-monorepo&quot; { build &amp; &gt;= &quot;0.3.2&quot; }
+  &quot;tcpip&quot; { ?monorepo &amp; &gt;= &quot;7.0.0&quot; &amp; &lt; &quot;8.0.0&quot; }
+  &quot;yaml&quot; { ?monorepo &amp; build }
+]</code></pre>
+<p>And each of these dependencies will have its own dependencies with
+their own version constraints.</p>
+<p>Nixpkgs has a large number of dependencies packaged<a href="#fn15"
+class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>
+which we could provide as build inputs to a Nix derivation. But Nixpkgs
+has only a global set of package versions. The support for installing
+multiple versions of a package concurrently comes from the fact that
+they are stored at a unique path and can be referenced separately, or
+symlinked, where required. All the packages in Nixpkgs depend on This is
+the same approach that many other system package managers take, like
+Arch Linux, as it’s too complicated organisationally to keep track Apart
+from some select packages, like postgres, where many major versions are
+packaged at once.</p>
+<p>This is why</p>
+<p>But this is a project for projects using <code>opam</code> to provide
+dependencies.</p>
 <ul>
-<li>nixpkgs has one global set of package versions</li>
 <li>but nix doesn’t deal with more complicated dependency
 versioning</li>
 </ul>
@@ -736,7 +774,9 @@ href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 href="../../resources/mphil-diss.pdf#sec-internet-arch">‘Spatial Name
 System’ section 2.2 Internet Architecture</a><a href="#fnref2"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>https://www.isc.org/bind/<a
+<li id="fn3" role="doc-endnote"><p><a
+href="https://www.isc.org/bind/">ISC bind</a> has many <a
+href="https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64">CVE’s</a><a
 href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4" role="doc-endnote"><p>As ‘nix’ means snow in Latin. Credits
 to Tim Cuthbertson.<a href="#fnref4" class="footnote-back"
@@ -774,9 +814,13 @@ role="doc-backlink">↩︎</a></p></li>
 href="https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix">here</a><a
 href="#fnref13" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn14" role="doc-endnote"><p><a
+<li id="fn14" role="doc-endnote"><p>For <a
+href="https://github.com/mirage/mirage-www">mirage-www</a> targetting
+<code>hvt</code>.<a href="#fnref14" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn15" role="doc-endnote"><p><a
 href="https://github.com/NixOS/nixpkgs/blob/9234f5a17e1a7820b5e91ecd4ff0de449e293383/pkgs/development/ocaml-modules/">github.com/NixOS/nixpkgs
-pkgs/development/ocaml-modules</a><a href="#fnref14"
+pkgs/development/ocaml-modules</a><a href="#fnref15"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>

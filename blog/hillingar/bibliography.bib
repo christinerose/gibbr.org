@@ -1,12 +1,21 @@
 
-@thesis{dolstraNixOSPurelyFunctional2010,
-  title = {{{NixOS}}: {{A Purely Functional Linux Distribution}}},
-  author = {Dolstra, Eelco},
-  date = {2010},
-  abstract = {Existing package and system configuration management tools suffer from an imperative model, where system administration actions such as package upgrades or changes to system configuration files are stateful: they destructively update the state of the system. This leads to many problems, such as the inability to roll back changes easily, to deploy multiple versions of a package side-by-side, to reproduce a configuration deterministically on another machine, or to reliably upgrade a system. In this article we show that we can overcome these problems by moving to a purely functional system configuration model. This means that all static parts of a system (such as software packages, configuration files and system startup scripts) are built by pure functions and are immutable, stored in a way analogous to a heap in a purely functional language. We have implemented this model in NixOS, a non-trivial Linux distribution that uses the Nix package manager to build the entire system configuration from a modular, purely functional specification.},
-  langid = {english},
-  keywords = {read},
-  file = {/home/ryan/library/zotero/storage/AED77JLS/Dolstra - 2010 - NixOS A Purely Functional Linux Distribution.pdf}
+@article{dolstraNixOSPurelyFunctional2008,
+  title = {{{NixOS}}: A Purely Functional {{Linux}} Distribution},
+  shorttitle = {{{NixOS}}},
+  author = {Dolstra, Eelco and Löh, Andres},
+  date = {2008-09-20},
+  journaltitle = {ACM SIGPLAN Notices},
+  shortjournal = {SIGPLAN Not.},
+  volume = {43},
+  number = {9},
+  pages = {367--378},
+  issn = {0362-1340},
+  doi = {10.1145/1411203.1411255},
+  url = {https://doi.org/10.1145/1411203.1411255},
+  urldate = {2022-10-13},
+  abstract = {Existing package and system configuration management tools suffer from an imperative model, where system administration actions such as upgrading packages or changes to system configuration files are stateful: they destructively update the state of the system. This leads to many problems, such as the inability to roll back changes easily, to run multiple versions of a package side-by-side, to reproduce a configuration deterministically on another machine, or to reliably upgrade a system. In this paper we show that we can overcome these problems by moving to a purely functional system configuration model. This means that all static parts of a system (such as software packages, configuration files and system startup scripts) are built by pure functions and are immutable, stored in a way analogously to a heap in a purely function language. We have implemented this model in NixOS, a non-trivial Linux distribution that uses the Nix package manager to build the entire system configuration from a purely functional specification.},
+  keywords = {nix,NixOS,package management,purely functional deployment model,purely functional language,software deployment,system configuration management},
+  file = {/home/ryan/library/zotero/storage/4SH7L3FG/Dolstra and Löh - 2008 - NixOS a purely functional Linux distribution.pdf}
 }
 
 @inproceedings{dolstraNixSafePolicyFree2004,

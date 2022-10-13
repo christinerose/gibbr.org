@@ -38,7 +38,7 @@ $ dig gibbr.org @ns1.gibbr.org +short
 
 Setting up a glue record with our registrar pointing `ns1.gibbr.org` to the IP address of our DNS-hosting machine allows anyone to use our authoritative server via their resolver.
 
-As you might notice, however, this is running the venerable bind^[https://www.isc.org/bind/] written in C.
+As you might notice, however, this is running the venerable bind^[[ISC bind](https://www.isc.org/bind/) has many [CVE's](https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64)] written in C.
 As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution[@madhavapeddyMelangeCreatingFunctional2007].
 One such language is OCaml.
 
@@ -212,7 +212,7 @@ OCaml is a bit more practical than other functional programming languages such a
 Now that we understand what Nix and Mirage are, and we've motivated the desire to deploy Mirage unikernels on a NixOS machine, what's stopping us from doing just that?
 Well, to support deploying a mirage unikernel, such as for a DNS server, we would need to write a NixOS module for it.
 
-A heavily paired-down^[The full module can be found [here](https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix)] version of the bind NixOS module is:
+A paired-down^[The full module can be found [here](https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix)] version of the bind NixOS module is:
 ```nix
 { config, lib, pkgs, ... }:
 
@@ -251,6 +251,34 @@ Once we build a Mirage unikernel with Nix, we can write a NixOS module to deploy
 ## Building Mirage unikernels
 
 Mirage uses the package manager for OCaml `opam`.
+Dependencies in `opam`, as is common in programming language package managers, has a file which specifies dependencies and their version constraints.
+For example^[For [mirage-www](https://github.com/mirage/mirage-www) targetting `hvt`.]
+```
+depends: [
+  "arp" { ?monorepo & >= "3.0.0" & < "4.0.0" }
+  "ethernet" { ?monorepo & >= "3.0.0" & < "4.0.0" }
+  "lwt" { ?monorepo }
+  "mirage" { build & >= "4.2.0" & < "4.3.0" }
+  "mirage-bootvar-solo5" { ?monorepo & >= "0.6.0" & < "0.7.0" }
+  "mirage-clock-solo5" { ?monorepo & >= "4.2.0" & < "5.0.0" }
+  "mirage-crypto-rng-mirage" { ?monorepo & >= "0.8.0" & < "0.11.0" }
+  "mirage-logs" { ?monorepo & >= "1.2.0" & < "2.0.0" }
+  "mirage-net-solo5" { ?monorepo & >= "0.8.0" & < "0.9.0" }
+  "mirage-random" { ?monorepo & >= "3.0.0" & < "4.0.0" }
+  "mirage-runtime" { ?monorepo & >= "4.2.0" & < "4.3.0" }
+  "mirage-solo5" { ?monorepo & >= "0.9.0" & < "0.10.0" }
+  "mirage-time" { ?monorepo }
+  "mirageio" { ?monorepo }
+  "ocaml" { build & >= "4.08.0" }
+  "ocaml-solo5" { build & >= "0.8.1" & < "0.9.0" }
+  "opam-monorepo" { build & >= "0.3.2" }
+  "tcpip" { ?monorepo & >= "7.0.0" & < "8.0.0" }
+  "yaml" { ?monorepo & build }
+]
+```
+
+And each of these dependencies will have its own dependencies with their own version constraints.
+
 
 
 Nixpkgs has a large number of dependencies packaged^[[github.com/NixOS/nixpkgs pkgs/development/ocaml-modules](https://github.com/NixOS/nixpkgs/blob/9234f5a17e1a7820b5e91ecd4ff0de449e293383/pkgs/development/ocaml-modules/)] which we could provide as build inputs to a Nix derivation.
@@ -258,8 +286,10 @@ But Nixpkgs has only a global set of package versions.
 The support for installing multiple versions of a package concurrently comes from the fact that they are stored at a unique path and can be referenced separately, or symlinked, where required.
 All the packages in Nixpkgs depend on 
 This is the same approach that many other system package managers take, like Arch Linux, as it's too complicated organisationally to keep track 
-Apart from some slecect packages, like postgres, where many major versions are packaged at once.
+Apart from some select packages, like postgres, where many major versions are packaged at once.
 
+
+This is why 
 
 But this is a project for projects using `opam` to provide dependencies.
 
