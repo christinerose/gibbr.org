@@ -458,11 +458,14 @@ class="sourceCode nix"><code class="sourceCode nix"><span id="cb7-1"><a href="#c
 repository Nix derivation for the <code>bind</code> package. Recall that
 every input to a Nix derivation is itself a Nix derivation; in order to
 use a package in a Nix expression – i.e. a NixOS module – we need to
-build said package with Nix. Once we build a Mirage unikernel, we can
-write a NixOS module to deploy it.</p>
-<h3 id="building-mirage-unikernels"><a
+build said package with Nix. Once we build a Mirage unikernel with Nix,
+we can write a NixOS module to deploy it.</p>
+<h2 id="building-mirage-unikernels"><a
 href="#building-mirage-unikernels" class="anchor"
-aria-hidden="true">Building Mirage unikernels</a></h3>
+aria-hidden="true">Building Mirage unikernels</a></h2>
+<p>Nixpkgs has a large number of dependencies packaged<a href="#fn14"
+class="footnote-ref" id="fnref14"
+role="doc-noteref"><sup>14</sup></a></p>
 <ul>
 <li>nixpkgs has one global set of package versions</li>
 <li>but nix doesn’t deal with more complicated dependency
@@ -629,8 +632,8 @@ https://robur.coop/Projects/Reproducible_builds</p>
 build .#<target></p>
 <p>Please open an issue (or message the #nix slack channel) if you
 encounter any issues.</p>
-<h5 id="thanks-to"><a href="#thanks-to" class="anchor"
-aria-hidden="true">Thanks To</a></h5>
+<h4 id="thanks-to"><a href="#thanks-to" class="anchor"
+aria-hidden="true">Thanks To</a></h4>
 <ul>
 <li>Lucas for OCaml ecosystem</li>
 <li>Balsoft for getting me to speed with the <code>opam-nix</code>
@@ -771,6 +774,10 @@ role="doc-backlink">↩︎</a></p></li>
 href="https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix">here</a><a
 href="#fnref13" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
+<li id="fn14" role="doc-endnote"><p><a
+href="https://github.com/NixOS/nixpkgs/blob/9234f5a17e1a7820b5e91ecd4ff0de449e293383/pkgs/development/ocaml-modules/">github.com/NixOS/nixpkgs
+pkgs/development/ocaml-modules</a><a href="#fnref14"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 </body>

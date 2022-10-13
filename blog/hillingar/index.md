@@ -246,14 +246,25 @@ with lib;
 Notice the reference to `pkgs.bind`.
 This is the Nixpkgs repository Nix derivation for the `bind` package.
 Recall that every input to a Nix derivation is itself a Nix derivation; in order to use a package in a Nix expression -- i.e. a NixOS module -- we need to build said package with Nix.
-Once we build a Mirage unikernel, we can write a NixOS module to deploy it.
+Once we build a Mirage unikernel with Nix, we can write a NixOS module to deploy it.
 
-### Building Mirage unikernels
+## Building Mirage unikernels
+
+Mirage uses the package manager for OCaml `opam`.
+
+
+Nixpkgs has a large number of dependencies packaged^[[github.com/NixOS/nixpkgs pkgs/development/ocaml-modules](https://github.com/NixOS/nixpkgs/blob/9234f5a17e1a7820b5e91ecd4ff0de449e293383/pkgs/development/ocaml-modules/)] which we could provide as build inputs to a Nix derivation.
+But Nixpkgs has only a global set of package versions.
+The support for installing multiple versions of a package concurrently comes from the fact that they are stored at a unique path and can be referenced separately, or symlinked, where required.
+All the packages in Nixpkgs depend on 
+This is the same approach that many other system package managers take, like Arch Linux, as it's too complicated organisationally to keep track 
+Apart from some slecect packages, like postgres, where many major versions are packaged at once.
+
+
+But this is a project for projects using `opam` to provide dependencies.
 
 
 
-
-- nixpkgs has one global set of package versions
 - but nix doesn’t deal with more complicated dependency versioning
 
 
@@ -488,7 +499,7 @@ Please open an issue (or message the #nix slack channel) if you encounter any is
 
 
 
-##### Thanks To
+#### Thanks To
 
 - Lucas for OCaml ecosystem
 - Balsoft for getting me to speed with the `opam-nix` project and working with me on the opam monorepo workflow integration
