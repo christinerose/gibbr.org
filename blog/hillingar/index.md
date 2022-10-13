@@ -38,11 +38,11 @@ $ dig gibbr.org @ns1.gibbr.org +short
 
 Setting up a glue record with our registrar pointing `ns1.gibbr.org` to the IP address of our DNS-hosting machine allows anyone to use our authoritative server via their resolver.
 
-As you might notice, however, this is running the venerable bind written in C.
-As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution[@madhavapeddyMelangeCreatingFunctional2007a].
+As you might notice, however, this is running the venerable bind^[https://www.isc.org/bind/] written in C.
+As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution[@madhavapeddyMelangeCreatingFunctional2007].
 One such language is OCaml.
 
-The MirageOS project is a deployment method for these OCaml programs[@madhavapeddyUnikernelsLibraryOperating2013a].
+The MirageOS project is a deployment method for these OCaml programs[@madhavapeddyUnikernelsLibraryOperating2013].
 Instead of running them as a traditional Unix process, we instead create a specialised 'unikernel' operating system to run the application, which allows dead code elimination improving security with smaller attack surfaces and improved efficiency.
 
 However, to deploy a Mirage unikernel with NixOS one has to use the imperative deployment methodologies native to the OCaml ecosystem, eliminating the benefit of reproducible systems that Nix gives us.
@@ -54,10 +54,10 @@ This blog post will explore how we enabled reproducible deployments of Mirage un
 
 At this point, the curious reader might be wondering, what on earth is 'Nix'?
 
-Nix is a deployment system that uses cryptographic hashes to compute unique paths for components (i.e. a dependency) which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
+Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post as they all fundamentally mean the same thing - a piece of software.] which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
 <!-- We replace references to a component with this absolute path, or symlink into the nix store for the system path, for example. -->
 This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades and downgrades, and 
-multiple user environments[@dolstraNixSafePolicyFree2004a].
+multiple user environments[@dolstraNixSafePolicyFree2004].
 
 Nix uses a declarative domain-specific language (DSL), also called 'Nix', to build and configure software.
 The snippet used to deploy the DNS server is in fact a Nix expression.
@@ -133,7 +133,7 @@ Nix realisations (hereafter referred to as builds) are done in isolation to ensu
 Projects often rely on interacting with package managers to make sure all dependencies are available, and may implicitly rely on system configuration at build time.
 To prevent this, every Nix derivation is built in isolation, without network access or access to the global file system, with only other Nix derivations as inputs.
 
-> The name Nix is derived from the Dutch word niks, meaning nothing; build actions do not see anything that has not been explicitly declared as an input[@dolstraNixSafePolicyFree2004a].
+> The name Nix is derived from the Dutch word niks, meaning nothing; build actions do not see anything that has not been explicitly declared as an input[@dolstraNixSafePolicyFree2004].
 
 <!-- There are analogies to functional program versus imperative programming, but applied to system management and software builds/deployment. -->
 
@@ -153,7 +153,8 @@ Since packages are built in isolation and entirely determined by their inputs, b
 NixOS^[[nixos.org](https://nixos.org)] is a Linux distribution built with Nix from a modular, purely functional specification[@dolstraNixOSPurelyFunctional2010].
 It has no traditional filesystem hierarchy (FSH) -- like `/bin`, `/lib`, `/usr` -- but instead stores all components in `/nix/store`.
 The configuration of the system is managed by Nix, with configuration files being built from modular Nix expressions.
-NixOS modules are just that -- small bits of configuration written in Nix that can be composed to build a full NixOS system.
+NixOS modules are just that -- small bits of configuration written in Nix that can be composed to build a full NixOS system^[[NixOS manual Chapter 66. Writing NixOS Modules](https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules).]
+While many NixOS modules are provided in the Nixpkgs repository they can also be written by a user.
 For example, the expression used to deploy a DNS server is a NixOS module.
 The system is built from this configuration like a Nix derivation is built.
 
@@ -196,29 +197,62 @@ More detail about flakes can be read in a series of blog posts by Eelco on the t
 
 ![ ^[Credits to Takayuki Imada] ](./mirage-logo.svg){width=50% min-width=5cm}
 
-As mentioned, MirageOS is a library operating system that creates unikernels that contains low-level operating system code and high-level application code bundled into one kernel and one address space.
+MirageOS is a library operating system that creates unikernels containing low-level operating system code and high-level application code bundled into one kernel and one address space[@madhavapeddyUnikernelsLibraryOperating2013].
 <!-- security, performance, speed -->
-It was the first such 'unikernel creation framework', but it comes from a long lineage of OS research such as the exokernel library OS architecture.
-You can remove a bunch of dead codes because there's no interface between the application and the open on the operating system.
+It was the first such 'unikernel creation framework', but it comes from a long lineage of OS research such as the exokernel library OS architecture[@englerExokernelOperatingSystem].
+Embedding application code in the kernel allows for dead-code elimination -- removing OS interfaces that are used -- reducing the unikernels attack surface and offering improved efficiency.
+
+![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach[@madhavapeddyUnikernelsLibraryOperating2013] ](./mirage-diagram.svg){width=70% min-width=5cm}
+
 Mirage unikernels are written in the typesafe high-level functional programming language OCaml.
-OCaml is a functional programming language, but it's a bit more practical than others (like Haskell) supporting imperative programming too.
-
-![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach[@madhavapeddyUnikernelsLibraryOperating2013a] ](./mirage-diagram.svg){width=50% min-width=5cm}
-
-Mirage was created to run on hypervisors in the cloud, but there is ongoing work towards porting it to run on bare metal for IoT applications.
-<!-- But hw support tricky. -->
+OCaml is a bit more practical than other functional programming languages such as Haskell for systems programming, such as supporting falling back on impure imperative code or mutable variables when warranted.
 
 ## Deploying Mirage unikernels
 
+Now that we understand what Nix and Mirage are, and we've motivated the desire to deploy Mirage unikernels on a NixOS machine, what's stopping us from doing just that?
+Well, to support deploying a mirage unikernel, such as for a DNS server, we would need to write a NixOS module for it.
 
-Why couldn't we just write a NixOS module to deploy a unikernel?
-Well, first we need to support building unikernels with Nix.
-This blog post will explore how to do that to provide easy deployability of Mirage unikernels.
+A heavily paired-down^[The full module can be found [here](https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix)] version of the bind NixOS module is:
+```nix
+{ config, lib, pkgs, ... }:
+
+with lib;
+
+{
+  options = {
+    services.bind = {
+      enable = mkEnableOption "BIND domain name server";
+      
+      zones = mkOption {
+        ...
+      };
+    };
+  };
+
+  config = mkIf cfg.enable {
+    systemd.services.bind = {
+      description = "BIND Domain Name Server";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        ExecStart = "${pkgs.bind.out}/sbin/named";
+      };
+    };
+  };
+}
+```
+
+Notice the reference to `pkgs.bind`.
+This is the Nixpkgs repository Nix derivation for the `bind` package.
+Recall that every input to a Nix derivation is itself a Nix derivation; in order to use a package in a Nix expression -- i.e. a NixOS module -- we need to build said package with Nix.
+Once we build a Mirage unikernel, we can write a NixOS module to deploy it.
+
+### Building Mirage unikernels
 
 
-- nixOS modules
-- …requires packaging with nix
-- …requires building with nix
+
+
 - nixpkgs has one global set of package versions
 - but nix doesn’t deal with more complicated dependency versioning
 
@@ -381,6 +415,14 @@ what are the benefits?:
 - reproducible builds with system dependencies (depexts in opam parlance)
     - as well as allow composing multiple language environments
 - we can benefit from nix cross compilation support (?)
+
+
+
+
+Mirage was created to run on hypervisors in the cloud, but there is ongoing work towards porting it to run on bare metal for IoT applications.
+where repdroducibility also important
+<!-- But hw support tricky. -->
+
 
 
 

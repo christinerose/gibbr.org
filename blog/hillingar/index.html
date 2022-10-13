@@ -155,18 +155,19 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 <p>Setting up a glue record with our registrar pointing
 <code>ns1.gibbr.org</code> to the IP address of our DNS-hosting machine
 allows anyone to use our authoritative server via their resolver.</p>
-<p>As you might notice, however, this is running the venerable bind
-written in C. As an alternative, using functional high-level type-safe
-programming languages to create network applications can greatly benefit
-safety and usability whilst maintaining performant execution<span
-class="citation"
-data-cites="madhavapeddyMelangeCreatingFunctional2007a"><a
-href="#ref-madhavapeddyMelangeCreatingFunctional2007a"
+<p>As you might notice, however, this is running the venerable bind<a
+href="#fn3" class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a> written in C. As an alternative,
+using functional high-level type-safe programming languages to create
+network applications can greatly benefit safety and usability whilst
+maintaining performant execution<span class="citation"
+data-cites="madhavapeddyMelangeCreatingFunctional2007"><a
+href="#ref-madhavapeddyMelangeCreatingFunctional2007"
 role="doc-biblioref">[2]</a></span>. One such language is OCaml.</p>
 <p>The MirageOS project is a deployment method for these OCaml
 programs<span class="citation"
-data-cites="madhavapeddyUnikernelsLibraryOperating2013a"><a
-href="#ref-madhavapeddyUnikernelsLibraryOperating2013a"
+data-cites="madhavapeddyUnikernelsLibraryOperating2013"><a
+href="#ref-madhavapeddyUnikernelsLibraryOperating2013"
 role="doc-biblioref">[3]</a></span>. Instead of running them as a
 traditional Unix process, we instead create a specialised ‘unikernel’
 operating system to run the application, which allows dead code
@@ -182,22 +183,23 @@ aria-hidden="true">Nix</a></h2>
 <figure>
 <img src="./nix-snowflake.svg" data-min-width="5cm" style="width:60.0%"
 alt="Nix snowflake" />
-<figcaption aria-hidden="true">Nix snowflake<a href="#fn3"
-class="footnote-ref" id="fnref3"
-role="doc-noteref"><sup>3</sup></a></figcaption>
+<figcaption aria-hidden="true">Nix snowflake<a href="#fn4"
+class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a></figcaption>
 </figure>
 <p>At this point, the curious reader might be wondering, what on earth
 is ‘Nix’?</p>
 <p>Nix is a deployment system that uses cryptographic hashes to compute
-unique paths for components (i.e. a dependency) which are stored in a
+unique paths for components<a href="#fn5" class="footnote-ref"
+id="fnref5" role="doc-noteref"><sup>5</sup></a> which are stored in a
 read-only directory, the Nix store, at
 <code>/nix/store/&lt;hash&gt;-&lt;name&gt;</code>.
 <!-- We replace references to a component with this absolute path, or symlink into the nix store for the system path, for example. -->
 This provides a number of benefits including concurrent installation of
 multiple versions of a package, atomic upgrades and downgrades, and
 multiple user environments<span class="citation"
-data-cites="dolstraNixSafePolicyFree2004a"><a
-href="#ref-dolstraNixSafePolicyFree2004a"
+data-cites="dolstraNixSafePolicyFree2004"><a
+href="#ref-dolstraNixSafePolicyFree2004"
 role="doc-biblioref">[4]</a></span>.</p>
 <p>Nix uses a declarative domain-specific language (DSL), also called
 ‘Nix’, to build and configure software. The snippet used to deploy the
@@ -274,8 +276,8 @@ inputs.</p>
 <p>The name Nix is derived from the Dutch word niks, meaning nothing;
 build actions do not see anything that has not been explicitly declared
 as an input<span class="citation"
-data-cites="dolstraNixSafePolicyFree2004a"><a
-href="#ref-dolstraNixSafePolicyFree2004a"
+data-cites="dolstraNixSafePolicyFree2004"><a
+href="#ref-dolstraNixSafePolicyFree2004"
 role="doc-biblioref">[4]</a></span>.</p>
 </blockquote>
 <!-- There are analogies to functional program versus imperative programming, but applied to system management and software builds/deployment. -->
@@ -285,8 +287,8 @@ aria-hidden="true">Nixpkgs</a></h4>
 derivation. As every input to a Nix derivation also has to be a Nix
 derivation, one can imagine the tedium involved in creating a Nix
 derivation for every dependency of your project. However, Nixpkgs<a
-href="#fn4" class="footnote-ref" id="fnref4"
-role="doc-noteref"><sup>4</sup></a> is a large repository of software
+href="#fn6" class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a> is a large repository of software
 packaged in Nix, where a package is a Nix derivation. We can use
 packages from Nixpkgs as inputs to a Nix derivation, as we’ve done with
 <code>bash</code>.</p>
@@ -300,8 +302,8 @@ can be transparently deployed by downloading them from a remote server
 instead of building the derivation locally.</p>
 <h4 id="nixos"><a href="#nixos" class="anchor"
 aria-hidden="true">NixOS</a></h4>
-<p>NixOS<a href="#fn5" class="footnote-ref" id="fnref5"
-role="doc-noteref"><sup>5</sup></a> is a Linux distribution built with
+<p>NixOS<a href="#fn7" class="footnote-ref" id="fnref7"
+role="doc-noteref"><sup>7</sup></a> is a Linux distribution built with
 Nix from a modular, purely functional specification<span
 class="citation" data-cites="dolstraNixOSPurelyFunctional2010"><a
 href="#ref-dolstraNixOSPurelyFunctional2010"
@@ -311,9 +313,12 @@ hierarchy (FSH) – like <code>/bin</code>, <code>/lib</code>,
 <code>/nix/store</code>. The configuration of the system is managed by
 Nix, with configuration files being built from modular Nix expressions.
 NixOS modules are just that – small bits of configuration written in Nix
-that can be composed to build a full NixOS system. For example, the
-expression used to deploy a DNS server is a NixOS module. The system is
-built from this configuration like a Nix derivation is built.</p>
+that can be composed to build a full NixOS system<a href="#fn8"
+class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>
+While many NixOS modules are provided in the Nixpkgs repository they can
+also be written by a user. For example, the expression used to deploy a
+DNS server is a NixOS module. The system is built from this
+configuration like a Nix derivation is built.</p>
 <p>NixOS minimises global mutable state that – without knowing it – you
 might rely on being set up in a certain way. For example, you might
 follow some instructions to run a series of shell commands and edit some
@@ -326,8 +331,8 @@ problem, but nix aims to be more reproducible (restricting network
 access). This can be frustrating at times because it can make it harder
 to get off the ground with a project, but I’ve found the benefits outway
 the cons for me.</p>
-<p>My own NixOS configuration is publicly available<a href="#fn6"
-class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.
+<p>My own NixOS configuration is publicly available<a href="#fn9"
+class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>.
 This makes it trivial to reproduce my system – a collection of various
 configurations, services, and hacks – on another machine. I use it to
 manage servers, workstations, and more. Compared to my previous approach
@@ -355,9 +360,9 @@ deadline. Nix’s atomic upgrades mean this wouldn’t have been an issue in
 the first place. And every new system configuration creates a GRUB
 entry, so you can boot previous systems from your UEFI/BIOS.</p>
 <p>The blog post ‘Nix – taming Unix with functional programming’ by
-Valentin Gagarin at Tweag<a href="#fn7" class="footnote-ref" id="fnref7"
-role="doc-noteref"><sup>7</sup></a> gives an interesting summary of Nix
-and NixOS.</p>
+Valentin Gagarin at Tweag<a href="#fn10" class="footnote-ref"
+id="fnref10" role="doc-noteref"><sup>10</sup></a> gives an interesting
+summary of Nix and NixOS.</p>
 <p>To summarise the parts of the Nix ecosystem that we’ve discussed:</p>
 <p><img src="./nix-stack.svg" data-min-width="5cm"
 style="width:50.0%" /></p>
@@ -369,52 +374,96 @@ expressions and provide a standard way to compose Nix projects.
 <!-- One of the reasons for improving Nix project composing is that there's some discussion around the sustainability of the Nixpkgs monorepo workflow^[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741]. -->
 Integrated with flakes there is also a new <code>nix</code> command
 aimed at improving the UI of Nix. More detail about flakes can be read
-in a series of blog posts by Eelco on the topic<a href="#fn8"
-class="footnote-ref" id="fnref8"
-role="doc-noteref"><sup>8</sup></a>.</p>
+in a series of blog posts by Eelco on the topic<a href="#fn11"
+class="footnote-ref" id="fnref11"
+role="doc-noteref"><sup>11</sup></a>.</p>
 <h2 id="mirageos"><a href="#mirageos" class="anchor"
 aria-hidden="true">MirageOS</a></h2>
 <figure>
 <img src="./mirage-logo.svg" data-min-width="5cm" style="width:50.0%"
 alt="" />
-<figcaption aria-hidden="true"><a href="#fn9" class="footnote-ref"
-id="fnref9" role="doc-noteref"><sup>9</sup></a></figcaption>
+<figcaption aria-hidden="true"><a href="#fn12" class="footnote-ref"
+id="fnref12" role="doc-noteref"><sup>12</sup></a></figcaption>
 </figure>
-<p>As mentioned, MirageOS is a library operating system that creates
-unikernels that contains low-level operating system code and high-level
-application code bundled into one kernel and one address space.
+<p>MirageOS is a library operating system that creates unikernels
+containing low-level operating system code and high-level application
+code bundled into one kernel and one address space<span class="citation"
+data-cites="madhavapeddyUnikernelsLibraryOperating2013"><a
+href="#ref-madhavapeddyUnikernelsLibraryOperating2013"
+role="doc-biblioref">[3]</a></span>.
 <!-- security, performance, speed --> It was the first such ‘unikernel
 creation framework’, but it comes from a long lineage of OS research
-such as the exokernel library OS architecture. You can remove a bunch of
-dead codes because there’s no interface between the application and the
-open on the operating system. Mirage unikernels are written in the
-typesafe high-level functional programming language OCaml. OCaml is a
-functional programming language, but it’s a bit more practical than
-others (like Haskell) supporting imperative programming too.</p>
+such as the exokernel library OS architecture<span class="citation"
+data-cites="englerExokernelOperatingSystem"><a
+href="#ref-englerExokernelOperatingSystem"
+role="doc-biblioref">[6]</a></span>. Embedding application code in the
+kernel allows for dead-code elimination – removing OS interfaces that
+are used – reducing the unikernels attack surface and offering improved
+efficiency.</p>
 <figure>
-<img src="./mirage-diagram.svg" data-min-width="5cm" style="width:50.0%"
+<img src="./mirage-diagram.svg" data-min-width="5cm" style="width:70.0%"
 alt="Contrasting software layers in existing VM appliances vs. unikernel’s standalone kernel compilation approach[3]" />
 <figcaption aria-hidden="true">Contrasting software layers in existing
 VM appliances vs. unikernel’s standalone kernel compilation
 approach<span class="citation"
-data-cites="madhavapeddyUnikernelsLibraryOperating2013a"><a
-href="#ref-madhavapeddyUnikernelsLibraryOperating2013a"
+data-cites="madhavapeddyUnikernelsLibraryOperating2013"><a
+href="#ref-madhavapeddyUnikernelsLibraryOperating2013"
 role="doc-biblioref">[3]</a></span></figcaption>
 </figure>
-<p>Mirage was created to run on hypervisors in the cloud, but there is
-ongoing work towards porting it to run on bare metal for IoT
-applications. <!-- But hw support tricky. --></p>
+<p>Mirage unikernels are written in the typesafe high-level functional
+programming language OCaml. OCaml is a bit more practical than other
+functional programming languages such as Haskell for systems
+programming, such as supporting falling back on impure imperative code
+or mutable variables when warranted.</p>
 <h2 id="deploying-mirage-unikernels"><a
 href="#deploying-mirage-unikernels" class="anchor"
 aria-hidden="true">Deploying Mirage unikernels</a></h2>
-<p>Why couldn’t we just write a NixOS module to deploy a unikernel?
-Well, first we need to support building unikernels with Nix. This blog
-post will explore how to do that to provide easy deployability of Mirage
-unikernels.</p>
+<p>Now that we understand what Nix and Mirage are, and we’ve motivated
+the desire to deploy Mirage unikernels on a NixOS machine, what’s
+stopping us from doing just that? Well, to support deploying a mirage
+unikernel, such as for a DNS server, we would need to write a NixOS
+module for it.</p>
+<p>A heavily paired-down<a href="#fn13" class="footnote-ref"
+id="fnref13" role="doc-noteref"><sup>13</sup></a> version of the bind
+NixOS module is:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode nix"><code class="sourceCode nix"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="va">config</span><span class="op">,</span> <span class="va">lib</span><span class="op">,</span> <span class="va">pkgs</span><span class="op">,</span> <span class="op">...</span> <span class="op">}</span>:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">with</span> lib<span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">options</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">services</span>.<span class="va">bind</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="va">enable</span> <span class="op">=</span> mkEnableOption <span class="st">&quot;BIND domain name server&quot;</span><span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      <span class="va">zones</span> <span class="op">=</span> mkOption <span class="op">{</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      <span class="op">};</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">};</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">};</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="va">config</span> <span class="op">=</span> mkIf cfg.enable <span class="op">{</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">systemd</span>.<span class="va">services</span>.<span class="va">bind</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>      <span class="va">description</span> <span class="op">=</span> <span class="st">&quot;BIND Domain Name Server&quot;</span><span class="op">;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      <span class="va">after</span> <span class="op">=</span> <span class="op">[</span> <span class="st">&quot;network.target&quot;</span> <span class="op">];</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>      <span class="va">wantedBy</span> <span class="op">=</span> <span class="op">[</span> <span class="st">&quot;multi-user.target&quot;</span> <span class="op">];</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>      <span class="va">serviceConfig</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">ExecStart</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">${</span>pkgs.bind.out<span class="sc">}</span><span class="st">/sbin/named&quot;</span><span class="op">;</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>      <span class="op">};</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">};</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="op">};</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Notice the reference to <code>pkgs.bind</code>. This is the Nixpkgs
+repository Nix derivation for the <code>bind</code> package. Recall that
+every input to a Nix derivation is itself a Nix derivation; in order to
+use a package in a Nix expression – i.e. a NixOS module – we need to
+build said package with Nix. Once we build a Mirage unikernel, we can
+write a NixOS module to deploy it.</p>
+<h3 id="building-mirage-unikernels"><a
+href="#building-mirage-unikernels" class="anchor"
+aria-hidden="true">Building Mirage unikernels</a></h3>
 <ul>
-<li>nixOS modules</li>
-<li>…requires packaging with nix</li>
-<li>…requires building with nix</li>
 <li>nixpkgs has one global set of package versions</li>
 <li>but nix doesn’t deal with more complicated dependency
 versioning</li>
@@ -431,7 +480,7 @@ directly, often invokes a build system like <code>make</code>. But Nix
 can also be considered a build system too<span class="citation"
 data-cites="mokhovBuildSystemsCarte2018"><a
 href="#ref-mokhovBuildSystemsCarte2018"
-role="doc-biblioref">[6]</a></span>. It takes a build graph and
+role="doc-biblioref">[7]</a></span>. It takes a build graph and
 computes.</p>
 <p>If any of the detivtion’s inputs change, the hash will change, and
 the path will change. So this.captures deep traces of inputs (as each
@@ -542,6 +591,10 @@ https://github.com/tarides/opam-monorepo/issues/331</p>
 modules - reproducible builds with system dependencies (depexts in opam
 parlance) - as well as allow composing multiple language environments -
 we can benefit from nix cross compilation support (?)</p>
+<p>Mirage was created to run on hypervisors in the cloud, but there is
+ongoing work towards porting it to run on bare metal for IoT
+applications. where repdroducibility also important
+<!-- But hw support tricky. --></p>
 <h2 id="conclusion"><a href="#conclusion" class="anchor"
 aria-hidden="true">Conclusion</a></h2>
 <p>Nix and Mirage both brining some kind of functional paradigm to OSes
@@ -606,7 +659,7 @@ href="https://doi.org/10.1364/JOSA.69.000776">10.1364/JOSA.69.000776</a>.
 href="https://home.cc.umanitoba.ca/~lehn/_Papers_for_Download/NZ79.pdf">https://home.cc.umanitoba.ca/~lehn/_Papers_for_Download/NZ79.pdf</a>.
 [Accessed: Oct. 11, 2022]</div>
 </div>
-<div id="ref-madhavapeddyMelangeCreatingFunctional2007a"
+<div id="ref-madhavapeddyMelangeCreatingFunctional2007"
 class="csl-entry" role="doc-biblioentry">
 <div class="csl-left-margin">[2] </div><div class="csl-right-inline">A.
 Madhavapeddy, A. Ho, T. Deegan, D. Scott, and R. Sohan, <span>“Melange:
@@ -617,7 +670,7 @@ href="https://doi.org/10.1145/1272998.1273009">10.1145/1272998.1273009</a>.
 href="https://anil.recoil.org/papers/2007-eurosys-melange.pdf">https://anil.recoil.org/papers/2007-eurosys-melange.pdf</a>.
 [Accessed: Oct. 11, 2022]</div>
 </div>
-<div id="ref-madhavapeddyUnikernelsLibraryOperating2013a"
+<div id="ref-madhavapeddyUnikernelsLibraryOperating2013"
 class="csl-entry" role="doc-biblioentry">
 <div class="csl-left-margin">[3] </div><div class="csl-right-inline">A.
 Madhavapeddy <em>et al.</em>, <span>“Unikernels: Library operating
@@ -628,7 +681,7 @@ href="https://doi.org/10.1145/2490301.2451167">10.1145/2490301.2451167</a>.
 href="https://anil.recoil.org/papers/2013-asplos-mirage.pdf">https://anil.recoil.org/papers/2013-asplos-mirage.pdf</a>.
 [Accessed: Oct. 11, 2022]</div>
 </div>
-<div id="ref-dolstraNixSafePolicyFree2004a" class="csl-entry"
+<div id="ref-dolstraNixSafePolicyFree2004" class="csl-entry"
 role="doc-biblioentry">
 <div class="csl-left-margin">[4] </div><div class="csl-right-inline">E.
 Dolstra, M. de Jonge, and E. Visser, <span>“Nix: <span>A Safe</span> and
@@ -645,9 +698,17 @@ role="doc-biblioentry">
 Dolstra, <span>“<span>NixOS</span>: <span>A Purely Functional Linux
 Distribution</span>,”</span> 2010. </div>
 </div>
+<div id="ref-englerExokernelOperatingSystem" class="csl-entry"
+role="doc-biblioentry">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">D.
+R. Engler, M. F. Kaashoek, J. O’Toole, and M. I. T. Laboratory,
+<span>“Exokernel: <span>An Operating System Architecture</span> for
+<span>Application-Level Resource Management</span>,”</span> p. 16.
+</div>
+</div>
 <div id="ref-mokhovBuildSystemsCarte2018" class="csl-entry"
 role="doc-biblioentry">
-<div class="csl-left-margin">[6] </div><div class="csl-right-inline">A.
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">A.
 Mokhov, N. Mitchell, and S. Peyton Jones, <span>“Build systems à la
 carte,”</span> <em>Proc. ACM Program. Lang.</em>, vol. 2, pp. 1–29, Jul.
 2018, doi: <a
@@ -672,27 +733,44 @@ href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 href="../../resources/mphil-diss.pdf#sec-internet-arch">‘Spatial Name
 System’ section 2.2 Internet Architecture</a><a href="#fnref2"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>As ‘nix’ means snow in Latin. Credits
-to Tim Cuthbertson.<a href="#fnref3" class="footnote-back"
+<li id="fn3" role="doc-endnote"><p>https://www.isc.org/bind/<a
+href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>As ‘nix’ means snow in Latin. Credits
+to Tim Cuthbertson.<a href="#fnref4" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p> <a
-href="https://github.com/nixos/nixpkgs">github.com/nixos/nixpkgs</a> <a
-href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p><a
-href="https://nixos.org">nixos.org</a><a href="#fnref5"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>NB: we will use component,
+dependency, and package somewhat interchangeably in this blog post as
+they all fundamentally mean the same thing - a piece of software.<a
+href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6" role="doc-endnote"><p> <a
-href="https://github.com/RyanGibb/nixos">github.com/RyanGibb/nixos</a>
-<a href="#fnref6" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
+href="https://github.com/nixos/nixpkgs">github.com/nixos/nixpkgs</a> <a
+href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
-href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+href="https://nixos.org">nixos.org</a><a href="#fnref7"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8" role="doc-endnote"><p><a
+href="https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules">NixOS
+manual Chapter 66. Writing NixOS Modules</a>.<a href="#fnref8"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9" role="doc-endnote"><p> <a
+href="https://github.com/RyanGibb/nixos">github.com/RyanGibb/nixos</a>
+<a href="#fnref9" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn10" role="doc-endnote"><p><a
+href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
+href="#fnref10" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn11" role="doc-endnote"><p><a
 href="https://www.tweag.io/blog/2020-05-25-flakes/">tweag.io/blog/2020-05-25-flakes</a><a
-href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9" role="doc-endnote"><p>Credits to Takayuki Imada<a
-href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+href="#fnref11" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn12" role="doc-endnote"><p>Credits to Takayuki Imada<a
+href="#fnref12" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn13" role="doc-endnote"><p>The full module can be found <a
+href="https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix">here</a><a
+href="#fnref13" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 </body>
