@@ -324,18 +324,6 @@ $ nix build .#<target>
 
 For example, see the flake for building the Mirage website as a unikernel with Nix: [github.com/RyanGibb/mirage-www/blob/master/flake.nix](https://github.com/RyanGibb/mirage-www/blob/master/flake.nix).
 
----
-
-As opposed to wrapping Nix in Mirage tools.
-Interesting arguments both ways - the former is better for Nix-natives and the latter better for OCaml/Mirage natives.
-But this way the most sensible for me, and easiest to prototype (no PRs).
-Also, it enables us to deploy unikernels using Nix.
-
-I guess my contribution was like a relatively modest PR to this open next conversion project.
-But there was like so much work to go into that like understanding what was going on and figuring out all these weird edge cases and stuff.
-So let me give you the summary.
-I was extending some support for an existing library to build in this workflow required for the unikernels.
-
 ### Dependancies
 
 3 types deps:
