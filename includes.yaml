@@ -7,4 +7,6 @@ include-before:
 		<li><a href="/blog/">blog</a></li>
 		<li><a href="/links.html">links</a></li>
 	</ul>
+citation-style: ieee-with-url.csl
+link-citations: true
 ---
