@@ -211,7 +211,7 @@ OCaml is a bit more practical than other functional programming languages such a
 Now that we understand what Nix and Mirage are, and we've motivated the desire to deploy Mirage unikernels on a NixOS machine, what's stopping us from doing just that?
 Well, to support deploying a mirage unikernel, such as for a DNS server, we would need to write a NixOS module for it.
 
-A paired-down^[The full module can be found [here](https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix)] version of the bind NixOS module, the module we use in our Nix expression for [deploying a DNS server on NixOS](#cb1), is:
+A paired-down^[The full module can be found [here](https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix)] version of the bind NixOS module, the module we use in our Nix expression for deploying a DNS server on NixOS ([&#167;](#cb1)), is:
 ```nix
 { config, lib, pkgs, ... }:
 
@@ -244,12 +244,12 @@ with lib;
 
 Notice the reference to `pkgs.bind`.
 This is the Nixpkgs repository Nix derivation for the `bind` package.
-Recall that every input to a Nix derivation is itself a Nix derivation ([&#167; ](#nixpkgs)); in order to use a package in a Nix expression -- i.e. a NixOS module -- we need to build said package with Nix.
+Recall that every input to a Nix derivation is itself a Nix derivation ([&#167;](#nixpkgs)); in order to use a package in a Nix expression -- i.e. a NixOS module -- we need to build said package with Nix.
 Once we build a Mirage unikernel with Nix, we can write a NixOS module to deploy it.
 
 ## Building Mirage unikernels
 
-Mirage uses the package manager for OCaml `opam`.
+Mirage uses the package manager for OCaml `opam`^[[opam.ocaml.org](https://opam.ocaml.org/)].
 Dependencies in `opam`, as is common in programming language package managers, has a file which -- among other meta-data, build/install scripts -- specifies dependencies and their version constraints.
 For example^[For [mirage-www](https://github.com/mirage/mirage-www) targetting `hvt`.]
 ```
@@ -285,10 +285,7 @@ In fact, it's NP-complete^[[https://research.swtch.com/version-sat](https://rese
 `opam` uses the `0install`^[[https://0install.net](0install.net)] SAT solver for dependency resolution.
 
 Nixpkgs has a large number of OCaml packages^[[github.com/NixOS/nixpkgs pkgs/development/ocaml-modules](https://github.com/NixOS/nixpkgs/blob/9234f5a17e1a7820b5e91ecd4ff0de449e293383/pkgs/development/ocaml-modules/)] which we could provide as build inputs to a Nix derivation.
-But Nixpkgs has one global coherent set of package versions^[Bar some exceptional packages that have multiple major versions packaged, like Postgres.].
-
-In fact arch has the same approach which is why it doesn't support partial upgrades.
-
+But Nixpkgs has one global coherent set of package versions^[Bar some exceptional packages that have multiple major versions packaged, like Postgres.] ^[In fact Arch has the same approach, which is why it doesn't support partial upgrades ([&#167;](#nixos)).].
 The support for installing multiple versions of a package concurrently comes from the fact that they are stored at a unique path and can be referenced separately, or symlinked, where required.
 So different projects or users that use a different version of Nixpkgs won't conflict, but Nix does not do any dependency version resolution -- everything is pinned.
 This has led to much confusion^[[github.com/NixOS/nixpkgs/issues/9682](https://github.com/NixOS/nixpkgs/issues/9682)] with how to install a specific version of a package.
@@ -298,39 +295,36 @@ This project uses the `opam` dependency versions solver inside a Nix derivation,
 Materialization can be used to create a kind of lockfile for this resolution which can be committed to the project to avoid having to do IFD on every new build.
 An alternative may be to use `opam`'s in-built version pinning^[[github.com/RyanGibb/hillingar/issues/4](https://github.com/RyanGibb/hillingar/issues/4)].
 
+However, this still doesn't support building our Mirage unikernels.
+Mirage 4^[[mirage.io/blog/announcing-mirage-40](https://mirage.io/blog/announcing-mirage-40)] uses the `dune` build system for OCaml^[[https://dune.build](dune.build)].
+Unikernels quite often need to be cross-compiled: compiled to run on a platform other than the one they're being built on.
+An common target, Solo5^[https://github.com/Solo5/solo5], is a sandboxed execution environment -- essentially acting as a minimal shim layer to interface between unikernels and different hypervisor backends.
+Solo5 uses a different `glibc` which requires cross compilation.
+Dune supports cross-compilation with toolchains; a host compiler is installed in an `opam` switch (a virtual environment) as normal, and a target compiler is created by modifying the host compiler.
+But the cross-compilation context of packages is only known at build time, as some metaprogramming modules may require preprocessing with the host compiler^[e.g. in [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10).].
+To ensure that the right compilation context is used, this means we have to provide `dune` the sources of all our dependancies.
+A tool called `opam monorepo` was created to do just that.
+
+> Cross-compilation - the details of how to build some native code can come late in the pipeline, which isn't a problem if the sources are available^[[github.com/tarides/opam-monorepo](https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6a9c5f20ed032/doc/faq.mld#L42)].
+
+We extended the `opam-nix` project to support the `opam monorepo` workflow with this pull request: [github.com/tweag/opam-nix/pull/18](https://github.com/tweag/opam-nix/pull/18).
+
+This is very low-level support for building Mirage unikernels with Nix, however.
+In order to provide a better user experience, we also created the `hillingar` Nix flake: [github.com/RyanGibb/hillingar](https://github.com/ryanGibb/hillingar).
+This wraps the mirage tooling and `opam-nix` function calls so that a simple high-level flake can be dropped into a Mirage project to support building it with Nix.
+To add Nix build support to a unikernel, simply:
+```bash
+# create a flake from hillingar's default template
+$ nix flake new . -t github:/RyanGibb/hillingar
+# substitute the name of the unikernel you're building
+$ sed -i 's/throw "Put the unikernel name here"/"<unikernel-name>"/g' flake.nix
+# build the unikernel with Nix for a particular target
+$ nix build .#<target>
+```
+
+For example, see the flake for building the Mirage website as a unikernel with Nix: [github.com/RyanGibb/mirage-www/blob/master/flake.nix](https://github.com/RyanGibb/mirage-www/blob/master/flake.nix).
+
 ---
-
-However, this still doesn't support our Mirage unikernel builds.
-we need x-compilation
-we will be built in the host compiler, and some will be built in the target compiler.
-dune sources
-opam monorepo
-
-The Mirage unikernels quite often need to be cross-compiled: compiled to run on a machine other than the machine you're building it on.
-A target they use is solo5, which isn't a different mircoarchitecture, but it uses a difrert GLIBC which requires cross compilation.
-However, PPX is a library that runs some code to generate other code, which doesn't work in a cross compilation context.
-The OCaml compiler does not support cross compilation.
-// TODO find link
-But Dune, the build system does.
-But opam has no concept to cross compilation.
-So the cross compilation information is included in the build system instructions like pre-processed this particular module in the host compiler, as oppsed to the target compiler.
-Which is something Dune has - a tool chin which has a target compiler embedded in it, which is modified from the host compiler.
-That's a bit tricky because it means we need to get all of the sources for the dependencies because we don't know in advance what context they're going to need to be built in?
-
-
-The way Mirage 4 works is - opam monorepo workflow.
-Gets all sources locally for cross compilation.
-So what we did was add support for this to `opam-nix`
-
-opam-monorepo:
-> -   Cross-compilation - the details of how to build some native code can come late in the pipeline, which isn't a problem if the sources are available
-
----
-
-
-And create a project `hillingar` which wraps the Mirage tools in Nix.
-github.com/RyanGibb/hillingar
-wraps mirage tooling
 
 As opposed to wrapping Nix in Mirage tools.
 Interesting arguments both ways - the former is better for Nix-natives and the latter better for OCaml/Mirage natives.
@@ -357,6 +351,13 @@ Dune deals well with project libraries, but not the others (although this may be
 Nix is really good system dependencies. Opam is really good at the library dependencies.
 Opam kind of tries the system dependencies but not on a very reproducible way.
 Nix tries the library dependencies but it doesn't have a way of like resolving different versions nicely.
+
+
+Opam has no concept to cross compilation
+So the cross compilation information is included in the build system instructions like pre-processed this particular module in the host compiler, as oppsed to the target compiler.
+Which is something Dune has - a tool chin which has a target compiler embedded in it, which is modified from the host compiler.
+That's a bit tricky because it means we need to get all of the sources for the dependencies because we don't know in advance what context they're going to need to be built in?
+
 
 dune cross compition ---...
 
@@ -428,10 +429,8 @@ chapter 10
 
 
 limitations:
-- dune cache use for monorepo deps
-    - as we invoke dune inside a nix derivation
-- Source deduplication takes the higher version of the dev-repo
-    - https://github.com/tarides/opam-monorepo/issues/331
+github.com/RyanGibb/hillingar/issues
+
 
 what are the benefits?:
 - enables unikernel deployments with nixOS modules
