@@ -8,14 +8,14 @@ bibliography: blog/hillingar/bibliography.bib
 
 2022-10-10
 
-> An arctic mirage[@lehnNovayaZemlyaEffect1979b]
+> An arctic mirage[@lehnNovayaZemlyaEffect1979]
 
 ![ ^[Generated with [Stable Diffusion](https://stability.ai/blog/stable-diffusion-public-release) and [GIMP](https://www.gimp.org/)] ](./hillingar2-caml.png){width=70% min-width=5cm}
 
 ## Introduction
 
 As part of my master's thesis, I've been hosting an authoritative DNS server at `ns1.gibbr.org`.
-More can be read in the dissertation^[['Spatial Name System' section 2.2 Internet Architecture](../../resources/mphil-diss.pdf#sec-internet-arch)], but DNS is one of the fundamental building blocks of the modern Internet.
+More can be read in the dissertation[@gibbSpatialNameSystem2022], but DNS is one of the fundamental building blocks of the modern Internet.
 And as part of my master's thesis procrastination, I've been running it on a NixOS machine.
 Using NixOS, deploying a DNS server is as simple as:
 ```nix
@@ -170,16 +170,16 @@ I use it to manage servers, workstations, and more.
 Compared to my previous approach of maintaining a git repository of dotfiles, this is much more modular, reproducible, and flexible.
 And if you want to deploy some new piece of software or service, it can be as easy as changing a single line in your system configuration.
 
-Despite these advantages, the reason I switched to NixOS from Arch Linux was simpler; NixOS allows rollbacks.
-As Arch packages bleeding-edge software with rolling updates it would frequently happen that some new version of something I was using would break due to a bug.
-Arch has one global coherent package set, like Nixpkgs, except you can use multiple instances of Nixpkgs (i.e. channels) at once as the Nix store allows multiple versions of a dependency to be stored at once, whereas Arch just doesn't support partial upgrades.
-So the options were to wait for the bug to be fixed, or manually rollback all the updated packages by inspecting the pacman (the Arch package manager) log and reinstalling the old versions from the local cache.
-While there may be tools on top of pacman to improve this, the straw that broke the caml's back was when I was updating the Linux kernel, something went wrong, and the machine crashed.
-I had to reinstall the kernel from a live USB to fix the issue, which is not something you want to have to do to your main workstation when you may have pressuring concerns like an upcoming deadline.
-Nix's atomic upgrades mean this wouldn't have been an issue in the first place.
-And every new system configuration creates a GRUB entry, so you can boot previous systems from your UEFI/BIOS.
+Despite these advantages, the reason I switched to NixOS from Arch Linux was simpler; NixOS allows rollbacks and atomic upgrades.
+As Arch packages bleeding-edge software with rolling updates it would frequently happen that some new version of something I was using would break.
+Arch has one global coherent package set, so to avoid complications with solving dependency versions Arch doesn't support partial upgrades.
+So the options were to wait for the bug to be fixed, or manually rollback all the updated packages by inspecting the pacman log (the Arch package manager) and reinstalling the old versions from the local cache.
+While there may be tools on top of `pacman` to improve this, the straw that broke the caml's back was when my machine crashed while updating the Linux kernel and I had to reinstall it from a live USB.
 
-The blog post 'Nix – taming Unix with functional programming' by Valentin Gagarin at Tweag^[[tweag.io/blog/2022-07-14-taming-unix-with-nix](https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/)] gives an interesting summary of Nix and NixOS.
+While Nixpkgs also has one global coherent package set, one can use multiple instances of Nixpkgs (i.e. channels) at once to support partial upgrades, as the Nix store allows multiple versions of a dependency to be stored.
+This also supports atomic upgrades as all the old versions of software can be kept until garbage collected.
+The pointers to the new packages are only updated when the install succeeds, so the crash during the Linux kernel upgrade would not have broken my OS install on NixOS.
+And every new system configuration creates a GRUB entry, so you can boot previous systems even from your UEFI/BIOS.
 
 To summarise the parts of the Nix ecosystem that we've discussed:
 
@@ -302,7 +302,7 @@ This still doesn't support building our Mirage unikernels, though.
 Unikernels quite often need to be cross-compiled: compiled to run on a platform other than the one they're being built on.
 A common target, Solo5^[[github.com/Solo5/solo5](https://github.com/Solo5/solo5)], is a sandboxed execution environment -- essentially acting as a minimal shim layer to interface between unikernels and different hypervisor backends.
 Solo5 uses a different `glibc` which requires cross-compilation.
-Mirage 4^[[mirage.io/blog/announcing-mirage-40](https://mirage.io/blog/announcing-mirage-40)] uses the Dune build system^[[dune.build](https://dune.build)] which supports cross-compilation through toolchains; a host compiler is installed in an Opam switch (a virtual environment) as normal, and a target compiler^[[github.com/mirage/ocaml-solo5](https://github.com/mirage/ocaml-solo5]) is created by modifying the host compiler.
+Mirage 4^[[mirage.io/blog/announcing-mirage-40](https://mirage.io/blog/announcing-mirage-40)] uses the Dune build system^[[dune.build](https://dune.build)] which supports cross-compilation through toolchains; a host compiler is installed in an Opam switch (a virtual environment) as normal, and a target compiler^[[github.com/mirage/ocaml-solo5](https://github.com/mirage/ocaml-solo5)] is created by modifying the host compiler.
 But the cross-compilation context of packages is only known at build time, as some metaprogramming modules may require preprocessing with the host compiler^[e.g. in [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10).].
 To ensure that the right compilation context is used, this means we have to provide Dune the sources of all our dependancies.
 A tool called `opam-monorepo` was created to do just that.
@@ -462,26 +462,7 @@ While only one was the primary motivation, other benefits of building unikernels
 Nix easily allows us to depend on this package in a reproducible way.
 - We can benefit from Nix cross-compilation support (to be explored).
 
-There are still a lot of things to improve with this project as detailed at [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues).
-The primary limitations of the project are that complex integration is required with the OCaml ecosystem to solve dependency version constraints with `opam-nix` and cross-compilation requires cloning all sources locally with `opam-monorepo` ([&#167;](#dependency-management)).
-Another issue that proved an annoyance during this project is the Nix DSL's dynamic typing.
-When writing simple derivations this doesn't often prove an issue, but when writing complicated logic it quickly gets in the way of productivity; the runtime errors produced can be very hard to parse.
-Thankfully there is work towards creating a typed language for the Nix deployment system, such as Nickel^[[www.tweag.io/blog/2020-10-22-nickel-open-sourcing](https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/)].
-However gradual typing is hard, and Nickel still isn't ready for real-world use despite being open-sourced (in a week as of writing this) for 2 years.
-
-
-
-
-
-Nix and Mirage
-both brining some kind of functional paradigm to OSes
-but top down vs bottom up
-
-
-- mirage and nix are of a similar theme
-    - bringing functional paradigm to operating systems
-    - bottom up vs top down
-
+There exists related work in the deployment and reproducible building of Mirage unikernels
 
 relevant work:
 https://mirage.io/blog/deploying-mirageos-robur
@@ -497,12 +478,24 @@ work on deploying them:
 https://hannes.robur.coop/Posts/VMM
 
 
-And I want to thank some people for the help with this project:
+
+
+There are still a lot of things to improve with this project, as detailed at [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues).
+But the primary limitations of the project are that complex integration is required with the OCaml ecosystem to solve dependency version constraints with `opam-nix` and cross-compilation requires cloning all sources locally with `opam-monorepo` ([&#167;](#dependency-management)).
+Another issue that proved an annoyance during this project is the Nix DSL's dynamic typing.
+When writing simple derivations this doesn't often prove an issue, but when writing complicated logic it quickly gets in the way of productivity; the runtime errors produced can be very hard to parse.
+Thankfully there is work towards creating a typed language for the Nix deployment system, such as Nickel^[[www.tweag.io/blog/2020-10-22-nickel-open-sourcing](https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/)].
+However gradual typing is hard, and Nickel still isn't ready for real-world use despite being open-sourced (in a week as of writing this) for 2 years.
+
+To conclude, while NixOS and MirageOS take fundamentally very different approaches, they're both trying to bring some kind of functional programming paradigm to operating systems.
+NixOS does this in a top-down manner, trying to tame Unix with functional principles like laziness and immutability^[[tweag.io/blog/2022-07-14-taming-unix-with-nix](https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/)].
+Whereas MirageOS does this by throwing Unix out the window and rebuilding the world from scratch in a very much bottom-up approach.
+Despite these two projects have such different motivations and goals, Hillingar aims to get the best from both worlds by marrying the two.
+
+Finally, I want to thank some people for their help with this project:
 
 - Lucas Pluvinage for invaluable help with the OCaml ecosystem.
 - Alexander Bantyev for getting me up to speed with the `opam-nix` project and working with me on the `opam-monorepo` workflow integration.
-- David Alsop 
-- Sonja 
 - Anil Madhavapeddy for having a discussion that led to the idea for this project.
 - Björg Bjarnadóttir for icelandic language consultation ('Hillingar').
 - And finally, everyone at Tarides for being so welcoming and helpful!
