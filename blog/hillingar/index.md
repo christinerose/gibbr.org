@@ -303,11 +303,9 @@ Unikernels quite often need to be cross-compiled: compiled to run on a platform 
 A common target, Solo5^[[github.com/Solo5/solo5](https://github.com/Solo5/solo5)], is a sandboxed execution environment -- essentially acting as a minimal shim layer to interface between unikernels and different hypervisor backends.
 Solo5 uses a different `glibc` which requires cross-compilation.
 Mirage 4^[[mirage.io/blog/announcing-mirage-40](https://mirage.io/blog/announcing-mirage-40)] uses the Dune build system^[[dune.build](https://dune.build)] which supports cross-compilation through toolchains; a host compiler is installed in an Opam switch (a virtual environment) as normal, and a target compiler^[[github.com/mirage/ocaml-solo5](https://github.com/mirage/ocaml-solo5)] is created by modifying the host compiler.
-But the cross-compilation context of packages is only known at build time, as some metaprogramming modules may require preprocessing with the host compiler^[e.g. in [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10).].
+But the cross-compilation context of packages is only known at build time, as some metaprogramming modules may require preprocessing with the host compiler.
 To ensure that the right compilation context is used, this means we have to provide Dune the sources of all our dependancies.
-A tool called `opam-monorepo` was created to do just that.
-
-> Cross-compilation - the details of how to build some native code can come late in the pipeline, which isn't a problem if the sources are available^[[github.com/tarides/opam-monorepo](https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6a9c5f20ed032/doc/faq.mld#L42)].
+A tool called `opam-monorepo` was created to do just that^[[github.com/tarides/opam-monorepo](https://github.com/tarides/opam-monorepo)].
 
 We extended the `opam-nix` project to support the `opam-monorepo` workflow with this pull request: [github.com/tweag/opam-nix/pull/18](https://github.com/tweag/opam-nix/pull/18).
 
@@ -346,46 +344,66 @@ Nix deals well with system dependencies but doesn't have a native way of resolvi
 Opam deals well with library dependencies but doesn't have a consistent way of installing system packages in a reproducible way.
 And Dune deals well with project dependencies, but not the others (although this may be changing in the future).
 
-#### Cross-compilation 
+#### Cross-compilation
+
+
 (library -> project)
 // opam cross compilation context
 
-Dune is used to support cross-compilation for Mirage unikernels.
+Dune is used to support cross-compilation for Mirage unikernels ([&#167;](#building-unikernels)).
+We encode the cross-compilation context in Dune the `preprocess` stanza is used in Dune's s-expression based Lisp-like DSL, for example from [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10) preprocesses pps:
+```lisp
+(library
+ (name tcp)
+ (public_name tcpip.tcp)
+ (instrumentation
+  (backend bisect_ppx))
+ (libraries logs ipaddr cstruct lwt-dllist mirage-profile tcpip.checksum
+   tcpip duration randomconv fmt mirage-time mirage-clock mirage-random
+   mirage-flow metrics)
+ (preprocess
+  (pps ppx_cstruct)))
+```
+
+Where ppx is options and ppx is ...
+
+
+
 This means we're essentially encoding the 
 
+
+The result of this is...
+
+> Cross-compilation - the details of how to build some native code can come late in the pipeline, which isn't a problem if the sources are available^[[github.com/tarides/opam-monorepo](https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6a9c5f20ed032/doc/faq.mld#L42)].
+
+Would be nice to encode in opam
 problem that it's by module
-so what if dune takes on more of opam's
+so what if dune takes on more of opam's functionality
+tighter integration better
+mixing library and project dependancies
 
 
-
-
-
+<!-- 
 Opam has no concept to cross compilation
 So the cross compilation information is included in the build system instructions like pre-processed this particular module in the host compiler, as oppsed to the target compiler.
 Which is something Dune has - a tool chin which has a target compiler embedded in it, which is modified from the host compiler.
-That's a bit tricky because it means we need to get all of the sources for the dependencies because we don't know in advance what context they're going to need to be built in?
+That's a bit tricky because it means we need to get all of the sources for the dependencies because we don't know in advance what context they're going to need to be built in? -->
 
-dune cross compition ---...
-
-I think it could be interesting to try and encode this in the package manager.
+<!-- I think it could be interesting to try and encode this in the package manager.
 Like this this particular module will be will built for the host compiler or the target compiler.
 But the tricky thing is some dependencies have modules which will be built in the host compiler, and some in the target compiler.
 We're conflating the library and project deps here, because we need the cross compilation context in the package manager, but the package manager only has a concept of packages - and not modules - inside a project or dependancy.
 You can have multiple packages inside of development repository, and then multiple modules inside one package.
-It's kind of messy - there's no one cohesive vision.
-
-
-
-
+It's kind of messy - there's no one cohesive vision. -->
 
 - we can benefit from nix cross compilation support (?
 
 The build process of certain compilers is written in such a way that the compiler resulting from a single build can itself only produce binaries for a single platform. The task of specifying this single “target platform” is thus pushed to build time of the compiler. The root cause of this is that the compiler (which will be run on the host) and the standard library/runtime (which will be run on the target) are built by a single build process. 
 
+https://nixos.org/manual/nixpkgs/stable/#chap-cross
 
 #### Version Resolution
-(system -> library)
-// system + library
+
 use opam version rsolution
 
 The workaround to get
@@ -410,11 +428,11 @@ https://github.com/RyanGibb/opam-nix#materialization
 However this doesn't address project dependancies...
 
 
+this is basicaly making nix handle library dependandices with a version solver
 
+---
 
-
-(library)
-// sat solver even required?
+Another approach makes consuder if a complicated version solver is even required?
 
 https://research.swtch.com/version-sat
 
@@ -426,8 +444,10 @@ It could be interesting to link a binary using different versions of the same pa
 
 Lucas has a vision of resolving dependencies by interface types rather than numerical versions...
 
+https://twitter.com/TheLortex/status/1571884882363830273
 
 #### Build systems
+
 (system -> project)
 // Nix low level build system
 
@@ -442,10 +462,6 @@ Nix can also be thought as a coarse grained build system
 and low level stuff?
 [1]	E. Dolstra, The purely functional software deployment model. S.l.: s.n., 2006.
 chapter 10
-
-// Cross-compilation
-
-
 
 ## Conclusion
 
@@ -462,23 +478,13 @@ While only one was the primary motivation, other benefits of building unikernels
 Nix easily allows us to depend on this package in a reproducible way.
 - We can benefit from Nix cross-compilation support (to be explored).
 
-There exists related work in the deployment and reproducible building of Mirage unikernels
-
-relevant work:
-https://mirage.io/blog/deploying-mirageos-robur
-Nix is source based...
-could deploy binaries with a binary cache
-as long as, e.g. zonefile, is not part of the build
-
-reproducible builds:
-https://hannes.nqsb.io/Posts/ReproducibleOPAM
-https://robur.coop/Projects/Reproducible_builds
-
-work on deploying them:
-https://hannes.robur.coop/Posts/VMM
-
-
-
+There exists related work in the deployment and reproducible building of Mirage unikernels.
+Albotross^[[hannes.robur.coop/Posts/VMM](https://hannes.robur.coop/Posts/VMM)] is one such tool for deploying unikernels.
+Albotross differs from Hillingar in that it also aims to provision resources for unikernels, share resources for unikernels between users, and monitor unikernels, with a Unix daemon;
+whereas Hillingar focuses on declaratively managing unikernel deployments reproducibly.
+It would be interesting to use Albotross to manage some of the inheritance imperative processes being unikernels as well as share access to resources for unikernels for other users on a NixOS system.
+There is also work in improving the reproducibility of Opam packages (as Mirage unikernels are Opam packages themselves)^[[hannes.nqsb.io/Posts/ReproducibleOPAM](https://hannes.nqsb.io/Posts/ReproducibleOPAM)].
+Hillingar differs in that it only uses Opam for version resolution, instead using Nix to provide dependencies, which provides reproducibility with pinned Nix derivation inputs and builds in isolation by default.
 
 There are still a lot of things to improve with this project, as detailed at [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues).
 But the primary limitations of the project are that complex integration is required with the OCaml ecosystem to solve dependency version constraints with `opam-nix` and cross-compilation requires cloning all sources locally with `opam-monorepo` ([&#167;](#dependency-management)).
@@ -486,16 +492,19 @@ Another issue that proved an annoyance during this project is the Nix DSL's dyna
 When writing simple derivations this doesn't often prove an issue, but when writing complicated logic it quickly gets in the way of productivity; the runtime errors produced can be very hard to parse.
 Thankfully there is work towards creating a typed language for the Nix deployment system, such as Nickel^[[www.tweag.io/blog/2020-10-22-nickel-open-sourcing](https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/)].
 However gradual typing is hard, and Nickel still isn't ready for real-world use despite being open-sourced (in a week as of writing this) for 2 years.
+Finally, despite it being the primary motivation we haven't actually written NixOS module for deploying a DNS server as a unikernel.
+There are still questions about how to provision resources like network access and provide zonefile data decleratively before we do this.
 
 To conclude, while NixOS and MirageOS take fundamentally very different approaches, they're both trying to bring some kind of functional programming paradigm to operating systems.
 NixOS does this in a top-down manner, trying to tame Unix with functional principles like laziness and immutability^[[tweag.io/blog/2022-07-14-taming-unix-with-nix](https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/)].
 Whereas MirageOS does this by throwing Unix out the window and rebuilding the world from scratch in a very much bottom-up approach.
-Despite these two projects have such different motivations and goals, Hillingar aims to get the best from both worlds by marrying the two.
+Despite these two projects having such different motivations and goals, Hillingar aims to get the best from both worlds by marrying the two.
 
 Finally, I want to thank some people for their help with this project:
 
 - Lucas Pluvinage for invaluable help with the OCaml ecosystem.
 - Alexander Bantyev for getting me up to speed with the `opam-nix` project and working with me on the `opam-monorepo` workflow integration.
+- David Allsopp for his Opam knowledge.
 - Anil Madhavapeddy for having a discussion that led to the idea for this project.
 - Björg Bjarnadóttir for icelandic language consultation ('Hillingar').
 - And finally, everyone at Tarides for being so welcoming and helpful!

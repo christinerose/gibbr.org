@@ -557,17 +557,12 @@ virtual environment) as normal, and a target compiler<a href="#fn29"
 class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a>
 is created by modifying the host compiler. But the cross-compilation
 context of packages is only known at build time, as some metaprogramming
-modules may require preprocessing with the host compiler<a href="#fn30"
-class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>.
-To ensure that the right compilation context is used, this means we have
-to provide Dune the sources of all our dependancies. A tool called
-<code>opam-monorepo</code> was created to do just that.</p>
-<blockquote>
-<p>Cross-compilation - the details of how to build some native code can
-come late in the pipeline, which isn’t a problem if the sources are
-available<a href="#fn31" class="footnote-ref" id="fnref31"
-role="doc-noteref"><sup>31</sup></a>.</p>
-</blockquote>
+modules may require preprocessing with the host compiler. To ensure that
+the right compilation context is used, this means we have to provide
+Dune the sources of all our dependancies. A tool called
+<code>opam-monorepo</code> was created to do just that<a href="#fn30"
+class="footnote-ref" id="fnref30"
+role="doc-noteref"><sup>30</sup></a>.</p>
 <p>We extended the <code>opam-nix</code> project to support the
 <code>opam-monorepo</code> workflow with this pull request: <a
 href="https://github.com/tweag/opam-nix/pull/18">github.com/tweag/opam-nix/pull/18</a>.</p>
@@ -619,30 +614,46 @@ future).</p>
 <h4 id="cross-compilation"><a href="#cross-compilation" class="anchor"
 aria-hidden="true">Cross-compilation</a></h4>
 <p>(library -&gt; project) // opam cross compilation context</p>
-<p>Dune is used to support cross-compilation for Mirage unikernels. This
-means we’re essentially encoding the</p>
-<p>problem that it’s by module so what if dune takes on more of
-opam’s</p>
-<p>Opam has no concept to cross compilation So the cross compilation
-information is included in the build system instructions like
-pre-processed this particular module in the host compiler, as oppsed to
-the target compiler. Which is something Dune has - a tool chin which has
-a target compiler embedded in it, which is modified from the host
-compiler. That’s a bit tricky because it means we need to get all of the
-sources for the dependencies because we don’t know in advance what
-context they’re going to need to be built in?</p>
-<p>dune cross compition —…</p>
-<p>I think it could be interesting to try and encode this in the package
-manager. Like this this particular module will be will built for the
-host compiler or the target compiler. But the tricky thing is some
-dependencies have modules which will be built in the host compiler, and
-some in the target compiler. We’re conflating the library and project
-deps here, because we need the cross compilation context in the package
-manager, but the package manager only has a concept of packages - and
-not modules - inside a project or dependancy. You can have multiple
-packages inside of development repository, and then multiple modules
-inside one package. It’s kind of messy - there’s no one cohesive
-vision.</p>
+<p>Dune is used to support cross-compilation for Mirage unikernels (<a
+href="#building-unikernels">§</a>). We encode the cross-compilation
+context in Dune the <code>preprocess</code> stanza is used in Dune’s
+s-expression based Lisp-like DSL, for example from <a
+href="https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10"><code>mirage-tcpip</code></a>
+preprocesses pps:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(library</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a> (name tcp)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a> (public_name tcpip.tcp)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a> (instrumentation</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  (backend bisect_ppx))</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a> (libraries logs ipaddr cstruct lwt-dllist mirage-profile tcpip.checksum</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>   tcpip duration randomconv fmt mirage-time mirage-clock mirage-random</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>   mirage-flow metrics)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a> (preprocess</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  (pps ppx_cstruct)))</span></code></pre></div>
+<p>Where ppx is options and ppx is …</p>
+<p>This means we’re essentially encoding the</p>
+<p>The result of this is…</p>
+<blockquote>
+<p>Cross-compilation - the details of how to build some native code can
+come late in the pipeline, which isn’t a problem if the sources are
+available<a href="#fn31" class="footnote-ref" id="fnref31"
+role="doc-noteref"><sup>31</sup></a>.</p>
+</blockquote>
+<p>Would be nice to encode in opam problem that it’s by module so what
+if dune takes on more of opam’s functionality tighter integration better
+mixing library and project dependancies</p>
+<!-- 
+Opam has no concept to cross compilation
+So the cross compilation information is included in the build system instructions like pre-processed this particular module in the host compiler, as oppsed to the target compiler.
+Which is something Dune has - a tool chin which has a target compiler embedded in it, which is modified from the host compiler.
+That's a bit tricky because it means we need to get all of the sources for the dependencies because we don't know in advance what context they're going to need to be built in? -->
+<!-- I think it could be interesting to try and encode this in the package manager.
+Like this this particular module will be will built for the host compiler or the target compiler.
+But the tricky thing is some dependencies have modules which will be built in the host compiler, and some in the target compiler.
+We're conflating the library and project deps here, because we need the cross compilation context in the package manager, but the package manager only has a concept of packages - and not modules - inside a project or dependancy.
+You can have multiple packages inside of development repository, and then multiple modules inside one package.
+It's kind of messy - there's no one cohesive vision. -->
 <ul>
 <li>we can benefit from nix cross compilation support (?</li>
 </ul>
@@ -653,10 +664,10 @@ binaries for a single platform. The task of specifying this single
 cause of this is that the compiler (which will be run on the host) and
 the standard library/runtime (which will be run on the target) are built
 by a single build process.</p>
+<p>https://nixos.org/manual/nixpkgs/stable/#chap-cross</p>
 <h4 id="version-resolution"><a href="#version-resolution" class="anchor"
 aria-hidden="true">Version Resolution</a></h4>
-<p>(system -&gt; library) // system + library use opam version
-rsolution</p>
+<p>use opam version rsolution</p>
 <p>The workaround to get</p>
 <p>Going forward, is there a way to manage 3 dep versions in a more
 unified way? work in: https://github.com/nix-community/dream2nix but
@@ -669,7 +680,11 @@ dependancy versions, and to create derivations for the resulting
 sources, but otherwise should be ecosystem agnostic</p>
 <p>lockfile: https://github.com/RyanGibb/opam-nix#materialization</p>
 <p>However this doesn’t address project dependancies…</p>
-<p>(library) // sat solver even required?</p>
+<p>this is basicaly making nix handle library dependandices with a
+version solver</p>
+<hr />
+<p>Another approach makes consuder if a complicated version solver is
+even required?</p>
 <p>https://research.swtch.com/version-sat</p>
 <p>trying to link a binary….</p>
 <p>It could be interesting to link a binary using different versions of
@@ -688,6 +703,7 @@ of D (under different fully-qualified names) into a program.</p>
 </blockquote>
 <p>Lucas has a vision of resolving dependencies by interface types
 rather than numerical versions…</p>
+<p>https://twitter.com/TheLortex/status/1571884882363830273</p>
 <h4 id="build-systems"><a href="#build-systems" class="anchor"
 aria-hidden="true">Build systems</a></h4>
 <p>(system -&gt; project) // Nix low level build system</p>
@@ -704,7 +720,6 @@ input is also a deticaiton with a hash base on its inputs).</p>
 <p>Nix can also be thought as a coarse grained build system</p>
 <p>and low level stuff? [1] E. Dolstra, The purely functional software
 deployment model. S.l.: s.n., 2006. chapter 10</p>
-<p>// Cross-compilation</p>
 <h2 id="conclusion"><a href="#conclusion" class="anchor"
 aria-hidden="true">Conclusion</a></h2>
 <p>To summarise, this project was motivated (<a
@@ -734,13 +749,22 @@ on this package in a reproducible way.</li>
 explored).</li>
 </ul>
 <p>There exists related work in the deployment and reproducible building
-of Mirage unikernels</p>
-<p>relevant work: https://mirage.io/blog/deploying-mirageos-robur Nix is
-source based… could deploy binaries with a binary cache as long as,
-e.g. zonefile, is not part of the build</p>
-<p>reproducible builds: https://hannes.nqsb.io/Posts/ReproducibleOPAM
-https://robur.coop/Projects/Reproducible_builds</p>
-<p>work on deploying them: https://hannes.robur.coop/Posts/VMM</p>
+of Mirage unikernels. Albotross<a href="#fn32" class="footnote-ref"
+id="fnref32" role="doc-noteref"><sup>32</sup></a> is one such tool for
+deploying unikernels. Albotross differs from Hillingar in that it also
+aims to provision resources for unikernels, share resources for
+unikernels between users, and monitor unikernels, with a Unix daemon;
+whereas Hillingar focuses on declaratively managing unikernel
+deployments reproducibly. It would be interesting to use Albotross to
+manage some of the inheritance imperative processes being unikernels as
+well as share access to resources for unikernels for other users on a
+NixOS system. There is also work in improving the reproducibility of
+Opam packages (as Mirage unikernels are Opam packages themselves)<a
+href="#fn33" class="footnote-ref" id="fnref33"
+role="doc-noteref"><sup>33</sup></a>. Hillingar differs in that it only
+uses Opam for version resolution, instead using Nix to provide
+dependencies, which provides reproducibility with pinned Nix derivation
+inputs and builds in isolation by default.</p>
 <p>There are still a lot of things to improve with this project, as
 detailed at <a
 href="https://github.com/RyanGibb/hillingar/issues">github.com/RyanGibb/hillingar/issues</a>.
@@ -754,19 +778,23 @@ writing simple derivations this doesn’t often prove an issue, but when
 writing complicated logic it quickly gets in the way of productivity;
 the runtime errors produced can be very hard to parse. Thankfully there
 is work towards creating a typed language for the Nix deployment system,
-such as Nickel<a href="#fn32" class="footnote-ref" id="fnref32"
-role="doc-noteref"><sup>32</sup></a>. However gradual typing is hard,
+such as Nickel<a href="#fn34" class="footnote-ref" id="fnref34"
+role="doc-noteref"><sup>34</sup></a>. However gradual typing is hard,
 and Nickel still isn’t ready for real-world use despite being
-open-sourced (in a week as of writing this) for 2 years.</p>
+open-sourced (in a week as of writing this) for 2 years. Finally,
+despite it being the primary motivation we haven’t actually written
+NixOS module for deploying a DNS server as a unikernel. There are still
+questions about how to provision resources like network access and
+provide zonefile data decleratively before we do this.</p>
 <p>To conclude, while NixOS and MirageOS take fundamentally very
 different approaches, they’re both trying to bring some kind of
 functional programming paradigm to operating systems. NixOS does this in
 a top-down manner, trying to tame Unix with functional principles like
-laziness and immutability<a href="#fn33" class="footnote-ref"
-id="fnref33" role="doc-noteref"><sup>33</sup></a>. Whereas MirageOS does
+laziness and immutability<a href="#fn35" class="footnote-ref"
+id="fnref35" role="doc-noteref"><sup>35</sup></a>. Whereas MirageOS does
 this by throwing Unix out the window and rebuilding the world from
 scratch in a very much bottom-up approach. Despite these two projects
-have such different motivations and goals, Hillingar aims to get the
+having such different motivations and goals, Hillingar aims to get the
 best from both worlds by marrying the two.</p>
 <p>Finally, I want to thank some people for their help with this
 project:</p>
@@ -775,6 +803,7 @@ project:</p>
 <li>Alexander Bantyev for getting me up to speed with the
 <code>opam-nix</code> project and working with me on the
 <code>opam-monorepo</code> workflow integration.</li>
+<li>David Allsopp for his Opam knowledge.</li>
 <li>Anil Madhavapeddy for having a discussion that led to the idea for
 this project.</li>
 <li>Björg Bjarnadóttir for icelandic language consultation
@@ -997,8 +1026,8 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 href="https://github.com/mirage/ocaml-solo5">github.com/mirage/ocaml-solo5</a><a
 href="#fnref29" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn30" role="doc-endnote"><p>e.g. in <a
-href="https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10"><code>mirage-tcpip</code></a>.<a
+<li id="fn30" role="doc-endnote"><p><a
+href="https://github.com/tarides/opam-monorepo">github.com/tarides/opam-monorepo</a><a
 href="#fnref30" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn31" role="doc-endnote"><p><a
@@ -1006,12 +1035,20 @@ href="https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6
 href="#fnref31" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn32" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/">www.tweag.io/blog/2020-10-22-nickel-open-sourcing</a><a
+href="https://hannes.robur.coop/Posts/VMM">hannes.robur.coop/Posts/VMM</a><a
 href="#fnref32" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn33" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
+href="https://hannes.nqsb.io/Posts/ReproducibleOPAM">hannes.nqsb.io/Posts/ReproducibleOPAM</a><a
 href="#fnref33" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn34" role="doc-endnote"><p><a
+href="https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/">www.tweag.io/blog/2020-10-22-nickel-open-sourcing</a><a
+href="#fnref34" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn35" role="doc-endnote"><p><a
+href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
+href="#fnref35" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
