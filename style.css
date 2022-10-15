@@ -112,6 +112,6 @@ iframe {
 	aspect-ratio: 16/9;
 }
 
-.footnote-ref, .footnote-back {
+.footnote-ref, .footnote-back, .citation a {
 	text-decoration: none;
 }
