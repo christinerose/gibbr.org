@@ -351,7 +351,7 @@ This is the level of granualrity that compilers and interpretters are normally c
 
 Nix deals well with system dependencies but doesn't have a native way of resolving library dependency versions.
 Opam deals well with library dependencies but doesn't have a consistent way of installing system packages in a reproducible way.
-And Dune deals with file dependencies, but not the others (although this may be changing in the future).
+And Dune deals with file dependencies, but not the others.
 The OCaml compiler keeps track of function dependencies when compiling and linking a program.
 
 #### Cross-compilation
@@ -379,7 +379,8 @@ This means we're essentially encoding the compilation context in the build syste
 To remove the requirement to clone dependancy sources locally with `opam-monorepo` we could try and encode the compilation context in the package manager.
 However, preprocessing can be at the OCaml module level of granualrity.
 Dune deals with this level of granuality with file dependancies, but Opam doesn't.
-Tigher integration between the build and package manager could improve this situation, like Rust's `cargo`, which there are some plans towards.
+Tigher integration between the build and package manager could improve this situation, like Rust's `cargo`.
+There are some plans towards modularising Opam and creating tigher integration with Dune.
 
 There is also the possibility of using Nix to avoid cross-compilation.
 Nixpkg's cross compilation^[https://nixos.org/manual/nixpkgs/stable/#chap-cross] will not help us here, as it simply specifies how to package software in a cross-compilation friendly way.

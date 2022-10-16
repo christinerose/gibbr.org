@@ -625,9 +625,8 @@ interpretters are normally concerened with.</li>
 of resolving library dependency versions. Opam deals well with library
 dependencies but doesn’t have a consistent way of installing system
 packages in a reproducible way. And Dune deals with file dependencies,
-but not the others (although this may be changing in the future). The
-OCaml compiler keeps track of function dependencies when compiling and
-linking a program.</p>
+but not the others. The OCaml compiler keeps track of function
+dependencies when compiling and linking a program.</p>
 <h4 id="cross-compilation"><a href="#cross-compilation" class="anchor"
 aria-hidden="true">Cross-compilation</a></h4>
 <p>Dune is used to support cross-compilation for Mirage unikernels (<a
@@ -663,8 +662,8 @@ the compilation context in the package manager. However, preprocessing
 can be at the OCaml module level of granualrity. Dune deals with this
 level of granuality with file dependancies, but Opam doesn’t. Tigher
 integration between the build and package manager could improve this
-situation, like Rust’s <code>cargo</code>, which there are some plans
-towards.</p>
+situation, like Rust’s <code>cargo</code>. There are some plans towards
+modularising Opam and creating tigher integration with Dune.</p>
 <p>There is also the possibility of using Nix to avoid
 cross-compilation. Nixpkg’s cross compilation<a href="#fn32"
 class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a>
