@@ -487,7 +487,7 @@ Hillingar differs in that it only uses Opam for version resolution, instead usin
 There are still a lot of things to improve with this project, as detailed at [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues).
 But the primary limitations of the project are that complex integration is required with the OCaml ecosystem to solve dependency version constraints with `opam-nix` and cross-compilation requires cloning all sources locally with `opam-monorepo` ([&#167;](#dependency-management)).
 Another issue that proved an annoyance during this project is the Nix DSL's dynamic typing.
-When writing simple derivations this doesn't often prove an issue, but when writing complicated logic it quickly gets in the way of productivity; the runtime errors produced can be very hard to parse.
+When writing simple derivations this often isn't a problem, but when writing complicated logic it quickly gets in the way of productivity; the runtime errors produced can be very hard to parse.
 Thankfully there is work towards creating a typed language for the Nix deployment system, such as Nickel^[[www.tweag.io/blog/2020-10-22-nickel-open-sourcing](https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/)].
 However gradual typing is hard, and Nickel still isn't ready for real-world use despite being open-sourced (in a week as of writing this) for 2 years.
 Finally, despite it being the primary motivation we haven't actually written NixOS module for deploying a DNS server as a unikernel.

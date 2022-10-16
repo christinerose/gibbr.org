@@ -859,10 +859,10 @@ constraints with <code>opam-nix</code> and cross-compilation requires
 cloning all sources locally with <code>opam-monorepo</code> (<a
 href="#dependency-management">§</a>). Another issue that proved an
 annoyance during this project is the Nix DSL’s dynamic typing. When
-writing simple derivations this doesn’t often prove an issue, but when
-writing complicated logic it quickly gets in the way of productivity;
-the runtime errors produced can be very hard to parse. Thankfully there
-is work towards creating a typed language for the Nix deployment system,
+writing simple derivations this often isn’t a problem, but when writing
+complicated logic it quickly gets in the way of productivity; the
+runtime errors produced can be very hard to parse. Thankfully there is
+work towards creating a typed language for the Nix deployment system,
 such as Nickel<a href="#fn42" class="footnote-ref" id="fnref42"
 role="doc-noteref"><sup>42</sup></a>. However gradual typing is hard,
 and Nickel still isn’t ready for real-world use despite being
