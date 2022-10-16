@@ -176,8 +176,8 @@ And if you want to deploy some new piece of software or service, it can be as ea
 Despite these advantages, the reason I switched to NixOS from Arch Linux was simpler; NixOS allows rollbacks and atomic upgrades.
 As Arch packages bleeding-edge software with rolling updates it would frequently happen that some new version of something I was using would break.
 Arch has one global coherent package set, so to avoid complications with solving dependency versions Arch doesn't support partial upgrades.
-So the options were to wait for the bug to be fixed, or manually rollback all the updated packages by inspecting the pacman log (the Arch package manager) and reinstalling the old versions from the local cache.
-While there may be tools on top of `pacman` to improve this, the straw that broke the caml's back was when my machine crashed while updating the Linux kernel and I had to reinstall it from a live USB.
+Given this, the options were to wait for the bug to be fixed, or manually rollback all the updated packages by inspecting the pacman log (the Arch package manager) and reinstalling the old versions from the local cache.
+While there may be tools on top of `pacman` to improve this, the straw that broke the camel's back was when my machine crashed while updating the Linux kernel and I had to reinstall it from a live USB.
 
 While Nixpkgs also has one global coherent package set, one can use multiple instances of Nixpkgs (i.e. channels) at once to support partial upgrades, as the Nix store allows multiple versions of a dependency to be stored.
 This also supports atomic upgrades as all the old versions of software can be kept until garbage collected.

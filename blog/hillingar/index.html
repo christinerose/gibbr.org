@@ -357,12 +357,12 @@ Linux was simpler; NixOS allows rollbacks and atomic upgrades. As Arch
 packages bleeding-edge software with rolling updates it would frequently
 happen that some new version of something I was using would break. Arch
 has one global coherent package set, so to avoid complications with
-solving dependency versions Arch doesn’t support partial upgrades. So
-the options were to wait for the bug to be fixed, or manually rollback
-all the updated packages by inspecting the pacman log (the Arch package
-manager) and reinstalling the old versions from the local cache. While
-there may be tools on top of <code>pacman</code> to improve this, the
-straw that broke the caml’s back was when my machine crashed while
+solving dependency versions Arch doesn’t support partial upgrades. Given
+this, the options were to wait for the bug to be fixed, or manually
+rollback all the updated packages by inspecting the pacman log (the Arch
+package manager) and reinstalling the old versions from the local cache.
+While there may be tools on top of <code>pacman</code> to improve this,
+the straw that broke the camel’s back was when my machine crashed while
 updating the Linux kernel and I had to reinstall it from a live USB.</p>
 <p>While Nixpkgs also has one global coherent package set, one can use
 multiple instances of Nixpkgs (i.e. channels) at once to support partial
