@@ -15,7 +15,7 @@ bibliography: blog/hillingar/bibliography.bib
 ## Introduction
 
 As part of my master's thesis, I've been hosting an authoritative DNS server at `ns1.gibbr.org`.
-More can be read in the dissertation[@gibbSpatialNameSystem2022], but DNS is one of the fundamental building blocks of the modern Internet.
+More can be read in the dissertation [@gibbSpatialNameSystem2022], but DNS is one of the fundamental building blocks of the modern Internet.
 And as part of my master's thesis procrastination, I've been running it on a NixOS machine.
 Using NixOS, deploying a DNS server is as simple as:
 ```nix
@@ -39,10 +39,10 @@ $ dig gibbr.org @ns1.gibbr.org +short
 Setting up a glue record with our registrar pointing `ns1.gibbr.org` to the IP address of our DNS-hosting machine allows anyone to use our authoritative server via their resolver.
 
 As you might notice, this is running the venerable bind^[[ISC bind](https://www.isc.org/bind/) has many [CVE's](https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64)] written in C.
-As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution[@madhavapeddyMelangeCreatingFunctional2007].
+As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution [@madhavapeddyMelangeCreatingFunctional2007].
 One such language is OCaml.
 
-The MirageOS project is a deployment method for these OCaml programs[@madhavapeddyUnikernelsLibraryOperating2013].
+The MirageOS project is a deployment method for these OCaml programs [@madhavapeddyUnikernelsLibraryOperating2013].
 Instead of running them as a traditional Unix process, we instead create a specialised 'unikernel' operating system to run the application, which allows dead code elimination improving security with smaller attack surfaces and improved efficiency.
 
 However, to deploy a Mirage unikernel with NixOS one has to use the imperative deployment methodologies native to the OCaml ecosystem, eliminating the benefit of reproducible systems that Nix gives us.
@@ -57,7 +57,7 @@ At this point, the curious reader might be wondering, what on earth is 'Nix'?
 Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post as they all fundamentally mean the same thing - a piece of software.] which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
 <!-- We replace references to a component with this absolute path, or symlink into the nix store for the system path, for example. -->
 This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades and downgrades, and 
-multiple user environments[@dolstraNixSafePolicyFree2004].
+multiple user environments [@dolstraNixSafePolicyFree2004].
 
 Nix uses a declarative domain-specific language (DSL), also called 'Nix', to build and configure software.
 The snippet used to deploy the DNS server is in fact a Nix expression.
@@ -133,7 +133,7 @@ Nix realisations (hereafter referred to as builds) are done in isolation to ensu
 Projects often rely on interacting with package managers to make sure all dependencies are available, and may implicitly rely on system configuration at build time.
 To prevent this, every Nix derivation is built in isolation, without network access or access to the global file system, with only other Nix derivations as inputs.
 
-> The name Nix is derived from the Dutch word niks, meaning nothing; build actions do not see anything that has not been explicitly declared as an input[@dolstraNixSafePolicyFree2004].
+> The name Nix is derived from the Dutch word niks, meaning nothing; build actions do not see anything that has not been explicitly declared as an input [@dolstraNixSafePolicyFree2004].
 
 <!-- There are analogies to functional program versus imperative programming, but applied to system management and software builds/deployment. -->
 
@@ -152,7 +152,7 @@ Since packages are built in isolation and entirely determined by their inputs, b
 
 #### NixOS
 
-NixOS^[[nixos.org](https://nixos.org)] is a Linux distribution built with Nix from a modular, purely functional specification[@dolstraNixOSPurelyFunctional2008].
+NixOS^[[nixos.org](https://nixos.org)] is a Linux distribution built with Nix from a modular, purely functional specification [@dolstraNixOSPurelyFunctional2008].
 It has no traditional filesystem hierarchy (FSH) -- like `/bin`, `/lib`, `/usr` -- but instead stores all components in `/nix/store`.
 The configuration of the system is managed by Nix, with configuration files being built from modular Nix expressions.
 NixOS modules are just that -- small bits of configuration written in Nix that can be composed to build a full NixOS system^[[NixOS manual Chapter 66. Writing NixOS Modules](https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules).]
@@ -200,12 +200,12 @@ More detail about flakes can be read in a series of blog posts by Eelco on the t
 
 ![ ^[Credits to Takayuki Imada] ](./mirage-logo.svg){width=50% min-width=5cm}
 
-MirageOS is a library operating system that creates unikernels containing low-level operating system code and high-level application code bundled into one kernel and one address space[@madhavapeddyUnikernelsLibraryOperating2013].
+MirageOS is a library operating system that creates unikernels containing low-level operating system code and high-level application code bundled into one kernel and one address space [@madhavapeddyUnikernelsLibraryOperating2013].
 <!-- security, performance, speed -->
-It was the first such 'unikernel creation framework', but it comes from a long lineage of OS research such as the exokernel library OS architecture[@englerExokernelOperatingSystem].
+It was the first such 'unikernel creation framework', but it comes from a long lineage of OS research such as the exokernel library OS architecture [@englerExokernelOperatingSystem].
 Embedding application code in the kernel allows for dead-code elimination -- removing OS interfaces that are used -- reducing the unikernels attack surface and offering improved efficiency.
 
-![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach[@madhavapeddyUnikernelsLibraryOperating2013] ](./mirage-diagram.svg){width=70% min-width=5cm}
+![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach [@madhavapeddyUnikernelsLibraryOperating2013] ](./mirage-diagram.svg){width=70% min-width=5cm}
 
 Mirage unikernels are written in the typesafe high-level functional programming language OCaml.
 OCaml is a bit more practical than other functional programming languages such as Haskell for systems programming, such as supporting falling back on impure imperative code or mutable variables when warranted.
@@ -285,8 +285,8 @@ depends: [
 And each of these dependencies will have its own dependencies with their own version constraints.
 As we can only link one dependency into the resulting program, we need to solve a set of dependency versions that satisfies these constraints.
 This is not an easy problem.
-In fact, it's NP-complete^[[research.swtch.com/version-sat](https://research.swtch.com/version-sat)].
-Opam uses the Zero Install`^[[0install.net](https://0install.net)] SAT solver for dependency resolution.
+In fact, it's NP-complete [@coxVersionSAT2016].
+Opam uses the Zero Install^[[0install.net](https://0install.net)] SAT solver for dependency resolution.
 
 Nixpkgs has a large number of OCaml packages^[[github.com/NixOS/nixpkgs pkgs/development/ocaml-modules](https://github.com/NixOS/nixpkgs/blob/9234f5a17e1a7820b5e91ecd4ff0de449e293383/pkgs/development/ocaml-modules/)] which we could provide as build inputs to a Nix derivation.
 But they are not as complete nor up to date as those in `opam-repository`^[[github.com/ocaml/opam-repository](https://github.com/ocaml/opam-repository)].
@@ -349,7 +349,7 @@ E.g. C includes, Java classes, Python imports, and OCaml modules.
 
 Nix deals well with system dependencies but doesn't have a native way of resolving library dependency versions.
 Opam deals well with library dependencies but doesn't have a consistent way of installing system packages in a reproducible way.
-And Dune deals with project dependencies, but not the others (although this may be changing in the future).
+And Dune deals with repository dependencies, but not the others (although this may be changing in the future).
 The OCaml compiler keeps track of function dependencies when compiling and linking a program.
 
 #### Cross-compilation
@@ -392,7 +392,7 @@ But generally, `X2nix` projects are numerous and created in an ad hoc way.
 Part of this is dealing with every language's ecosystems package repository system, and there are existing approaches^[[github.com/nix-community/dream2nix](https://github.com/nix-community/dream2nix)] ^[[github.com/timbertson/fetlock](https://github.com/timbertson/fetlock)] aimed at reducing code duplication, but there is still the fundamental problem of version resolution.
 Nix uses pointers (paths) to refer to different versions of a dependancy, which works well solving the dimond dependancy problem for system depdnancies, but we don't have this luxury when linking a binary with library dependancies.
 
-![The diamond dependancy problem.](version-sat.svg){width=100% min-width=5cm}
+![The diamond dependancy problem [@coxVersionSAT2016].](version-sat.svg){width=100% min-width=5cm}
 
 This is exactly why Opam uses a constraint solver to find a coherent package set.
 But what if we could split version solving functionality into something that can tie into any language ecosystem?
@@ -403,44 +403,20 @@ Although perhaps this is too lofty a goal to be practical, and perhaps the real 
 
 Nix allows multiple versions of a package to be installed simultaneously by having different derivations refer to different paths in the Nix store concurrently.
 What if we could use a similar approach for linking binaries to sidestep the version constraint solving altogether at the cost of larger binaries (a similar tradeoff Nix makes with disk space)?
-A very simple approach might be to programatically prepend/append function calls with the dependancy version name for the packages `B` and `C` in the diagram above.
+A very simple approach might be to programatically prepend/append function calls with the dependancy version name `vers1` and `verse2` for the packages `B` and `C` respectively in the diagram above.
 
+> Another way to avoid NP-completeness is to attack assumption 4: what if two different versions of a package could be installed simultaneously? Then almost any search algorithm will find a combination of packages to build the program; it just might not be the smallest possible combination (that's still NP-complete). If B needs D 1.5 and C needs D 2.2, the build can include both packages in the final binary, treating them as distinct packages. I mentioned above that there can't be two definitions of printf built into a C program, but languages with explicit module systems should have no problem including separate copies of D (under different fully-qualified names) into a program. [@coxVersionSAT2016]
 
-
-
-Function dependancies
-
-
-Another approach makes consuder if a complicated version solver is even required?
-
-https://research.swtch.com/version-sat
-
-trying to link a binary....
-
-It could be interesting to link a binary using different versions of the same package (preprending signatures with versions, say).
-
-> Another way to avoid NP-completeness is to attack assumption 4: what if two different versions of a package could be installed simultaneously? Then almost any search algorithm will find a combination of packages to build the program; it just might not be the smallest possible combination (that's still NP-complete). If B needs D 1.5 and C needs D 2.2, the build can include both packages in the final binary, treating them as distinct packages. I mentioned above that there can't be two definitions of printf built into a C program, but languages with explicit module systems should have no problem including separate copies of D (under different fully-qualified names) into a program. 
-
-Lucas has a vision of resolving dependencies by interface types rather than numerical versions...
-
-https://twitter.com/TheLortex/status/1571884882363830273
+Another, wackier, idea is to resolve dependancies purely based on typing^[[twitter.com/TheLortex/status/1571884882363830273](https://twitter.com/TheLortex/status/1571884882363830273)].
 
 #### Build systems
 
-(system -> project)
-// Nix low level build system
+The build script in a Nix derivation -- if it doesn't invoke a compiler directly -- often invokes a build system like Make, or in this case Dune.
+But Nix can also be considered a build system with a suspending scheduler -- allowing a minimal build system with dynamic dependencies -- and deep constructive trace rebuilding allowing reproducible builds and reliable binary caching [@mokhovBuildSystemsCarte2018].
+But Nix is at a coarse-grained package level, invoking these finer-grained build systems to deal with repository dependencies.
 
-The build script in a Nix derivation, if it doesn't invoke a compiler directly, often invokes a build system like `make`.
-But Nix can also be considered a build system too[@mokhovBuildSystemsCarte2018].
-It takes a build graph and computes.
-
-If any of the detivtion's inputs change, the hash will change, and the path will change. So this.captures deep traces of inputs (as each input is also a deticaiton with a hash base on its inputs).
-
-Nix can also be thought as a coarse grained build system 
-
-and low level stuff?
-[1]	E. Dolstra, The purely functional software deployment model. S.l.: s.n., 2006.
-chapter 10
+In Chapter 10 of the original Nix thesis [@dolstraPurelyFunctionalSoftware2006] low-level build management using Nix is discussed, proposing extending Nix to support repository dependencies.
+I would be very interested if anyone reading this knows if this idea went anywhere!
 
 ## Conclusion
 
@@ -493,7 +469,7 @@ This work was completed with the support of [Tarides](https://tarides.com/).
 
 ---
 
-If you spot any errors or have any questions, please get in touch at [ryan@gibbr.org](mailto:ryan@gibbr.org).
+If you spot any errors, have any questions, notice something I've mentioned that someone has already thought of, or notice any incorrect assumptions or assertions made, please get in touch at [ryan@gibbr.org](mailto:ryan@gibbr.org).
 
 If you have a unikernel, consider trying to build it with Hillingar, and please report any problems at [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues)!
 
