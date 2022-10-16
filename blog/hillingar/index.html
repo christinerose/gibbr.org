@@ -327,9 +327,9 @@ NixOS modules are just that – small bits of configuration written in Nix
 that can be composed to build a full NixOS system<a href="#fn8"
 class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.
 While many NixOS modules are provided in the Nixpkgs repository they can
-also be written by a user. For example, the expression used to deploy a
-DNS server is a NixOS module. The system is built from this
-configuration like a Nix derivation is built.</p>
+also be written by an individual user. For example, the expression used
+to deploy a DNS server is a NixOS module. Together these modules form
+the configuration which builds the Linux system as a Nix derivation.</p>
 <p>NixOS minimises global mutable state that – without knowing it – you
 might rely on being set up in a certain way. For example, you might
 follow some instructions to run a series of shell commands and edit some

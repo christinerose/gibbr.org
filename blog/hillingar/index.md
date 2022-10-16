@@ -156,9 +156,9 @@ NixOS^[[nixos.org](https://nixos.org)] is a Linux distribution built with Nix fr
 It has no traditional filesystem hierarchy (FSH) -- like `/bin`, `/lib`, `/usr` -- but instead stores all components in `/nix/store`.
 The configuration of the system is managed by Nix, with configuration files being built from modular Nix expressions.
 NixOS modules are just that -- small bits of configuration written in Nix that can be composed to build a full NixOS system^[[NixOS manual Chapter 66. Writing NixOS Modules](https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules).].
-While many NixOS modules are provided in the Nixpkgs repository they can also be written by a user.
+While many NixOS modules are provided in the Nixpkgs repository they can also be written by an individual user.
 For example, the expression used to deploy a DNS server is a NixOS module.
-The system is built from this configuration like a Nix derivation is built.
+Together these modules form the configuration which builds the Linux system as a Nix derivation.
 
 NixOS minimises global mutable state that -- without knowing it -- you might rely on being set up in a certain way.
 For example, you might follow some instructions to run a series of shell commands and edit some files in a certain way to get a piece of software working, but then forgot and fail to document the process.
