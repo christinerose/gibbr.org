@@ -148,6 +148,8 @@ There is also a command line package manager installing packages from Nixpkgs, w
 While Nix, and Therefore nix package management, is primarily source-based -- since derivations describe how to build software from source -- binary deployment is an optimization of this.
 Since packages are built in isolation and entirely determined by their inputs, binaries can be transparently deployed by downloading them from a remote server instead of building the derivation locally.
 
+![Visualisation of Nixpkgs^[[www.tweag.io/blog/2022-09-13-nixpkgs-graph/](https://www.tweag.io/blog/2022-09-13-nixpkgs-graph/)]](./nixpkgs.png){width=100% min-width=5cm}
+
 #### NixOS
 
 NixOS^[[nixos.org](https://nixos.org)] is a Linux distribution built with Nix from a modular, purely functional specification[@dolstraNixOSPurelyFunctional2008].
@@ -352,9 +354,6 @@ The OCaml compiler keeps track of function dependencies when compiling and linki
 
 #### Cross-compilation
 
-(library -> project)
-// opam cross compilation context
-
 Dune is used to support cross-compilation for Mirage unikernels ([&#167;](#building-unikernels)).
 We encode the cross-compilation context in Dune the `preprocess` stanza is used in Dune's DSL, for example from [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10):
 ```
@@ -370,75 +369,47 @@ We encode the cross-compilation context in Dune the `preprocess` stanza is used 
   (pps ppx_cstruct)))
 ```
 Which tells dune to preprocess the Opam package `ppx_cstruct` with the host compiler.
-
 As this information is only available from the build manager, this requires fetching all dependancy sources to support cross compilation with the `opam-monorepo` tool:
 
 > Cross-compilation - the details of how to build some native code can come late in the pipeline, which isn't a problem if the sources are available^[[github.com/tarides/opam-monorepo](https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6a9c5f20ed032/doc/faq.mld#L42)].
 
 This means we're essentially encoding the compilation context in the build system rules.
-To remove the requirement to clone dependancy sources locally with `opam-monorepo` we could try and encode the compilation context in the package manager, except that preprocessing can be at the OCaml module level of granualrity.
+To remove the requirement to clone dependancy sources locally with `opam-monorepo` we could try and encode the compilation context in the package manager.
+However, preprocessing can be at the OCaml module level of granualrity.
 Dune deals with this level of granuality with repository dependancies, but Opam doesn't.
-Tigher integration between the build and package manager could improve this situation, like Rust's `cargo`.
+Tigher integration between the build and package manager could improve this situation, like Rust's `cargo`, which there are some plans towards.
 
-
-
-
-
-Would be nice to encode in opam
-problem that it's by module
-so what if dune takes on more of opam's functionality
-tighter integration better
-mixing library and project dependencies
-
-
-<!-- 
-Opam has no concept to cross compilation
-So the cross compilation information is included in the build system instructions like pre-processed this particular module in the host compiler, as oppsed to the target compiler.
-Which is something Dune has - a tool chin which has a target compiler embedded in it, which is modified from the host compiler.
-That's a bit tricky because it means we need to get all of the sources for the dependencies because we don't know in advance what context they're going to need to be built in? -->
-
-<!-- I think it could be interesting to try and encode this in the package manager.
-Like this this particular module will be will built for the host compiler or the target compiler.
-But the tricky thing is some dependencies have modules which will be built in the host compiler, and some in the target compiler.
-We're conflating the library and project deps here, because we need the cross compilation context in the package manager, but the package manager only has a concept of packages - and not modules - inside a project or dependency.
-You can have multiple packages inside of development repository, and then multiple modules inside one package.
-It's kind of messy - there's no one cohesive vision. -->
-
-- we can benefit from nix cross compilation support (?
-
-The build process of certain compilers is written in such a way that the compiler resulting from a single build can itself only produce binaries for a single platform. The task of specifying this single “target platform” is thus pushed to build time of the compiler. The root cause of this is that the compiler (which will be run on the host) and the standard library/runtime (which will be run on the target) are built by a single build process. 
-
-https://nixos.org/manual/nixpkgs/stable/#chap-cross
+There is also the possibility of using Nix to avoid cross-compilation.
+Nixpkg's cross compilation^[https://nixos.org/manual/nixpkgs/stable/#chap-cross] will not help us here, as it simply specifies how to package software in a cross-compilation friendly way.
+However, Nix remote builders would enable reproducible builds on a remote machine^[[nixos.org/manual/nix/stable/advanced-topics/distributed-builds.html](https://nixos.org/manual/nix/stable/advanced-topics/distributed-builds.html)] with Nix installed that may sidestep the need for cross-compilation in certain contexts.
 
 #### Version Resolution
 
-use opam version rsolution
+Hillingar uses the Zero Install SAT solver for version resolution through Opam.
+While works, it isn't the most principled approach for getting Nix to work with library dependencies.
+Some package managers are just using Nix for system dependencies and using the existing tooling as normal for library dependancies^[[docs.haskellstack.org/en/stable/nix_integration](https://docs.haskellstack.org/en/stable/nix_integration/)].
+But generally, `X2nix` projects are numerous and created in an ad hoc way.
+Part of this is dealing with every language's ecosystems package repository system, and there are existing approaches^[[github.com/nix-community/dream2nix](https://github.com/nix-community/dream2nix)] ^[[github.com/timbertson/fetlock](https://github.com/timbertson/fetlock)] aimed at reducing code duplication, but there is still the fundamental problem of version resolution.
+Nix uses pointers (paths) to refer to different versions of a dependancy, which works well solving the dimond dependancy problem for system depdnancies, but we don't have this luxury when linking a binary with library dependancies.
 
-The workaround to get
+![The diamond dependancy problem.](version-sat.svg){width=100% min-width=5cm}
 
+This is exactly why Opam uses a constraint solver to find a coherent package set.
+But what if we could split version solving functionality into something that can tie into any language ecosystem?
+This could be a more principled, elegant, approach to the current fragmented state of library dependancies (program language package managers).
+This would require some ecosystem-specific logic to, for example, obtain the version constraints and to create derivations for the resulting sources, but the core functionality could be ecosystem agnostic.
+As with `opam-nix`, materialization^[[https://github.com/tweag/opam-nix#materialization](https://github.com/tweag/opam-nix/blob/4e602e02a82a720c2f1d7324ea29dc9c7916a9c2/README.md#materialization)] could be used to commit a lockfile and avoid IFD.
+Although perhaps this is too lofty a goal to be practical, and perhaps the real issues are organisational rather than technical.
 
-Going forward, is there a way to manage 3 dep versions in a more unified way?
-work in:
-https://github.com/nix-community/dream2nix
-but focusing on code dedduplication
-
-https://github.com/timbertson/fetlock
-
-
-
-could do version solving in nix:
-I would be very intersted in a version constrained solver that can be used in a Nix derivation.
-This would require some ecosystem-logic specific logic to obtain the dependency versions, and to create derivations for the resulting sources, but otherwise should be ecosystem agnostic
-
-lockfile:
-https://github.com/RyanGibb/opam-nix#materialization
-
-However this doesn't address project dependencies...
+Nix allows multiple versions of a package to be installed simultaneously by having different derivations refer to different paths in the Nix store concurrently.
+What if we could use a similar approach for linking binaries to sidestep the version constraint solving altogether at the cost of larger binaries (a similar tradeoff Nix makes with disk space)?
+A very simple approach might be to programatically prepend/append function calls with the dependancy version name for the packages `B` and `C` in the diagram above.
 
 
-this is basicaly making nix handle library dependandices with a version solver
 
----
+
+Function dependancies
+
 
 Another approach makes consuder if a complicated version solver is even required?
 
@@ -524,7 +495,7 @@ This work was completed with the support of [Tarides](https://tarides.com/).
 
 If you spot any errors or have any questions, please get in touch at [ryan@gibbr.org](mailto:ryan@gibbr.org).
 
-If you have a unikernel, consider trying to build it with Hillingar, and please report any problems to [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues)!
+If you have a unikernel, consider trying to build it with Hillingar, and please report any problems at [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues)!
 
 ---
 

@@ -304,10 +304,17 @@ source – binary deployment is an optimization of this. Since packages
 are built in isolation and entirely determined by their inputs, binaries
 can be transparently deployed by downloading them from a remote server
 instead of building the derivation locally.</p>
+<figure>
+<img src="./nixpkgs.png" data-min-width="5cm" style="width:100.0%"
+alt="Visualisation of Nixpkgs" />
+<figcaption aria-hidden="true">Visualisation of Nixpkgs<a href="#fn6"
+class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a></figcaption>
+</figure>
 <h4 id="nixos"><a href="#nixos" class="anchor"
 aria-hidden="true">NixOS</a></h4>
-<p>NixOS<a href="#fn6" class="footnote-ref" id="fnref6"
-role="doc-noteref"><sup>6</sup></a> is a Linux distribution built with
+<p>NixOS<a href="#fn7" class="footnote-ref" id="fnref7"
+role="doc-noteref"><sup>7</sup></a> is a Linux distribution built with
 Nix from a modular, purely functional specification<span
 class="citation" data-cites="dolstraNixOSPurelyFunctional2008"><a
 href="#ref-dolstraNixOSPurelyFunctional2008"
@@ -317,8 +324,8 @@ hierarchy (FSH) – like <code>/bin</code>, <code>/lib</code>,
 <code>/nix/store</code>. The configuration of the system is managed by
 Nix, with configuration files being built from modular Nix expressions.
 NixOS modules are just that – small bits of configuration written in Nix
-that can be composed to build a full NixOS system<a href="#fn7"
-class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>
+that can be composed to build a full NixOS system<a href="#fn8"
+class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>
 While many NixOS modules are provided in the Nixpkgs repository they can
 also be written by a user. For example, the expression used to deploy a
 DNS server is a NixOS module. The system is built from this
@@ -335,8 +342,8 @@ problem, but nix aims to be more reproducible (restricting network
 access). This can be frustrating at times because it can make it harder
 to get off the ground with a project, but I’ve found the benefits outway
 the cons for me.</p>
-<p>My own NixOS configuration is publicly available<a href="#fn8"
-class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.
+<p>My own NixOS configuration is publicly available<a href="#fn9"
+class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>.
 This makes it trivial to reproduce my system – a collection of various
 configurations, services, and hacks – on another machine. I use it to
 manage servers, workstations, and more. Compared to my previous approach
@@ -374,22 +381,22 @@ aria-hidden="true">Flakes</a></h4>
 depth, for our purposes, they enable hermetic evaluation of nix
 expressions and provide a standard way to compose Nix projects. With
 flakes, instead of using a Nixpkgs repository version from a ‘channel’<a
-href="#fn9" class="footnote-ref" id="fnref9"
-role="doc-noteref"><sup>9</sup></a>, we pin Nixpkgs as an input to every
-Nix flake – be it a project build with Nix or a NixOS system.
+href="#fn10" class="footnote-ref" id="fnref10"
+role="doc-noteref"><sup>10</sup></a>, we pin Nixpkgs as an input to
+every Nix flake – be it a project build with Nix or a NixOS system.
 <!-- One of the reasons for improving Nix project composing is that there's some discussion around the sustainability of the Nixpkgs monorepo workflow^[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741]. -->
 Integrated with flakes there is also a new <code>nix</code> command
 aimed at improving the UI of Nix. More detail about flakes can be read
-in a series of blog posts by Eelco on the topic<a href="#fn10"
-class="footnote-ref" id="fnref10"
-role="doc-noteref"><sup>10</sup></a>.</p>
+in a series of blog posts by Eelco on the topic<a href="#fn11"
+class="footnote-ref" id="fnref11"
+role="doc-noteref"><sup>11</sup></a>.</p>
 <h2 id="mirageos"><a href="#mirageos" class="anchor"
 aria-hidden="true">MirageOS</a></h2>
 <figure>
 <img src="./mirage-logo.svg" data-min-width="5cm" style="width:50.0%"
 alt="" />
-<figcaption aria-hidden="true"><a href="#fn11" class="footnote-ref"
-id="fnref11" role="doc-noteref"><sup>11</sup></a></figcaption>
+<figcaption aria-hidden="true"><a href="#fn12" class="footnote-ref"
+id="fnref12" role="doc-noteref"><sup>12</sup></a></figcaption>
 </figure>
 <p>MirageOS is a library operating system that creates unikernels
 containing low-level operating system code and high-level application
@@ -428,8 +435,8 @@ the desire to deploy Mirage unikernels on a NixOS machine, what’s
 stopping us from doing just that? Well, to support deploying a mirage
 unikernel, such as for a DNS server, we would need to write a NixOS
 module for it.</p>
-<p>A paired-down<a href="#fn12" class="footnote-ref" id="fnref12"
-role="doc-noteref"><sup>12</sup></a> version of the bind NixOS module,
+<p>A paired-down<a href="#fn13" class="footnote-ref" id="fnref13"
+role="doc-noteref"><sup>13</sup></a> version of the bind NixOS module,
 the module we use in our Nix expression for deploying a DNS server on
 NixOS (<a href="#cb1">§</a>), is:</p>
 <div class="sourceCode" id="cb7"><pre
@@ -469,13 +476,13 @@ build a Mirage unikernel with Nix, we can write a NixOS module to deploy
 it.</p>
 <h2 id="building-unikernels"><a href="#building-unikernels"
 class="anchor" aria-hidden="true">Building Unikernels</a></h2>
-<p>Mirage uses the package manager for OCaml Opam<a href="#fn13"
-class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>.
+<p>Mirage uses the package manager for OCaml Opam<a href="#fn14"
+class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>.
 dependencies in Opam, as is common in programming language package
 managers, has a file which – among other meta-data, build/install
 scripts – specifies dependencies and their version constraints. For
-example<a href="#fn14" class="footnote-ref" id="fnref14"
-role="doc-noteref"><sup>14</sup></a></p>
+example<a href="#fn15" class="footnote-ref" id="fnref15"
+role="doc-noteref"><sup>15</sup></a></p>
 <pre><code>...
 depends: [
   &quot;arp&quot; { ?monorepo &amp; &gt;= &quot;3.0.0&quot; &amp; &lt; &quot;4.0.0&quot; }
@@ -503,66 +510,66 @@ depends: [
 their own version constraints. As we can only link one dependency into
 the resulting program, we need to solve a set of dependency versions
 that satisfies these constraints. This is not an easy problem. In fact,
-it’s NP-complete<a href="#fn15" class="footnote-ref" id="fnref15"
-role="doc-noteref"><sup>15</sup></a>. Opam uses the Zero Install`<a
-href="#fn16" class="footnote-ref" id="fnref16"
-role="doc-noteref"><sup>16</sup></a> SAT solver for dependency
+it’s NP-complete<a href="#fn16" class="footnote-ref" id="fnref16"
+role="doc-noteref"><sup>16</sup></a>. Opam uses the Zero Install`<a
+href="#fn17" class="footnote-ref" id="fnref17"
+role="doc-noteref"><sup>17</sup></a> SAT solver for dependency
 resolution.</p>
-<p>Nixpkgs has a large number of OCaml packages<a href="#fn17"
-class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a>
+<p>Nixpkgs has a large number of OCaml packages<a href="#fn18"
+class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>
 which we could provide as build inputs to a Nix derivation. But they are
 not as complete nor up to date as those in
-<code>opam-repository</code><a href="#fn18" class="footnote-ref"
-id="fnref18" role="doc-noteref"><sup>18</sup></a>. A larger issue,
+<code>opam-repository</code><a href="#fn19" class="footnote-ref"
+id="fnref19" role="doc-noteref"><sup>19</sup></a>. A larger issue,
 however, is that Nixpkgs has one global coherent set of package
-versions<a href="#fn19" class="footnote-ref" id="fnref19"
-role="doc-noteref"><sup>19</sup></a> <a href="#fn20"
-class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>.
+versions<a href="#fn20" class="footnote-ref" id="fnref20"
+role="doc-noteref"><sup>20</sup></a> <a href="#fn21"
+class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a>.
 The support for installing multiple versions of a package concurrently
 comes from the fact that they are stored at a unique path and can be
 referenced separately, or symlinked, where required. So different
 projects or users that use a different version of Nixpkgs won’t
 conflict, but Nix does not do any dependency version resolution –
-everything is pinned. This has led to much confusion<a href="#fn21"
-class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a>
+everything is pinned. This has led to much confusion<a href="#fn22"
+class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a>
 with how to install a specific version of a package.</p>
 <p>Luckily there already exists a project from Tweag called
-<code>opam-nix</code> to deal with this<a href="#fn22"
-class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a>
-<a href="#fn23" class="footnote-ref" id="fnref23"
-role="doc-noteref"><sup>23</sup></a>. This project uses the Opam
+<code>opam-nix</code> to deal with this<a href="#fn23"
+class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a>
+<a href="#fn24" class="footnote-ref" id="fnref24"
+role="doc-noteref"><sup>24</sup></a>. This project uses the Opam
 dependency versions solver inside a Nix derivation, and then something
-called Import From Derivation (IFD)<a href="#fn24" class="footnote-ref"
-id="fnref24" role="doc-noteref"><sup>24</sup></a> to create derivations
+called Import From Derivation (IFD)<a href="#fn25" class="footnote-ref"
+id="fnref25" role="doc-noteref"><sup>25</sup></a> to create derivations
 from the resulting dependency versions. Materialization can be used to
 create a kind of lockfile for this resolution which can be committed to
 the project to avoid having to do IFD on every new build. An alternative
-may be to use Opam’s in-built version pinning<a href="#fn25"
-class="footnote-ref" id="fnref25"
-role="doc-noteref"><sup>25</sup></a>.</p>
+may be to use Opam’s in-built version pinning<a href="#fn26"
+class="footnote-ref" id="fnref26"
+role="doc-noteref"><sup>26</sup></a>.</p>
 <p>This still doesn’t support building our Mirage unikernels, though.
 Unikernels quite often need to be cross-compiled: compiled to run on a
 platform other than the one they’re being built on. A common target,
-Solo5<a href="#fn26" class="footnote-ref" id="fnref26"
-role="doc-noteref"><sup>26</sup></a>, is a sandboxed execution
+Solo5<a href="#fn27" class="footnote-ref" id="fnref27"
+role="doc-noteref"><sup>27</sup></a>, is a sandboxed execution
 environment – essentially acting as a minimal shim layer to interface
 between unikernels and different hypervisor backends. Solo5 uses a
 different <code>glibc</code> which requires cross-compilation. Mirage
-4<a href="#fn27" class="footnote-ref" id="fnref27"
-role="doc-noteref"><sup>27</sup></a> uses the Dune build system<a
-href="#fn28" class="footnote-ref" id="fnref28"
-role="doc-noteref"><sup>28</sup></a> which supports cross-compilation
+4<a href="#fn28" class="footnote-ref" id="fnref28"
+role="doc-noteref"><sup>28</sup></a> uses the Dune build system<a
+href="#fn29" class="footnote-ref" id="fnref29"
+role="doc-noteref"><sup>29</sup></a> which supports cross-compilation
 through toolchains; a host compiler is installed in an Opam switch (a
-virtual environment) as normal, and a target compiler<a href="#fn29"
-class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a>
+virtual environment) as normal, and a target compiler<a href="#fn30"
+class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>
 is created by modifying the host compiler. But the cross-compilation
 context of packages is only known at build time, as some metaprogramming
 modules may require preprocessing with the host compiler. To ensure that
 the right compilation context is used, this means we have to provide
 Dune the sources of all our dependencies. A tool called
-<code>opam-monorepo</code> was created to do just that<a href="#fn30"
-class="footnote-ref" id="fnref30"
-role="doc-noteref"><sup>30</sup></a>.</p>
+<code>opam-monorepo</code> was created to do just that<a href="#fn31"
+class="footnote-ref" id="fnref31"
+role="doc-noteref"><sup>31</sup></a>.</p>
 <p>We extended the <code>opam-nix</code> project to support the
 <code>opam-monorepo</code> workflow with this pull request: <a
 href="https://github.com/tweag/opam-nix/pull/18">github.com/tweag/opam-nix/pull/18</a>.</p>
@@ -622,7 +629,6 @@ future). The OCaml compiler keeps track of function dependencies when
 compiling and linking a program.</p>
 <h4 id="cross-compilation"><a href="#cross-compilation" class="anchor"
 aria-hidden="true">Cross-compilation</a></h4>
-<p>(library -&gt; project) // opam cross compilation context</p>
 <p>Dune is used to support cross-compilation for Mirage unikernels (<a
 href="#building-unikernels">§</a>). We encode the cross-compilation
 context in Dune the <code>preprocess</code> stanza is used in Dune’s
@@ -639,67 +645,81 @@ href="https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e05
  (preprocess
   (pps ppx_cstruct)))</code></pre>
 <p>Which tells dune to preprocess the Opam package
-<code>ppx_cstruct</code> with the host compiler.</p>
-<p>As this information is only available from the build manager, this
-requires fetching all dependancy sources to support cross compilation
-with the <code>opam-monorepo</code> tool:</p>
+<code>ppx_cstruct</code> with the host compiler. As this information is
+only available from the build manager, this requires fetching all
+dependancy sources to support cross compilation with the
+<code>opam-monorepo</code> tool:</p>
 <blockquote>
 <p>Cross-compilation - the details of how to build some native code can
 come late in the pipeline, which isn’t a problem if the sources are
-available<a href="#fn31" class="footnote-ref" id="fnref31"
-role="doc-noteref"><sup>31</sup></a>.</p>
+available<a href="#fn32" class="footnote-ref" id="fnref32"
+role="doc-noteref"><sup>32</sup></a>.</p>
 </blockquote>
 <p>This means we’re essentially encoding the compilation context in the
 build system rules. To remove the requirement to clone dependancy
 sources locally with <code>opam-monorepo</code> we could try and encode
-the compilation context in the package manager, except that
-preprocessing can be at the OCaml module level of granualrity. Dune
-deals with this level of granuality with repository dependancies, but
-Opam doesn’t. Tigher integration between the build and package manager
-could improve this situation, like Rust’s <code>cargo</code>.</p>
-<p>Would be nice to encode in opam problem that it’s by module so what
-if dune takes on more of opam’s functionality tighter integration better
-mixing library and project dependencies</p>
-<!-- 
-Opam has no concept to cross compilation
-So the cross compilation information is included in the build system instructions like pre-processed this particular module in the host compiler, as oppsed to the target compiler.
-Which is something Dune has - a tool chin which has a target compiler embedded in it, which is modified from the host compiler.
-That's a bit tricky because it means we need to get all of the sources for the dependencies because we don't know in advance what context they're going to need to be built in? -->
-<!-- I think it could be interesting to try and encode this in the package manager.
-Like this this particular module will be will built for the host compiler or the target compiler.
-But the tricky thing is some dependencies have modules which will be built in the host compiler, and some in the target compiler.
-We're conflating the library and project deps here, because we need the cross compilation context in the package manager, but the package manager only has a concept of packages - and not modules - inside a project or dependency.
-You can have multiple packages inside of development repository, and then multiple modules inside one package.
-It's kind of messy - there's no one cohesive vision. -->
-<ul>
-<li>we can benefit from nix cross compilation support (?</li>
-</ul>
-<p>The build process of certain compilers is written in such a way that
-the compiler resulting from a single build can itself only produce
-binaries for a single platform. The task of specifying this single
-“target platform” is thus pushed to build time of the compiler. The root
-cause of this is that the compiler (which will be run on the host) and
-the standard library/runtime (which will be run on the target) are built
-by a single build process.</p>
-<p>https://nixos.org/manual/nixpkgs/stable/#chap-cross</p>
+the compilation context in the package manager. However, preprocessing
+can be at the OCaml module level of granualrity. Dune deals with this
+level of granuality with repository dependancies, but Opam doesn’t.
+Tigher integration between the build and package manager could improve
+this situation, like Rust’s <code>cargo</code>, which there are some
+plans towards.</p>
+<p>There is also the possibility of using Nix to avoid
+cross-compilation. Nixpkg’s cross compilation<a href="#fn33"
+class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a>
+will not help us here, as it simply specifies how to package software in
+a cross-compilation friendly way. However, Nix remote builders would
+enable reproducible builds on a remote machine<a href="#fn34"
+class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a>
+with Nix installed that may sidestep the need for cross-compilation in
+certain contexts.</p>
 <h4 id="version-resolution"><a href="#version-resolution" class="anchor"
 aria-hidden="true">Version Resolution</a></h4>
-<p>use opam version rsolution</p>
-<p>The workaround to get</p>
-<p>Going forward, is there a way to manage 3 dep versions in a more
-unified way? work in: https://github.com/nix-community/dream2nix but
-focusing on code dedduplication</p>
-<p>https://github.com/timbertson/fetlock</p>
-<p>could do version solving in nix: I would be very intersted in a
-version constrained solver that can be used in a Nix derivation. This
-would require some ecosystem-logic specific logic to obtain the
-dependency versions, and to create derivations for the resulting
-sources, but otherwise should be ecosystem agnostic</p>
-<p>lockfile: https://github.com/RyanGibb/opam-nix#materialization</p>
-<p>However this doesn’t address project dependencies…</p>
-<p>this is basicaly making nix handle library dependandices with a
-version solver</p>
-<hr />
+<p>Hillingar uses the Zero Install SAT solver for version resolution
+through Opam. While works, it isn’t the most principled approach for
+getting Nix to work with library dependencies. Some package managers are
+just using Nix for system dependencies and using the existing tooling as
+normal for library dependancies<a href="#fn35" class="footnote-ref"
+id="fnref35" role="doc-noteref"><sup>35</sup></a>. But generally,
+<code>X2nix</code> projects are numerous and created in an ad hoc way.
+Part of this is dealing with every language’s ecosystems package
+repository system, and there are existing approaches<a href="#fn36"
+class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a>
+<a href="#fn37" class="footnote-ref" id="fnref37"
+role="doc-noteref"><sup>37</sup></a> aimed at reducing code duplication,
+but there is still the fundamental problem of version resolution. Nix
+uses pointers (paths) to refer to different versions of a dependancy,
+which works well solving the dimond dependancy problem for system
+depdnancies, but we don’t have this luxury when linking a binary with
+library dependancies.</p>
+<figure>
+<img src="version-sat.svg" data-min-width="5cm" style="width:100.0%"
+alt="The diamond dependancy problem." />
+<figcaption aria-hidden="true">The diamond dependancy
+problem.</figcaption>
+</figure>
+<p>This is exactly why Opam uses a constraint solver to find a coherent
+package set. But what if we could version solving functionality into
+something that can tie into any language ecosystem? This could be a more
+principled, elegant, approach to the current fragmented state of library
+dependancies (program language package managers). This would require
+some ecosystem-specific logic to, for example, obtain the versions
+constrains and to create derivations for the resulting sources, but the
+core functionality could be ecosystem agnostic. As with
+<code>opam-nix</code>, materialization<a href="#fn38"
+class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a>
+could be used to commit a lockfile and avoid IFD. Although perhaps this
+is too lofty a goal to be practical, and perhaps the real issues are
+organisational rather than technical.</p>
+<p>Nix allows multiple versions of a package to be installed
+simultaneously by having different derivations refer to different paths
+in the Nix store concurrently. What if we could use a similar approach
+for linking binaries to sidestep the version constraint solving
+altogether at the cost of larger binaries (a similar tradeoff Nix makes
+with disk space)? A very simple approach might be to programatically
+prepend/append function calls with the dependancy version name for the
+packages <code>B</code> and <code>C</code> in the diagram above.</p>
+<p>Function dependancies</p>
 <p>Another approach makes consuder if a complicated version solver is
 even required?</p>
 <p>https://research.swtch.com/version-sat</p>
@@ -766,8 +786,8 @@ on this package in a reproducible way.</li>
 explored).</li>
 </ul>
 <p>There exists related work in the deployment and reproducible building
-of Mirage unikernels. Albotross<a href="#fn32" class="footnote-ref"
-id="fnref32" role="doc-noteref"><sup>32</sup></a> is one such tool for
+of Mirage unikernels. Albotross<a href="#fn39" class="footnote-ref"
+id="fnref39" role="doc-noteref"><sup>39</sup></a> is one such tool for
 deploying unikernels. Albotross differs from Hillingar in that it also
 aims to provision resources for unikernels, share resources for
 unikernels between users, and monitor unikernels, with a Unix daemon;
@@ -777,8 +797,8 @@ manage some of the inheritance imperative processes being unikernels as
 well as share access to resources for unikernels for other users on a
 NixOS system. There is also work in improving the reproducibility of
 Opam packages (as Mirage unikernels are Opam packages themselves)<a
-href="#fn33" class="footnote-ref" id="fnref33"
-role="doc-noteref"><sup>33</sup></a>. Hillingar differs in that it only
+href="#fn40" class="footnote-ref" id="fnref40"
+role="doc-noteref"><sup>40</sup></a>. Hillingar differs in that it only
 uses Opam for version resolution, instead using Nix to provide
 dependencies, which provides reproducibility with pinned Nix derivation
 inputs and builds in isolation by default.</p>
@@ -795,8 +815,8 @@ writing simple derivations this doesn’t often prove an issue, but when
 writing complicated logic it quickly gets in the way of productivity;
 the runtime errors produced can be very hard to parse. Thankfully there
 is work towards creating a typed language for the Nix deployment system,
-such as Nickel<a href="#fn34" class="footnote-ref" id="fnref34"
-role="doc-noteref"><sup>34</sup></a>. However gradual typing is hard,
+such as Nickel<a href="#fn41" class="footnote-ref" id="fnref41"
+role="doc-noteref"><sup>41</sup></a>. However gradual typing is hard,
 and Nickel still isn’t ready for real-world use despite being
 open-sourced (in a week as of writing this) for 2 years. Finally,
 despite it being the primary motivation we haven’t actually written
@@ -807,8 +827,8 @@ provide zonefile data decleratively before we do this.</p>
 different approaches, they’re both trying to bring some kind of
 functional programming paradigm to operating systems. NixOS does this in
 a top-down manner, trying to tame Unix with functional principles like
-laziness and immutability<a href="#fn35" class="footnote-ref"
-id="fnref35" role="doc-noteref"><sup>35</sup></a>. Whereas MirageOS does
+laziness and immutability<a href="#fn42" class="footnote-ref"
+id="fnref42" role="doc-noteref"><sup>42</sup></a>. Whereas MirageOS does
 this by throwing Unix out the window and rebuilding the world from
 scratch in a very much bottom-up approach. Despite these two projects
 having such different motivations and goals, Hillingar aims to get the
@@ -834,7 +854,7 @@ href="https://tarides.com/">Tarides</a>.</p>
 <p>If you spot any errors or have any questions, please get in touch at
 <a href="mailto:ryan@gibbr.org">ryan@gibbr.org</a>.</p>
 <p>If you have a unikernel, consider trying to build it with Hillingar,
-and please report any problems to <a
+and please report any problems at <a
 href="https://github.com/RyanGibb/hillingar/issues">github.com/RyanGibb/hillingar/issues</a>!</p>
 <hr />
 <h4 id="references"><a href="#references" class="anchor"
@@ -950,122 +970,150 @@ href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 href="https://github.com/nixos/nixpkgs">github.com/nixos/nixpkgs</a> <a
 href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6" role="doc-endnote"><p><a
-href="https://nixos.org">nixos.org</a><a href="#fnref6"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+href="https://www.tweag.io/blog/2022-09-13-nixpkgs-graph/">www.tweag.io/blog/2022-09-13-nixpkgs-graph/</a><a
+href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7" role="doc-endnote"><p><a
-href="https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules">NixOS
-manual Chapter 66. Writing NixOS Modules</a>.<a href="#fnref7"
+href="https://nixos.org">nixos.org</a><a href="#fnref7"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8" role="doc-endnote"><p> <a
+<li id="fn8" role="doc-endnote"><p><a
+href="https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules">NixOS
+manual Chapter 66. Writing NixOS Modules</a>.<a href="#fnref8"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9" role="doc-endnote"><p> <a
 href="https://github.com/RyanGibb/nixos">github.com/RyanGibb/nixos</a>
-<a href="#fnref8" class="footnote-back"
+<a href="#fnref9" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn9" role="doc-endnote"><p><a
-href="https://nixos.org/manual/nix/stable/package-management/channels.html">nixos.org/manual/nix/stable/package-management/channels.html</a><a
-href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn10" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2020-05-25-flakes/">tweag.io/blog/2020-05-25-flakes</a><a
+href="https://nixos.org/manual/nix/stable/package-management/channels.html">nixos.org/manual/nix/stable/package-management/channels.html</a><a
 href="#fnref10" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn11" role="doc-endnote"><p>Credits to Takayuki Imada<a
+<li id="fn11" role="doc-endnote"><p><a
+href="https://www.tweag.io/blog/2020-05-25-flakes/">tweag.io/blog/2020-05-25-flakes</a><a
 href="#fnref11" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn12" role="doc-endnote"><p>The full module can be found <a
-href="https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix">here</a><a
+<li id="fn12" role="doc-endnote"><p>Credits to Takayuki Imada<a
 href="#fnref12" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn13" role="doc-endnote"><p><a
-href="https://opam.ocaml.org/">opam.ocaml.org</a><a href="#fnref13"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn14" role="doc-endnote"><p>For <a
-href="https://github.com/mirage/mirage-www">mirage-www</a> targetting
-<code>hvt</code>.<a href="#fnref14" class="footnote-back"
+<li id="fn13" role="doc-endnote"><p>The full module can be found <a
+href="https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix">here</a><a
+href="#fnref13" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn15" role="doc-endnote"><p><a
-href="https://research.swtch.com/version-sat">research.swtch.com/version-sat</a><a
-href="#fnref15" class="footnote-back"
+<li id="fn14" role="doc-endnote"><p><a
+href="https://opam.ocaml.org/">opam.ocaml.org</a><a href="#fnref14"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15" role="doc-endnote"><p>For <a
+href="https://github.com/mirage/mirage-www">mirage-www</a> targetting
+<code>hvt</code>.<a href="#fnref15" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn16" role="doc-endnote"><p><a
-href="https://0install.net">0install.net</a><a href="#fnref16"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+href="https://research.swtch.com/version-sat">research.swtch.com/version-sat</a><a
+href="#fnref16" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
 <li id="fn17" role="doc-endnote"><p><a
-href="https://github.com/NixOS/nixpkgs/blob/9234f5a17e1a7820b5e91ecd4ff0de449e293383/pkgs/development/ocaml-modules/">github.com/NixOS/nixpkgs
-pkgs/development/ocaml-modules</a><a href="#fnref17"
+href="https://0install.net">0install.net</a><a href="#fnref17"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn18" role="doc-endnote"><p><a
-href="https://github.com/ocaml/opam-repository">github.com/ocaml/opam-repository</a><a
-href="#fnref18" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
-<li id="fn19" role="doc-endnote"><p>Bar some exceptional packages that
-have multiple major versions packaged, like Postgres.<a href="#fnref19"
+href="https://github.com/NixOS/nixpkgs/blob/9234f5a17e1a7820b5e91ecd4ff0de449e293383/pkgs/development/ocaml-modules/">github.com/NixOS/nixpkgs
+pkgs/development/ocaml-modules</a><a href="#fnref18"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn20" role="doc-endnote"><p>In fact Arch has the same approach,
-which is why it doesn’t support partial upgrades (<a
-href="#nixos">§</a>).<a href="#fnref20" class="footnote-back"
+<li id="fn19" role="doc-endnote"><p><a
+href="https://github.com/ocaml/opam-repository">github.com/ocaml/opam-repository</a><a
+href="#fnref19" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn21" role="doc-endnote"><p><a
-href="https://github.com/NixOS/nixpkgs/issues/9682">github.com/NixOS/nixpkgs/issues/9682</a><a
-href="#fnref21" class="footnote-back"
+<li id="fn20" role="doc-endnote"><p>Bar some exceptional packages that
+have multiple major versions packaged, like Postgres.<a href="#fnref20"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21" role="doc-endnote"><p>In fact Arch has the same approach,
+which is why it doesn’t support partial upgrades (<a
+href="#nixos">§</a>).<a href="#fnref21" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn22" role="doc-endnote"><p><a
-href="https://github.com/tweag/opam-nix">github.com/tweag/opam-nix</a><a
+href="https://github.com/NixOS/nixpkgs/issues/9682">github.com/NixOS/nixpkgs/issues/9682</a><a
 href="#fnref22" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn23" role="doc-endnote"><p>Another project, <a
+<li id="fn23" role="doc-endnote"><p><a
+href="https://github.com/tweag/opam-nix">github.com/tweag/opam-nix</a><a
+href="#fnref23" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn24" role="doc-endnote"><p>Another project, <a
 href="https://github.com/timbertson/opam2nix">timbertson/opam2nix</a>,
 also exists, but depends on a binary of itself at build time as it’s
 written in OCaml as opposed to Nix, is not as minimal (higher LOC
 count), and isn’t under active development (with development focused on
 <a
 href="https://github.com/timbertson/fetlock">github.com/timbertson/fetlock</a>)<a
-href="#fnref23" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
-<li id="fn24" role="doc-endnote"><p><a
-href="https://nixos.wiki/wiki/Import_From_Derivation">nixos.wiki/wiki/Import_From_Derivation</a><a
 href="#fnref24" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn25" role="doc-endnote"><p><a
-href="https://github.com/RyanGibb/hillingar/issues/4">github.com/RyanGibb/hillingar/issues/4</a><a
+href="https://nixos.wiki/wiki/Import_From_Derivation">nixos.wiki/wiki/Import_From_Derivation</a><a
 href="#fnref25" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn26" role="doc-endnote"><p><a
-href="https://github.com/Solo5/solo5">github.com/Solo5/solo5</a><a
+href="https://github.com/RyanGibb/hillingar/issues/4">github.com/RyanGibb/hillingar/issues/4</a><a
 href="#fnref26" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn27" role="doc-endnote"><p><a
-href="https://mirage.io/blog/announcing-mirage-40">mirage.io/blog/announcing-mirage-40</a><a
+href="https://github.com/Solo5/solo5">github.com/Solo5/solo5</a><a
 href="#fnref27" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn28" role="doc-endnote"><p><a
-href="https://dune.build">dune.build</a><a href="#fnref28"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn29" role="doc-endnote"><p><a
-href="https://github.com/mirage/ocaml-solo5">github.com/mirage/ocaml-solo5</a><a
-href="#fnref29" class="footnote-back"
+href="https://mirage.io/blog/announcing-mirage-40">mirage.io/blog/announcing-mirage-40</a><a
+href="#fnref28" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
+<li id="fn29" role="doc-endnote"><p><a
+href="https://dune.build">dune.build</a><a href="#fnref29"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn30" role="doc-endnote"><p><a
-href="https://github.com/tarides/opam-monorepo">github.com/tarides/opam-monorepo</a><a
+href="https://github.com/mirage/ocaml-solo5">github.com/mirage/ocaml-solo5</a><a
 href="#fnref30" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn31" role="doc-endnote"><p><a
-href="https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6a9c5f20ed032/doc/faq.mld#L42">github.com/tarides/opam-monorepo</a><a
+href="https://github.com/tarides/opam-monorepo">github.com/tarides/opam-monorepo</a><a
 href="#fnref31" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn32" role="doc-endnote"><p><a
-href="https://hannes.robur.coop/Posts/VMM">hannes.robur.coop/Posts/VMM</a><a
+href="https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6a9c5f20ed032/doc/faq.mld#L42">github.com/tarides/opam-monorepo</a><a
 href="#fnref32" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn33" role="doc-endnote"><p><a
-href="https://hannes.nqsb.io/Posts/ReproducibleOPAM">hannes.nqsb.io/Posts/ReproducibleOPAM</a><a
+<li id="fn33"
+role="doc-endnote"><p>https://nixos.org/manual/nixpkgs/stable/#chap-cross<a
 href="#fnref33" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn34" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/">www.tweag.io/blog/2020-10-22-nickel-open-sourcing</a><a
+href="https://nixos.org/manual/nix/stable/advanced-topics/distributed-builds.html">nixos.org/manual/nix/stable/advanced-topics/distributed-builds.html</a><a
 href="#fnref34" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn35" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
+href="https://docs.haskellstack.org/en/stable/nix_integration/">docs.haskellstack.org/en/stable/nix_integration</a><a
 href="#fnref35" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn36" role="doc-endnote"><p><a
+href="https://github.com/nix-community/dream2nix">github.com/nix-community/dream2nix</a><a
+href="#fnref36" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn37" role="doc-endnote"><p><a
+href="https://github.com/timbertson/fetlock">github.com/timbertson/fetlock</a><a
+href="#fnref37" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn38" role="doc-endnote"><p><a
+href="https://github.com/tweag/opam-nix/blob/4e602e02a82a720c2f1d7324ea29dc9c7916a9c2/README.md#materialization">https://github.com/tweag/opam-nix#materialization</a><a
+href="#fnref38" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn39" role="doc-endnote"><p><a
+href="https://hannes.robur.coop/Posts/VMM">hannes.robur.coop/Posts/VMM</a><a
+href="#fnref39" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn40" role="doc-endnote"><p><a
+href="https://hannes.nqsb.io/Posts/ReproducibleOPAM">hannes.nqsb.io/Posts/ReproducibleOPAM</a><a
+href="#fnref40" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn41" role="doc-endnote"><p><a
+href="https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/">www.tweag.io/blog/2020-10-22-nickel-open-sourcing</a><a
+href="#fnref41" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn42" role="doc-endnote"><p><a
+href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
+href="#fnref42" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
