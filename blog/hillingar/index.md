@@ -357,7 +357,7 @@ The OCaml compiler keeps track of function dependencies when compiling and linki
 #### Cross-compilation
 
 Dune is used to support cross-compilation for Mirage unikernels ([&#167;](#building-unikernels)).
-We encode the cross-compilation context in Dune the `preprocess` stanza is used in Dune's DSL, for example from [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10):
+We encode the cross-compilation context in Dune using the `preprocess` stanza in Dune's DSL, for example from [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10):
 ```
 (library
  (name tcp)
