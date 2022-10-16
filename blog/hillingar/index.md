@@ -502,7 +502,8 @@ Finally, I want to thank some people for their help with this project:
 
 - Lucas Pluvinage for invaluable help with the OCaml ecosystem.
 - Alexander Bantyev for getting me up to speed with the `opam-nix` project and working with me on the `opam-monorepo` workflow integration.
-- David Allsopp for his Opam knowledge.
+- David Allsopp for his Opam expertise.
+- Sonja Heinze for her `ppx` insights.
 - Anil Madhavapeddy for having a discussion that led to the idea for this project.
 - Björg Bjarnadóttir for icelandic language consultation ('Hillingar').
 - And finally, everyone at Tarides for being so welcoming and helpful!
