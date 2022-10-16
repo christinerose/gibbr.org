@@ -164,7 +164,7 @@ NixOS minimises global mutable state that -- without knowing it -- you might rel
 For example, you might follow instructions to run a series of shell commands, and edit some files in a certain way, to get a piece of software working.
 You may subsequently be unable to reproduce the result because you've forgotten some intricacy, or are now using a different version of the software.
 Nix forces you to encode this in a reproducible way, which is extremely useful for replicating software configurations and deployments, aiming to solve the 'It works on my machine' problem.
-Docker is often used to fix this configuration problem, but nix aims to be more reproducible (restricting network access).
+Docker is often used to fix this configuration problem, but nix aims to be more reproducible.
 This can be frustrating at times because it can make it harder to get off the ground with a project, but I've found the benefits outway the cons for me.
 
 My own NixOS configuration is publicly available^[ [github.com/RyanGibb/nixos](https://github.com/RyanGibb/nixos) ].
