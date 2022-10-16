@@ -389,7 +389,7 @@ However, Nix remote builders would enable reproducible builds on a remote machin
 #### Version Resolution
 
 Hillingar uses the Zero Install SAT solver for version resolution through Opam.
-While works, it isn't the most principled approach for getting Nix to work with library dependencies.
+While this works, it isn't the most principled approach for getting Nix to work with library dependencies.
 Some package managers are just using Nix for system dependencies and using the existing tooling as normal for library dependancies^[[docs.haskellstack.org/en/stable/nix_integration](https://docs.haskellstack.org/en/stable/nix_integration/)].
 But generally, `X2nix` projects are numerous and created in an ad hoc way.
 Part of this is dealing with every language's ecosystems package repository system, and there are existing approaches^[[github.com/nix-community/dream2nix](https://github.com/nix-community/dream2nix)] ^[[github.com/timbertson/fetlock](https://github.com/timbertson/fetlock)] aimed at reducing code duplication, but there is still the fundamental problem of version resolution.

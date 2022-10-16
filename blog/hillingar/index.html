@@ -676,22 +676,22 @@ certain contexts.</p>
 <h4 id="version-resolution"><a href="#version-resolution" class="anchor"
 aria-hidden="true">Version Resolution</a></h4>
 <p>Hillingar uses the Zero Install SAT solver for version resolution
-through Opam. While works, it isn’t the most principled approach for
-getting Nix to work with library dependencies. Some package managers are
-just using Nix for system dependencies and using the existing tooling as
-normal for library dependancies<a href="#fn34" class="footnote-ref"
-id="fnref34" role="doc-noteref"><sup>34</sup></a>. But generally,
-<code>X2nix</code> projects are numerous and created in an ad hoc way.
-Part of this is dealing with every language’s ecosystems package
-repository system, and there are existing approaches<a href="#fn35"
-class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a>
-<a href="#fn36" class="footnote-ref" id="fnref36"
-role="doc-noteref"><sup>36</sup></a> aimed at reducing code duplication,
-but there is still the fundamental problem of version resolution. Nix
-uses pointers (paths) to refer to different versions of a dependancy,
-which works well solving the dimond dependancy problem for system
-depdnancies, but we don’t have this luxury when linking a binary with
-library dependancies.</p>
+through Opam. While this works, it isn’t the most principled approach
+for getting Nix to work with library dependencies. Some package managers
+are just using Nix for system dependencies and using the existing
+tooling as normal for library dependancies<a href="#fn34"
+class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a>.
+But generally, <code>X2nix</code> projects are numerous and created in
+an ad hoc way. Part of this is dealing with every language’s ecosystems
+package repository system, and there are existing approaches<a
+href="#fn35" class="footnote-ref" id="fnref35"
+role="doc-noteref"><sup>35</sup></a> <a href="#fn36"
+class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a>
+aimed at reducing code duplication, but there is still the fundamental
+problem of version resolution. Nix uses pointers (paths) to refer to
+different versions of a dependancy, which works well solving the dimond
+dependancy problem for system depdnancies, but we don’t have this luxury
+when linking a binary with library dependancies.</p>
 <figure>
 <img src="version-sat.svg" data-min-width="5cm" style="width:100.0%"
 alt="The diamond dependancy problem [8]." />
