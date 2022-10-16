@@ -474,7 +474,7 @@ While only one was the primary motivation, other benefits of building unikernels
 - Reproducible and low-config Unikernel deployment using NixOS modules is enabled.
 - Nix allows reproducible builds pinning system dependencies and composing multiple language environments. For example, the OCaml package `conf-gmp` is a 'virtual package' that relies on a system installation of the C/Assembly library `gmp` (The GNU Multiple Precision Arithmetic Library).
 Nix easily allows us to depend on this package in a reproducible way.
-- We can benefit from Nix cross-compilation support (to be explored).
+- We can use Nix to support building on different systems ([&#167;](#cross-compilation)).
 
 There exists related work in the deployment and reproducible building of Mirage unikernels.
 Albotross^[[hannes.robur.coop/Posts/VMM](https://hannes.robur.coop/Posts/VMM)] is one such tool for deploying unikernels.
