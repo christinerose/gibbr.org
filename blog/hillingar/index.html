@@ -471,7 +471,7 @@ it.</p>
 class="anchor" aria-hidden="true">Building Unikernels</a></h2>
 <p>Mirage uses the package manager for OCaml Opam<a href="#fn13"
 class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>.
-Dependencies in Opam, as is common in programming language package
+dependencies in Opam, as is common in programming language package
 managers, has a file which – among other meta-data, build/install
 scripts – specifies dependencies and their version constraints. For
 example<a href="#fn14" class="footnote-ref" id="fnref14"
@@ -559,7 +559,7 @@ is created by modifying the host compiler. But the cross-compilation
 context of packages is only known at build time, as some metaprogramming
 modules may require preprocessing with the host compiler. To ensure that
 the right compilation context is used, this means we have to provide
-Dune the sources of all our dependancies. A tool called
+Dune the sources of all our dependencies. A tool called
 <code>opam-monorepo</code> was created to do just that<a href="#fn30"
 class="footnote-ref" id="fnref30"
 role="doc-noteref"><sup>30</sup></a>.</p>
@@ -587,62 +587,79 @@ href="https://github.com/RyanGibb/mirage-www/blob/master/flake.nix">github.com/R
 <h2 id="dependency-management"><a href="#dependency-management"
 class="anchor" aria-hidden="true">Dependency Management</a></h2>
 <p>To step back for a moment and look at the big picture, we can
-consider three different types of dependacies at play here:</p>
+consider a number of different types of dependencies at play here:</p>
 <ol type="1">
-<li>System dependancies:<br> Are dependancies installed through the
+<li>System dependencies:<br> Are dependencies installed through the
 system package manager – <code>depexts</code> in Opam parlance. This is
 Nix for Hillinar, but another platform’s package managers include
 <code>apt</code>, <code>pacman</code>, and <code>brew</code>. For
 unikernels these are often C libraries like <code>gmp</code>.</li>
-<li>Library dependancies:<br> Are installed through the programming
+<li>Library dependencies:<br> Are installed through the programming
 language package manager. This is <code>opam</code> here, but other
 language package managers include <code>pip</code>, <code>node</code>,
-and <code>cargo</code>. These are the dependancies that often have
+and <code>cargo</code>. These are the dependencies that often have
 version constraints and require complicated resolution possibly using a
 SAT solver.</li>
-<li>Project dependancies:<br> Are dependencies between files, modules,
-classes, or another unit of code, inside one project, often a version
-control system repository. E.g. C includes, Java classes, Python
-imports, and OCaml modules.</li>
+<li>Repository dependencies:<br> Are dependencies between files,
+modules, classes, or another unit of code, inside one version control
+system repository, at the file-system level of granularity. Most likely
+this will be for a simple project (e.g. Opam package) but in a monorepo
+these could span many projects which all interoperate. In fact, Nixpkgs
+is a monorepo that stores – in most instances – exactly one version of a
+package, all of which interoperate with each other. In contrast,
+<code>opam-repository</code> stores all the previous versions of
+packages.</li>
+<li>Function dependencies:<br> Are dependencies between functions,
+modules, classes, or another unit of code. E.g. C includes, Java
+classes, Python imports, and OCaml modules.</li>
 </ol>
 <p>Nix deals well with system dependencies but doesn’t have a native way
 of resolving library dependency versions. Opam deals well with library
 dependencies but doesn’t have a consistent way of installing system
-packages in a reproducible way. And Dune deals well with project
+packages in a reproducible way. And Dune deals with project
 dependencies, but not the others (although this may be changing in the
-future).</p>
+future). The OCaml compiler keeps track of function dependencies when
+compiling and linking a program.</p>
 <h4 id="cross-compilation"><a href="#cross-compilation" class="anchor"
 aria-hidden="true">Cross-compilation</a></h4>
 <p>(library -&gt; project) // opam cross compilation context</p>
 <p>Dune is used to support cross-compilation for Mirage unikernels (<a
 href="#building-unikernels">§</a>). We encode the cross-compilation
 context in Dune the <code>preprocess</code> stanza is used in Dune’s
-s-expression based Lisp-like DSL, for example from <a
-href="https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10"><code>mirage-tcpip</code></a>
-preprocesses pps:</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(library</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a> (name tcp)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a> (public_name tcpip.tcp)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a> (instrumentation</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  (backend bisect_ppx))</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a> (libraries logs ipaddr cstruct lwt-dllist mirage-profile tcpip.checksum</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>   tcpip duration randomconv fmt mirage-time mirage-clock mirage-random</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>   mirage-flow metrics)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a> (preprocess</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  (pps ppx_cstruct)))</span></code></pre></div>
-<p>Where ppx is options and ppx is …</p>
-<p>This means we’re essentially encoding the</p>
-<p>The result of this is…</p>
+DSL, for example from <a
+href="https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10"><code>mirage-tcpip</code></a>:</p>
+<pre><code>(library
+ (name tcp)
+ (public_name tcpip.tcp)
+ (instrumentation
+  (backend bisect_ppx))
+ (libraries logs ipaddr cstruct lwt-dllist mirage-profile tcpip.checksum
+   tcpip duration randomconv fmt mirage-time mirage-clock mirage-random
+   mirage-flow metrics)
+ (preprocess
+  (pps ppx_cstruct)))</code></pre>
+<p>Which tells dune to preprocess the Opam package
+<code>ppx_cstruct</code> with the host compiler.</p>
+<p>As this information is only available from the build manager, this
+requires fetching all dependancy sources to support cross compilation
+with the <code>opam-monorepo</code> tool:</p>
 <blockquote>
 <p>Cross-compilation - the details of how to build some native code can
 come late in the pipeline, which isn’t a problem if the sources are
 available<a href="#fn31" class="footnote-ref" id="fnref31"
 role="doc-noteref"><sup>31</sup></a>.</p>
 </blockquote>
+<p>This means we’re essentially encoding the compilation context in the
+build system rules. To remove the requirement to clone dependancy
+sources locally with <code>opam-monorepo</code> we could try and encode
+the compilation context in the package manager, except that
+preprocessing can be at the OCaml module level of granualrity. Dune
+deals with this level of granuality with repository dependancies, but
+Opam doesn’t. Tigher integration between the build and package manager
+could improve this situation, like Rust’s <code>cargo</code>.</p>
 <p>Would be nice to encode in opam problem that it’s by module so what
 if dune takes on more of opam’s functionality tighter integration better
-mixing library and project dependancies</p>
+mixing library and project dependencies</p>
 <!-- 
 Opam has no concept to cross compilation
 So the cross compilation information is included in the build system instructions like pre-processed this particular module in the host compiler, as oppsed to the target compiler.
@@ -651,7 +668,7 @@ That's a bit tricky because it means we need to get all of the sources for the d
 <!-- I think it could be interesting to try and encode this in the package manager.
 Like this this particular module will be will built for the host compiler or the target compiler.
 But the tricky thing is some dependencies have modules which will be built in the host compiler, and some in the target compiler.
-We're conflating the library and project deps here, because we need the cross compilation context in the package manager, but the package manager only has a concept of packages - and not modules - inside a project or dependancy.
+We're conflating the library and project deps here, because we need the cross compilation context in the package manager, but the package manager only has a concept of packages - and not modules - inside a project or dependency.
 You can have multiple packages inside of development repository, and then multiple modules inside one package.
 It's kind of messy - there's no one cohesive vision. -->
 <ul>
@@ -676,10 +693,10 @@ focusing on code dedduplication</p>
 <p>could do version solving in nix: I would be very intersted in a
 version constrained solver that can be used in a Nix derivation. This
 would require some ecosystem-logic specific logic to obtain the
-dependancy versions, and to create derivations for the resulting
+dependency versions, and to create derivations for the resulting
 sources, but otherwise should be ecosystem agnostic</p>
 <p>lockfile: https://github.com/RyanGibb/opam-nix#materialization</p>
-<p>However this doesn’t address project dependancies…</p>
+<p>However this doesn’t address project dependencies…</p>
 <p>this is basicaly making nix handle library dependandices with a
 version solver</p>
 <hr />

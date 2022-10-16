@@ -252,7 +252,7 @@ Once we build a Mirage unikernel with Nix, we can write a NixOS module to deploy
 ## Building Unikernels
 
 Mirage uses the package manager for OCaml Opam^[[opam.ocaml.org](https://opam.ocaml.org/)].
-Dependencies in Opam, as is common in programming language package managers, has a file which -- among other meta-data, build/install scripts -- specifies dependencies and their version constraints.
+dependencies in Opam, as is common in programming language package managers, has a file which -- among other meta-data, build/install scripts -- specifies dependencies and their version constraints.
 For example^[For [mirage-www](https://github.com/mirage/mirage-www) targetting `hvt`.]
 ```
 ...
@@ -304,7 +304,7 @@ A common target, Solo5^[[github.com/Solo5/solo5](https://github.com/Solo5/solo5)
 Solo5 uses a different `glibc` which requires cross-compilation.
 Mirage 4^[[mirage.io/blog/announcing-mirage-40](https://mirage.io/blog/announcing-mirage-40)] uses the Dune build system^[[dune.build](https://dune.build)] which supports cross-compilation through toolchains; a host compiler is installed in an Opam switch (a virtual environment) as normal, and a target compiler^[[github.com/mirage/ocaml-solo5](https://github.com/mirage/ocaml-solo5)] is created by modifying the host compiler.
 But the cross-compilation context of packages is only known at build time, as some metaprogramming modules may require preprocessing with the host compiler.
-To ensure that the right compilation context is used, this means we have to provide Dune the sources of all our dependancies.
+To ensure that the right compilation context is used, this means we have to provide Dune the sources of all our dependencies.
 A tool called `opam-monorepo` was created to do just that^[[github.com/tarides/opam-monorepo](https://github.com/tarides/opam-monorepo)].
 
 We extended the `opam-nix` project to support the `opam-monorepo` workflow with this pull request: [github.com/tweag/opam-nix/pull/18](https://github.com/tweag/opam-nix/pull/18).
@@ -326,33 +326,38 @@ For example, see the flake for building the Mirage website as a unikernel with N
 
 ## Dependency Management
 
-To step back for a moment and look at the big picture, we can consider three different types of dependacies at play here:
+To step back for a moment and look at the big picture, we can consider a number of different types of dependencies at play here:
 
-1. System dependancies:<br>
-Are dependancies installed through the system package manager -- `depexts` in Opam parlance.
+1. System dependencies:<br>
+Are dependencies installed through the system package manager -- `depexts` in Opam parlance.
 This is Nix for Hillinar, but another platform's package managers include `apt`, `pacman`, and `brew`.
 For unikernels these are often C libraries like `gmp`.
-2. Library dependancies:<br>
+2. Library dependencies:<br>
 Are installed through the programming language package manager.
 This is `opam` here, but other language package managers include `pip`, `node`, and `cargo`.
-These are the dependancies that often have version constraints and require complicated resolution possibly using a SAT solver.
-3. Project dependancies:<br>
-Are dependencies between files, modules, classes, or another unit of code, inside one project, often a version control system repository.
+These are the dependencies that often have version constraints and require complicated resolution possibly using a SAT solver.
+3. Repository dependencies:<br>
+Are dependencies between files, modules, classes, or another unit of code, inside one version control system repository, at the file-system level of granularity.
+Most likely this will be for a simple project (e.g. Opam package) but in a monorepo these could span many projects which all interoperate.
+In fact, Nixpkgs is a monorepo that stores -- in most instances -- exactly one version of a package, all of which interoperate with each other.
+In contrast, `opam-repository` stores all the previous versions of packages.
+3. Function dependencies:<br>
+Are dependencies between functions, modules, classes, or another unit of code.
 E.g. C includes, Java classes, Python imports, and OCaml modules.
 
 Nix deals well with system dependencies but doesn't have a native way of resolving library dependency versions.
 Opam deals well with library dependencies but doesn't have a consistent way of installing system packages in a reproducible way.
-And Dune deals well with project dependencies, but not the others (although this may be changing in the future).
+And Dune deals with project dependencies, but not the others (although this may be changing in the future).
+The OCaml compiler keeps track of function dependencies when compiling and linking a program.
 
 #### Cross-compilation
-
 
 (library -> project)
 // opam cross compilation context
 
 Dune is used to support cross-compilation for Mirage unikernels ([&#167;](#building-unikernels)).
-We encode the cross-compilation context in Dune the `preprocess` stanza is used in Dune's s-expression based Lisp-like DSL, for example from [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10) preprocesses pps:
-```lisp
+We encode the cross-compilation context in Dune the `preprocess` stanza is used in Dune's DSL, for example from [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10):
+```
 (library
  (name tcp)
  (public_name tcpip.tcp)
@@ -364,23 +369,26 @@ We encode the cross-compilation context in Dune the `preprocess` stanza is used 
  (preprocess
   (pps ppx_cstruct)))
 ```
+Which tells dune to preprocess the Opam package `ppx_cstruct` with the host compiler.
 
-Where ppx is options and ppx is ...
-
-
-
-This means we're essentially encoding the 
-
-
-The result of this is...
+As this information is only available from the build manager, this requires fetching all dependancy sources to support cross compilation with the `opam-monorepo` tool:
 
 > Cross-compilation - the details of how to build some native code can come late in the pipeline, which isn't a problem if the sources are available^[[github.com/tarides/opam-monorepo](https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6a9c5f20ed032/doc/faq.mld#L42)].
+
+This means we're essentially encoding the compilation context in the build system rules.
+To remove the requirement to clone dependancy sources locally with `opam-monorepo` we could try and encode the compilation context in the package manager, except that preprocessing can be at the OCaml module level of granualrity.
+Dune deals with this level of granuality with repository dependancies, but Opam doesn't.
+Tigher integration between the build and package manager could improve this situation, like Rust's `cargo`.
+
+
+
+
 
 Would be nice to encode in opam
 problem that it's by module
 so what if dune takes on more of opam's functionality
 tighter integration better
-mixing library and project dependancies
+mixing library and project dependencies
 
 
 <!-- 
@@ -392,7 +400,7 @@ That's a bit tricky because it means we need to get all of the sources for the d
 <!-- I think it could be interesting to try and encode this in the package manager.
 Like this this particular module will be will built for the host compiler or the target compiler.
 But the tricky thing is some dependencies have modules which will be built in the host compiler, and some in the target compiler.
-We're conflating the library and project deps here, because we need the cross compilation context in the package manager, but the package manager only has a concept of packages - and not modules - inside a project or dependancy.
+We're conflating the library and project deps here, because we need the cross compilation context in the package manager, but the package manager only has a concept of packages - and not modules - inside a project or dependency.
 You can have multiple packages inside of development repository, and then multiple modules inside one package.
 It's kind of messy - there's no one cohesive vision. -->
 
@@ -420,12 +428,12 @@ https://github.com/timbertson/fetlock
 
 could do version solving in nix:
 I would be very intersted in a version constrained solver that can be used in a Nix derivation.
-This would require some ecosystem-logic specific logic to obtain the dependancy versions, and to create derivations for the resulting sources, but otherwise should be ecosystem agnostic
+This would require some ecosystem-logic specific logic to obtain the dependency versions, and to create derivations for the resulting sources, but otherwise should be ecosystem agnostic
 
 lockfile:
 https://github.com/RyanGibb/opam-nix#materialization
 
-However this doesn't address project dependancies...
+However this doesn't address project dependencies...
 
 
 this is basicaly making nix handle library dependandices with a version solver
