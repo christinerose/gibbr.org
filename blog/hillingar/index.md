@@ -177,7 +177,7 @@ Despite these advantages, the reason I switched to NixOS from Arch Linux was sim
 As Arch packages bleeding-edge software with rolling updates it would frequently happen that some new version of something I was using would break.
 Arch has one global coherent package set, so to avoid complications with solving dependency versions Arch doesn't support partial upgrades.
 Given this, the options were to wait for the bug to be fixed, or manually rollback all the updated packages by inspecting the pacman log (the Arch package manager) and reinstalling the old versions from the local cache.
-While there may be tools on top of `pacman` to improve this, the straw that broke the camel's back was when my machine crashed while updating the Linux kernel and I had to reinstall it from a live USB.
+While there may be tools on top of pacman to improve this, the straw that broke the camel's back was when my machine crashed while updating the Linux kernel and I had to reinstall it from a live USB.
 
 While Nixpkgs also has one global coherent package set, one can use multiple instances of Nixpkgs (i.e. channels) at once to support partial upgrades, as the Nix store allows multiple versions of a dependency to be stored.
 This also supports atomic upgrades as all the old versions of software can be kept until garbage collected.
@@ -214,7 +214,7 @@ OCaml is a bit more practical than other functional programming languages such a
 ## Deploying Unikernels
 
 Now that we understand what Nix and Mirage are, and we've motivated the desire to deploy Mirage unikernels on a NixOS machine, what's stopping us from doing just that?
-Well, to support deploying a mirage unikernel, such as for a DNS server, we would need to write a NixOS module for it.
+Well, to support deploying a Mirage unikernel, such as for a DNS server, we would need to write a NixOS module for it.
 
 A paired-down^[The full module can be found [here](https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix)] version of the bind NixOS module, the module we use in our Nix expression for deploying a DNS server on NixOS ([&#167;](#cb1)), is:
 ```nix
@@ -371,14 +371,14 @@ We encode the cross-compilation context in Dune using the `preprocess` stanza fr
   (pps ppx_cstruct)))
 ```
 Which tells dune to preprocess the Opam package `ppx_cstruct` with the host compiler.
-As this information is only available from the build manager, this requires fetching all dependancy sources to support cross compilation with the `opam-monorepo` tool:
+As this information is only available from the build manager, this requires fetching all dependency sources to support cross compilation with the `opam-monorepo` tool:
 
 > Cross-compilation - the details of how to build some native code can come late in the pipeline, which isn't a problem if the sources are available^[[github.com/tarides/opam-monorepo](https://github.com/tarides/opam-monorepo/blob/feeb325c9c8d560c6b92cbde62b6a9c5f20ed032/doc/faq.mld#L42)].
 
 This means we're essentially encoding the compilation context in the build system rules.
-To remove the requirement to clone dependancy sources locally with `opam-monorepo` we could try and encode the compilation context in the package manager.
+To remove the requirement to clone dependency sources locally with `opam-monorepo` we could try and encode the compilation context in the package manager.
 However, preprocessing can be at the OCaml module level of granualrity.
-Dune deals with this level of granuality with file dependancies, but Opam doesn't.
+Dune deals with this level of granuality with file dependencies, but Opam doesn't.
 Tigher integration between the build and package manager could improve this situation, like Rust's `cargo`.
 There are some plans towards modularising Opam and creating tigher integration with Dune.
 
@@ -390,38 +390,76 @@ However, Nix remote builders would enable reproducible builds on a remote machin
 
 Hillingar uses the Zero Install SAT solver for version resolution through Opam.
 While this works, it isn't the most principled approach for getting Nix to work with library dependencies.
-Some package managers are just using Nix for system dependencies and using the existing tooling as normal for library dependancies^[[docs.haskellstack.org/en/stable/nix_integration](https://docs.haskellstack.org/en/stable/nix_integration/)].
+Some package managers are just using Nix for system dependencies and using the existing tooling as normal for library dependencies^[[docs.haskellstack.org/en/stable/nix_integration](https://docs.haskellstack.org/en/stable/nix_integration/)].
 But generally, `X2nix` projects are numerous and created in an ad hoc way.
 Part of this is dealing with every language's ecosystems package repository system, and there are existing approaches^[[github.com/nix-community/dream2nix](https://github.com/nix-community/dream2nix)] ^[[github.com/timbertson/fetlock](https://github.com/timbertson/fetlock)] aimed at reducing code duplication, but there is still the fundamental problem of version resolution.
-Nix uses pointers (paths) to refer to different versions of a dependancy, which works well solving the dimond dependancy problem for system depdnancies, but we don't have this luxury when linking a binary with library dependancies.
+Nix uses pointers (paths) to refer to different versions of a dependency, which works well solving the diamond dependency problem for system depdnencies, but we don't have this luxury when linking a binary with library dependencies.
 
-![The diamond dependancy problem [@coxVersionSAT2016].](version-sat.svg){width=100% min-width=5cm}
+![The diamond dependency problem [@coxVersionSAT2016].](version-sat.svg){width=100% min-width=5cm}
 
 This is exactly why Opam uses a constraint solver to find a coherent package set.
 But what if we could split version solving functionality into something that can tie into any language ecosystem?
-This could be a more principled, elegant, approach to the current fragmented state of library dependancies (program language package managers).
+This could be a more principled, elegant, approach to the current fragmented state of library dependencies (program language package managers).
 This would require some ecosystem-specific logic to, for example, obtain the version constraints and to create derivations for the resulting sources, but the core functionality could be ecosystem agnostic.
 As with `opam-nix`, materialization^[[https://github.com/tweag/opam-nix#materialization](https://github.com/tweag/opam-nix/blob/4e602e02a82a720c2f1d7324ea29dc9c7916a9c2/README.md#materialization)] could be used to commit a lockfile and avoid IFD.
 Although perhaps this is too lofty a goal to be practical, and perhaps the real issues are organisational rather than technical.
 
 Nix allows multiple versions of a package to be installed simultaneously by having different derivations refer to different paths in the Nix store concurrently.
-What if we could use a similar approach for linking binaries to sidestep the version constraint solving altogether at the cost of larger binaries (a similar tradeoff Nix makes with disk space)?
-A very simple approach might be to programatically prepend/append function calls with the dependancy version name `vers1` and `verse2` for the packages `B` and `C` respectively in the diagram above.
+What if we could use a similar approach for linking binaries to sidestep the version constraint solving altogether at the cost of larger binaries?
+Nix makes a similar tradeoff makes with disk space.
+A very simple approach might be to programmatically prepend/append functions in `D` with the dependency version name `vers1` and `vers2` for calls in the packages `B` and `C` respectively in the diagram above.
 
 > Another way to avoid NP-completeness is to attack assumption 4: what if two different versions of a package could be installed simultaneously? Then almost any search algorithm will find a combination of packages to build the program; it just might not be the smallest possible combination (that's still NP-complete). If B needs D 1.5 and C needs D 2.2, the build can include both packages in the final binary, treating them as distinct packages. I mentioned above that there can't be two definitions of printf built into a C program, but languages with explicit module systems should have no problem including separate copies of D (under different fully-qualified names) into a program. [@coxVersionSAT2016]
 
-Another, wackier, idea is to resolve dependancies purely based on typing^[[twitter.com/TheLortex/status/1571884882363830273](https://twitter.com/TheLortex/status/1571884882363830273)].
+Another wackier idea is instead of having programmers manually specific constraints with version numbers, to resolve dependencies purely based on typing^[[twitter.com/TheLortex/status/1571884882363830273](https://twitter.com/TheLortex/status/1571884882363830273)].
+The issue here is that solving dependencies would now involve type checking, which could prove computationally expensive.
 
 #### Build systems
 
 The build script in a Nix derivation -- if it doesn't invoke a compiler directly -- often invokes a build system like Make, or in this case Dune.
-But Nix can also be considered a build system with a suspending scheduler -- allowing a minimal build system with dynamic dependencies -- and deep constructive trace rebuilding allowing reproducible builds and reliable binary caching [@mokhovBuildSystemsCarte2018].
+But Nix can also be considered a build system with a suspending scheduler and deep constructive trace rebuilding [@mokhovBuildSystemsCarte2018].
 But Nix is at a coarse-grained package level, invoking these finer-grained build systems to deal with file dependencies.
 
-To enable more minimal build systems, tighter integration with the compiler would enable analysing function dependencies^[[signalsandthreads.com/build-systems/#4305](https://signalsandthreads.com/build-systems/#4305)].
-
 In Chapter 10 of the original Nix thesis [@dolstraPurelyFunctionalSoftware2006] low-level build management using Nix is discussed, proposing extending Nix to support file dependencies.
+For example, to build the ATerm library:
+```nix
+{sharedLib ? true}:
+
+with (import ../../../lib);
+
+rec {
+  sources = [
+    ./afun.c ./aterm.c ./bafio.c ./byteio.c ./gc.c ./hash.c
+    ./list.c ./make.c ./md5c.c ./memory.c ./tafio.c ./version.c
+  ];
+
+  compile = main: compileC {inherit main sharedLib;};
+
+  libATerm = makeLibrary {
+    libraryName = "ATerm";
+    objects = map compile sources;
+    inherit sharedLib;
+  };
+}
+```
+
+This has the advantage over traditional build systems like Make that if a dependency isn't specified, the build will fail.
+And if the build succeeds, the build will succeed.
+So it's not possible to make incomplete dependency specifications, which could lead to inconsistent builds.
+
+A downside, however, is that Nix doesn't support dynamic dependencies.
+We need to know the derivation inputs in advance of invoking the build script.
+This is why in Hillingar we need to use IFD to import from a derivation invoking Opam to solve dependency versions.
+
 I would be very interested if anyone reading this knows if this idea went anywhere!
+The only issue I see with this is the computational and storage overhead associated with storing derivations in the Nix store that are manageable for coarse-grained dependencies might prove too costly for fine-grained file dependencies.
+
+While on the topic of build systems, to enable more minimal builds tighter integration with the compiler would enable analysing function dependencies^[[signalsandthreads.com/build-systems/#4305](https://signalsandthreads.com/build-systems/#4305)].
+For example, Dune could recompile only certain functions that have changed since the last invocation.
+Taking granularity to such a fine degree will cause a great increase in the size of the build graph, however.
+Recomputing this graph for every invocation may prove more mostly than doing the actual rebuilding after a certain point.
+Perhaps persisting the build graph and calculating differentials of it could mitigate this.
+A meta-build-graph, if you will.
 
 ## Conclusion
 

@@ -361,9 +361,9 @@ solving dependency versions Arch doesn’t support partial upgrades. Given
 this, the options were to wait for the bug to be fixed, or manually
 rollback all the updated packages by inspecting the pacman log (the Arch
 package manager) and reinstalling the old versions from the local cache.
-While there may be tools on top of <code>pacman</code> to improve this,
-the straw that broke the camel’s back was when my machine crashed while
-updating the Linux kernel and I had to reinstall it from a live USB.</p>
+While there may be tools on top of pacman to improve this, the straw
+that broke the camel’s back was when my machine crashed while updating
+the Linux kernel and I had to reinstall it from a live USB.</p>
 <p>While Nixpkgs also has one global coherent package set, one can use
 multiple instances of Nixpkgs (i.e. channels) at once to support partial
 upgrades, as the Nix store allows multiple versions of a dependency to
@@ -434,7 +434,7 @@ or mutable variables when warranted.</p>
 class="anchor" aria-hidden="true">Deploying Unikernels</a></h2>
 <p>Now that we understand what Nix and Mirage are, and we’ve motivated
 the desire to deploy Mirage unikernels on a NixOS machine, what’s
-stopping us from doing just that? Well, to support deploying a mirage
+stopping us from doing just that? Well, to support deploying a Mirage
 unikernel, such as for a DNS server, we would need to write a NixOS
 module for it.</p>
 <p>A paired-down<a href="#fn13" class="footnote-ref" id="fnref13"
@@ -647,7 +647,7 @@ href="https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e05
 <p>Which tells dune to preprocess the Opam package
 <code>ppx_cstruct</code> with the host compiler. As this information is
 only available from the build manager, this requires fetching all
-dependancy sources to support cross compilation with the
+dependency sources to support cross compilation with the
 <code>opam-monorepo</code> tool:</p>
 <blockquote>
 <p>Cross-compilation - the details of how to build some native code can
@@ -656,11 +656,11 @@ available<a href="#fn31" class="footnote-ref" id="fnref31"
 role="doc-noteref"><sup>31</sup></a>.</p>
 </blockquote>
 <p>This means we’re essentially encoding the compilation context in the
-build system rules. To remove the requirement to clone dependancy
+build system rules. To remove the requirement to clone dependency
 sources locally with <code>opam-monorepo</code> we could try and encode
 the compilation context in the package manager. However, preprocessing
 can be at the OCaml module level of granualrity. Dune deals with this
-level of granuality with file dependancies, but Opam doesn’t. Tigher
+level of granuality with file dependencies, but Opam doesn’t. Tigher
 integration between the build and package manager could improve this
 situation, like Rust’s <code>cargo</code>. There are some plans towards
 modularising Opam and creating tigher integration with Dune.</p>
@@ -679,7 +679,7 @@ aria-hidden="true">Version Resolution</a></h4>
 through Opam. While this works, it isn’t the most principled approach
 for getting Nix to work with library dependencies. Some package managers
 are just using Nix for system dependencies and using the existing
-tooling as normal for library dependancies<a href="#fn34"
+tooling as normal for library dependencies<a href="#fn34"
 class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a>.
 But generally, <code>X2nix</code> projects are numerous and created in
 an ad hoc way. Part of this is dealing with every language’s ecosystems
@@ -689,13 +689,13 @@ role="doc-noteref"><sup>35</sup></a> <a href="#fn36"
 class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a>
 aimed at reducing code duplication, but there is still the fundamental
 problem of version resolution. Nix uses pointers (paths) to refer to
-different versions of a dependancy, which works well solving the dimond
-dependancy problem for system depdnancies, but we don’t have this luxury
-when linking a binary with library dependancies.</p>
+different versions of a dependency, which works well solving the diamond
+dependency problem for system depdnencies, but we don’t have this luxury
+when linking a binary with library dependencies.</p>
 <figure>
 <img src="version-sat.svg" data-min-width="5cm" style="width:100.0%"
-alt="The diamond dependancy problem [8]." />
-<figcaption aria-hidden="true">The diamond dependancy problem <span
+alt="The diamond dependency problem [8]." />
+<figcaption aria-hidden="true">The diamond dependency problem <span
 class="citation" data-cites="coxVersionSAT2016"><a
 href="#ref-coxVersionSAT2016"
 role="doc-biblioref">[8]</a></span>.</figcaption>
@@ -704,7 +704,7 @@ role="doc-biblioref">[8]</a></span>.</figcaption>
 package set. But what if we could split version solving functionality
 into something that can tie into any language ecosystem? This could be a
 more principled, elegant, approach to the current fragmented state of
-library dependancies (program language package managers). This would
+library dependencies (program language package managers). This would
 require some ecosystem-specific logic to, for example, obtain the
 version constraints and to create derivations for the resulting sources,
 but the core functionality could be ecosystem agnostic. As with
@@ -717,11 +717,12 @@ organisational rather than technical.</p>
 simultaneously by having different derivations refer to different paths
 in the Nix store concurrently. What if we could use a similar approach
 for linking binaries to sidestep the version constraint solving
-altogether at the cost of larger binaries (a similar tradeoff Nix makes
-with disk space)? A very simple approach might be to programatically
-prepend/append function calls with the dependancy version name
-<code>vers1</code> and <code>verse2</code> for the packages
-<code>B</code> and <code>C</code> respectively in the diagram above.</p>
+altogether at the cost of larger binaries? Nix makes a similar tradeoff
+makes with disk space. A very simple approach might be to
+programmatically prepend/append functions in <code>D</code> with the
+dependency version name <code>vers1</code> and <code>vers2</code> for
+calls in the packages <code>B</code> and <code>C</code> respectively in
+the diagram above.</p>
 <blockquote>
 <p>Another way to avoid NP-completeness is to attack assumption 4: what
 if two different versions of a package could be installed
@@ -736,33 +737,74 @@ of D (under different fully-qualified names) into a program. <span
 class="citation" data-cites="coxVersionSAT2016"><a
 href="#ref-coxVersionSAT2016" role="doc-biblioref">[8]</a></span></p>
 </blockquote>
-<p>Another, wackier, idea is to resolve dependancies purely based on
-typing<a href="#fn38" class="footnote-ref" id="fnref38"
-role="doc-noteref"><sup>38</sup></a>.</p>
+<p>Another wackier idea is instead of having programmers manually
+specific constraints with version numbers, to resolve dependencies
+purely based on typing<a href="#fn38" class="footnote-ref" id="fnref38"
+role="doc-noteref"><sup>38</sup></a>. The issue here is that solving
+dependencies would now involve type checking, which could prove
+computationally expensive.</p>
 <h4 id="build-systems"><a href="#build-systems" class="anchor"
 aria-hidden="true">Build systems</a></h4>
 <p>The build script in a Nix derivation – if it doesn’t invoke a
 compiler directly – often invokes a build system like Make, or in this
 case Dune. But Nix can also be considered a build system with a
-suspending scheduler – allowing a minimal build system with dynamic
-dependencies – and deep constructive trace rebuilding allowing
-reproducible builds and reliable binary caching <span class="citation"
-data-cites="mokhovBuildSystemsCarte2018"><a
+suspending scheduler and deep constructive trace rebuilding <span
+class="citation" data-cites="mokhovBuildSystemsCarte2018"><a
 href="#ref-mokhovBuildSystemsCarte2018"
 role="doc-biblioref">[9]</a></span>. But Nix is at a coarse-grained
 package level, invoking these finer-grained build systems to deal with
 file dependencies.</p>
-<p>To enable more minimal build systems, tighter integration with the
-compiler would enable analysing function dependencies<a href="#fn39"
-class="footnote-ref" id="fnref39"
-role="doc-noteref"><sup>39</sup></a>.</p>
 <p>In Chapter 10 of the original Nix thesis <span class="citation"
 data-cites="dolstraPurelyFunctionalSoftware2006"><a
 href="#ref-dolstraPurelyFunctionalSoftware2006"
 role="doc-biblioref">[10]</a></span> low-level build management using
 Nix is discussed, proposing extending Nix to support file dependencies.
-I would be very interested if anyone reading this knows if this idea
-went anywhere!</p>
+For example, to build the ATerm library:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode nix"><code class="sourceCode nix"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span><span class="va">sharedLib</span> <span class="op">?</span> <span class="cn">true</span><span class="op">}</span>:</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="kw">with</span> <span class="op">(</span><span class="bu">import</span> <span class="ss">../../../lib</span><span class="op">);</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="kw">rec</span> <span class="op">{</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">sources</span> <span class="op">=</span> <span class="op">[</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="ss">./afun.c</span> <span class="ss">./aterm.c</span> <span class="ss">./bafio.c</span> <span class="ss">./byteio.c</span> <span class="ss">./gc.c</span> <span class="ss">./hash.c</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="ss">./list.c</span> <span class="ss">./make.c</span> <span class="ss">./md5c.c</span> <span class="ss">./memory.c</span> <span class="ss">./tafio.c</span> <span class="ss">./version.c</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">];</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="va">compile</span> <span class="op">=</span> <span class="va">main</span><span class="op">:</span> compileC <span class="op">{</span><span class="kw">inherit</span> main sharedLib<span class="op">;};</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="va">libATerm</span> <span class="op">=</span> makeLibrary <span class="op">{</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">libraryName</span> <span class="op">=</span> <span class="st">&quot;ATerm&quot;</span><span class="op">;</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">objects</span> <span class="op">=</span> <span class="bu">map</span> compile sources<span class="op">;</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">inherit</span> sharedLib<span class="op">;</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="op">};</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>This has the advantage over traditional build systems like Make that
+if a dependency isn’t specified, the build will fail. And if the build
+succeeds, the build will succeed. So it’s not possible to make
+incomplete dependency specifications, which could lead to inconsistent
+builds.</p>
+<p>A downside, however, is that Nix doesn’t support dynamic
+dependencies. We need to know the derivation inputs in advance of
+invoking the build script. This is why in Hillingar we need to use IFD
+to import from a derivation invoking Opam to solve dependency
+versions.</p>
+<p>I would be very interested if anyone reading this knows if this idea
+went anywhere! The only issue I see with this is the computational and
+storage overhead associated with storing derivations in the Nix store
+that are manageable for coarse-grained dependencies might prove too
+costly for fine-grained file dependencies.</p>
+<p>While on the topic of build systems, to enable more minimal builds
+tighter integration with the compiler would enable analysing function
+dependencies<a href="#fn39" class="footnote-ref" id="fnref39"
+role="doc-noteref"><sup>39</sup></a>. For example, Dune could recompile
+only certain functions that have changed since the last invocation.
+Taking granularity to such a fine degree will cause a great increase in
+the size of the build graph, however. Recomputing this graph for every
+invocation may prove more mostly than doing the actual rebuilding after
+a certain point. Perhaps persisting the build graph and calculating
+differentials of it could mitigate this. A meta-build-graph, if you
+will.</p>
 <h2 id="conclusion"><a href="#conclusion" class="anchor"
 aria-hidden="true">Conclusion</a></h2>
 <p>To summarise, this project was motivated (<a
@@ -956,7 +998,7 @@ carte,”</span> <em>Proc. ACM Program. Lang.</em>, vol. 2, pp. 1–29, Jul.
 2018, doi: <a
 href="https://doi.org/10.1145/3236774">10.1145/3236774</a>. [Online].
 Available: <a
-href="https://dl.acm.org/doi/10.1145/3236774">https://dl.acm.org/doi/10.1145/3236774</a>.
+href="https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf">https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf</a>.
 [Accessed: Oct. 11, 2022]</div>
 </div>
 <div id="ref-dolstraPurelyFunctionalSoftware2006" class="csl-entry"
