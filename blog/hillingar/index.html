@@ -754,6 +754,10 @@ href="#ref-mokhovBuildSystemsCarte2018"
 role="doc-biblioref">[9]</a></span>. But Nix is at a coarse-grained
 package level, invoking these finer-grained build systems to deal with
 repository dependencies.</p>
+<p>To enable more minimal build systems, tighter integration with the
+compiler would enable analysing function dependencies<a href="#fn39"
+class="footnote-ref" id="fnref39"
+role="doc-noteref"><sup>39</sup></a>.</p>
 <p>In Chapter 10 of the original Nix thesis <span class="citation"
 data-cites="dolstraPurelyFunctionalSoftware2006"><a
 href="#ref-dolstraPurelyFunctionalSoftware2006"
@@ -790,8 +794,8 @@ on this package in a reproducible way.</li>
 explored).</li>
 </ul>
 <p>There exists related work in the deployment and reproducible building
-of Mirage unikernels. Albotross<a href="#fn39" class="footnote-ref"
-id="fnref39" role="doc-noteref"><sup>39</sup></a> is one such tool for
+of Mirage unikernels. Albotross<a href="#fn40" class="footnote-ref"
+id="fnref40" role="doc-noteref"><sup>40</sup></a> is one such tool for
 deploying unikernels. Albotross differs from Hillingar in that it also
 aims to provision resources for unikernels, share resources for
 unikernels between users, and monitor unikernels, with a Unix daemon;
@@ -801,8 +805,8 @@ manage some of the inheritance imperative processes being unikernels as
 well as share access to resources for unikernels for other users on a
 NixOS system. There is also work in improving the reproducibility of
 Opam packages (as Mirage unikernels are Opam packages themselves)<a
-href="#fn40" class="footnote-ref" id="fnref40"
-role="doc-noteref"><sup>40</sup></a>. Hillingar differs in that it only
+href="#fn41" class="footnote-ref" id="fnref41"
+role="doc-noteref"><sup>41</sup></a>. Hillingar differs in that it only
 uses Opam for version resolution, instead using Nix to provide
 dependencies, which provides reproducibility with pinned Nix derivation
 inputs and builds in isolation by default.</p>
@@ -819,8 +823,8 @@ writing simple derivations this doesn’t often prove an issue, but when
 writing complicated logic it quickly gets in the way of productivity;
 the runtime errors produced can be very hard to parse. Thankfully there
 is work towards creating a typed language for the Nix deployment system,
-such as Nickel<a href="#fn41" class="footnote-ref" id="fnref41"
-role="doc-noteref"><sup>41</sup></a>. However gradual typing is hard,
+such as Nickel<a href="#fn42" class="footnote-ref" id="fnref42"
+role="doc-noteref"><sup>42</sup></a>. However gradual typing is hard,
 and Nickel still isn’t ready for real-world use despite being
 open-sourced (in a week as of writing this) for 2 years. Finally,
 despite it being the primary motivation we haven’t actually written
@@ -831,8 +835,8 @@ provide zonefile data decleratively before we do this.</p>
 different approaches, they’re both trying to bring some kind of
 functional programming paradigm to operating systems. NixOS does this in
 a top-down manner, trying to tame Unix with functional principles like
-laziness and immutability<a href="#fn42" class="footnote-ref"
-id="fnref42" role="doc-noteref"><sup>42</sup></a>. Whereas MirageOS does
+laziness and immutability<a href="#fn43" class="footnote-ref"
+id="fnref43" role="doc-noteref"><sup>43</sup></a>. Whereas MirageOS does
 this by throwing Unix out the window and rebuilding the world from
 scratch in a very much bottom-up approach. Despite these two projects
 having such different motivations and goals, Hillingar aims to get the
@@ -1121,20 +1125,24 @@ href="https://twitter.com/TheLortex/status/1571884882363830273">twitter.com/TheL
 href="#fnref38" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn39" role="doc-endnote"><p><a
-href="https://hannes.robur.coop/Posts/VMM">hannes.robur.coop/Posts/VMM</a><a
+href="https://signalsandthreads.com/build-systems/#4305">signalsandthreads.com/build-systems/#4305</a><a
 href="#fnref39" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn40" role="doc-endnote"><p><a
-href="https://hannes.nqsb.io/Posts/ReproducibleOPAM">hannes.nqsb.io/Posts/ReproducibleOPAM</a><a
+href="https://hannes.robur.coop/Posts/VMM">hannes.robur.coop/Posts/VMM</a><a
 href="#fnref40" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn41" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/">www.tweag.io/blog/2020-10-22-nickel-open-sourcing</a><a
+href="https://hannes.nqsb.io/Posts/ReproducibleOPAM">hannes.nqsb.io/Posts/ReproducibleOPAM</a><a
 href="#fnref41" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn42" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
+href="https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/">www.tweag.io/blog/2020-10-22-nickel-open-sourcing</a><a
 href="#fnref42" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn43" role="doc-endnote"><p><a
+href="https://www.tweag.io/blog/2022-07-14-taming-unix-with-nix/">tweag.io/blog/2022-07-14-taming-unix-with-nix</a><a
+href="#fnref43" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>

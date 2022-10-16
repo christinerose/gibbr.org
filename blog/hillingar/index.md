@@ -415,6 +415,8 @@ The build script in a Nix derivation -- if it doesn't invoke a compiler directly
 But Nix can also be considered a build system with a suspending scheduler -- allowing a minimal build system with dynamic dependencies -- and deep constructive trace rebuilding allowing reproducible builds and reliable binary caching [@mokhovBuildSystemsCarte2018].
 But Nix is at a coarse-grained package level, invoking these finer-grained build systems to deal with repository dependencies.
 
+To enable more minimal build systems, tighter integration with the compiler would enable analysing function dependencies^[[signalsandthreads.com/build-systems/#4305](https://signalsandthreads.com/build-systems/#4305)].
+
 In Chapter 10 of the original Nix thesis [@dolstraPurelyFunctionalSoftware2006] low-level build management using Nix is discussed, proposing extending Nix to support repository dependencies.
 I would be very interested if anyone reading this knows if this idea went anywhere!
 
