@@ -478,7 +478,7 @@ build a Mirage unikernel with Nix, we can write a NixOS module to deploy
 it.</p>
 <h2 id="building-unikernels"><a href="#building-unikernels"
 class="anchor" aria-hidden="true">Building Unikernels</a></h2>
-<p>Mirage uses the package manager for OCaml Opam<a href="#fn14"
+<p>Mirage uses the package manager for OCaml called Opam<a href="#fn14"
 class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>.
 dependencies in Opam, as is common in programming language package
 managers, has a file which – among other meta-data, build/install
@@ -605,31 +605,29 @@ Nix for Hillinar, but another platform’s package managers include
 <code>apt</code>, <code>pacman</code>, and <code>brew</code>. For
 unikernels these are often C libraries like <code>gmp</code>.</li>
 <li>Library dependencies:<br> Are installed through the programming
-language package manager. This is <code>opam</code> here, but other
-language package managers include <code>pip</code>, <code>node</code>,
-and <code>cargo</code>. These are the dependencies that often have
-version constraints and require complicated resolution possibly using a
+language package manager. For example <code>opam</code>,
+<code>pip</code>, and <code>npm</code>. These are the dependencies that
+often have version constraints and require resolution possibly using a
 SAT solver.</li>
-<li>Repository dependencies:<br> Are dependencies between files,
-modules, classes, or another unit of code, inside one version control
-system repository, at the file-system level of granularity. Most likely
-this will be for a simple project (e.g. Opam package) but in a monorepo
-these could span many projects which all interoperate. In fact, Nixpkgs
-is a monorepo that stores – in most instances – exactly one version of a
-package, all of which interoperate with each other. In contrast,
-<code>opam-repository</code> stores all the previous versions of
-packages.</li>
-<li>Function dependencies:<br> Are dependencies between functions,
-modules, classes, or another unit of code. E.g. C includes, Java
-classes, Python imports, and OCaml modules.</li>
+<li>File dependencies:<br> Are dependencies at the file system level of
+granularity. For example, C files, Java (non-inner) classes, or OCaml
+modules. Most likely this will be for a single project, but in a
+monorepo these could span many projects which all interoperate
+(e.g. Nixpkgs). This is the level of granuality that builds systems
+often deal with – like Make, Dune, and Bazel.</li>
+<li>Function dependencies:<br> Are dependencies between functions or
+another unit of code native to a language. For example, if function
+<code>a</code> calls function <code>a</code> then a depends upon
+<code>b</code>. This is the level of granualrity that compilers and
+interpretters are normally concerened with.</li>
 </ol>
 <p>Nix deals well with system dependencies but doesn’t have a native way
 of resolving library dependency versions. Opam deals well with library
 dependencies but doesn’t have a consistent way of installing system
-packages in a reproducible way. And Dune deals with repository
-dependencies, but not the others (although this may be changing in the
-future). The OCaml compiler keeps track of function dependencies when
-compiling and linking a program.</p>
+packages in a reproducible way. And Dune deals with file dependencies,
+but not the others (although this may be changing in the future). The
+OCaml compiler keeps track of function dependencies when compiling and
+linking a program.</p>
 <h4 id="cross-compilation"><a href="#cross-compilation" class="anchor"
 aria-hidden="true">Cross-compilation</a></h4>
 <p>Dune is used to support cross-compilation for Mirage unikernels (<a
@@ -663,10 +661,10 @@ build system rules. To remove the requirement to clone dependancy
 sources locally with <code>opam-monorepo</code> we could try and encode
 the compilation context in the package manager. However, preprocessing
 can be at the OCaml module level of granualrity. Dune deals with this
-level of granuality with repository dependancies, but Opam doesn’t.
-Tigher integration between the build and package manager could improve
-this situation, like Rust’s <code>cargo</code>, which there are some
-plans towards.</p>
+level of granuality with file dependancies, but Opam doesn’t. Tigher
+integration between the build and package manager could improve this
+situation, like Rust’s <code>cargo</code>, which there are some plans
+towards.</p>
 <p>There is also the possibility of using Nix to avoid
 cross-compilation. Nixpkg’s cross compilation<a href="#fn32"
 class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a>
@@ -754,7 +752,7 @@ data-cites="mokhovBuildSystemsCarte2018"><a
 href="#ref-mokhovBuildSystemsCarte2018"
 role="doc-biblioref">[9]</a></span>. But Nix is at a coarse-grained
 package level, invoking these finer-grained build systems to deal with
-repository dependencies.</p>
+file dependencies.</p>
 <p>To enable more minimal build systems, tighter integration with the
 compiler would enable analysing function dependencies<a href="#fn39"
 class="footnote-ref" id="fnref39"
@@ -763,9 +761,9 @@ role="doc-noteref"><sup>39</sup></a>.</p>
 data-cites="dolstraPurelyFunctionalSoftware2006"><a
 href="#ref-dolstraPurelyFunctionalSoftware2006"
 role="doc-biblioref">[10]</a></span> low-level build management using
-Nix is discussed, proposing extending Nix to support repository
-dependencies. I would be very interested if anyone reading this knows if
-this idea went anywhere!</p>
+Nix is discussed, proposing extending Nix to support file dependencies.
+I would be very interested if anyone reading this knows if this idea
+went anywhere!</p>
 <h2 id="conclusion"><a href="#conclusion" class="anchor"
 aria-hidden="true">Conclusion</a></h2>
 <p>To summarise, this project was motivated (<a

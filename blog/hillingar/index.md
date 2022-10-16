@@ -254,7 +254,7 @@ Once we build a Mirage unikernel with Nix, we can write a NixOS module to deploy
 
 ## Building Unikernels
 
-Mirage uses the package manager for OCaml Opam^[[opam.ocaml.org](https://opam.ocaml.org/)].
+Mirage uses the package manager for OCaml called Opam^[[opam.ocaml.org](https://opam.ocaml.org/)].
 dependencies in Opam, as is common in programming language package managers, has a file which -- among other meta-data, build/install scripts -- specifies dependencies and their version constraints.
 For example^[For [mirage-www](https://github.com/mirage/mirage-www) targetting `hvt`.]
 ```
@@ -337,20 +337,21 @@ This is Nix for Hillinar, but another platform's package managers include `apt`,
 For unikernels these are often C libraries like `gmp`.
 2. Library dependencies:<br>
 Are installed through the programming language package manager.
-This is `opam` here, but other language package managers include `pip`, `node`, and `cargo`.
-These are the dependencies that often have version constraints and require complicated resolution possibly using a SAT solver.
-3. Repository dependencies:<br>
-Are dependencies between files, modules, classes, or another unit of code, inside one version control system repository, at the file-system level of granularity.
-Most likely this will be for a simple project (e.g. Opam package) but in a monorepo these could span many projects which all interoperate.
-In fact, Nixpkgs is a monorepo that stores -- in most instances -- exactly one version of a package, all of which interoperate with each other.
-In contrast, `opam-repository` stores all the previous versions of packages.
+For example `opam`, `pip`, and `npm`.
+These are the dependencies that often have version constraints and require resolution possibly using a SAT solver.
+3. File dependencies:<br>
+Are dependencies at the file system level of granularity.
+For example, C files, Java (non-inner) classes, or OCaml modules. 
+Most likely this will be for a single project, but in a monorepo these could span many projects which all interoperate (e.g. Nixpkgs).
+This is the level of granuality that builds systems often deal with -- like Make, Dune, and Bazel.
 3. Function dependencies:<br>
-Are dependencies between functions, modules, classes, or another unit of code.
-E.g. C includes, Java classes, Python imports, and OCaml modules.
+Are dependencies between functions or another unit of code native to a language.
+For example, if function `a` calls function `a` then a depends upon `b`.
+This is the level of granualrity that compilers and interpretters are normally concerened with.
 
 Nix deals well with system dependencies but doesn't have a native way of resolving library dependency versions.
 Opam deals well with library dependencies but doesn't have a consistent way of installing system packages in a reproducible way.
-And Dune deals with repository dependencies, but not the others (although this may be changing in the future).
+And Dune deals with file dependencies, but not the others (although this may be changing in the future).
 The OCaml compiler keeps track of function dependencies when compiling and linking a program.
 
 #### Cross-compilation
@@ -377,7 +378,7 @@ As this information is only available from the build manager, this requires fetc
 This means we're essentially encoding the compilation context in the build system rules.
 To remove the requirement to clone dependancy sources locally with `opam-monorepo` we could try and encode the compilation context in the package manager.
 However, preprocessing can be at the OCaml module level of granualrity.
-Dune deals with this level of granuality with repository dependancies, but Opam doesn't.
+Dune deals with this level of granuality with file dependancies, but Opam doesn't.
 Tigher integration between the build and package manager could improve this situation, like Rust's `cargo`, which there are some plans towards.
 
 There is also the possibility of using Nix to avoid cross-compilation.
@@ -414,11 +415,11 @@ Another, wackier, idea is to resolve dependancies purely based on typing^[[twitt
 
 The build script in a Nix derivation -- if it doesn't invoke a compiler directly -- often invokes a build system like Make, or in this case Dune.
 But Nix can also be considered a build system with a suspending scheduler -- allowing a minimal build system with dynamic dependencies -- and deep constructive trace rebuilding allowing reproducible builds and reliable binary caching [@mokhovBuildSystemsCarte2018].
-But Nix is at a coarse-grained package level, invoking these finer-grained build systems to deal with repository dependencies.
+But Nix is at a coarse-grained package level, invoking these finer-grained build systems to deal with file dependencies.
 
 To enable more minimal build systems, tighter integration with the compiler would enable analysing function dependencies^[[signalsandthreads.com/build-systems/#4305](https://signalsandthreads.com/build-systems/#4305)].
 
-In Chapter 10 of the original Nix thesis [@dolstraPurelyFunctionalSoftware2006] low-level build management using Nix is discussed, proposing extending Nix to support repository dependencies.
+In Chapter 10 of the original Nix thesis [@dolstraPurelyFunctionalSoftware2006] low-level build management using Nix is discussed, proposing extending Nix to support file dependencies.
 I would be very interested if anyone reading this knows if this idea went anywhere!
 
 ## Conclusion
