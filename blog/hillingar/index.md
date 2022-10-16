@@ -1,12 +1,12 @@
 ---
 pagetitle: "Hillingar | gibbr.org"
-date: "2022-10-10 00:00:00"
+date: "2022-10-17 00:00:00"
 bibliography: blog/hillingar/bibliography.bib
 ---
 
 # Hillingar: building Mirage unikernels with Nix
 
-2022-10-10
+2022-10-17
 
 > An arctic mirage[@lehnNovayaZemlyaEffect1979]
 
