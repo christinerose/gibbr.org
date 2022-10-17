@@ -4,7 +4,7 @@ date: "2022-10-17 00:00:00"
 bibliography: blog/hillingar/bibliography.bib
 ---
 
-# Hillingar: MirageOS unikernels on NixOS
+# Hillingar: MirageOS Unikernels on NixOS
 
 2022-10-21
 
@@ -36,16 +36,16 @@ $ dig gibbr.org @ns1.gibbr.org +short
 45.77.205.198
 ```
 
-Setting up a glue record with our registrar pointing `ns1.gibbr.org` to the IP address of our DNS-hosting machine allows anyone to use our authoritative server via their resolver.
+Setting up a glue record with our registrar pointing `ns1.gibbr.org` to our DNS-hosting machine's IP address allows anyone to use our authoritative server via their resolver.
 
 As you might notice, this is running the venerable bind^[[ISC bind](https://www.isc.org/bind/) has many [CVE's](https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64)] written in C.
 As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution [@madhavapeddyMelangeCreatingFunctional2007].
 One such language is OCaml.
 
-The MirageOS project is a deployment method for these OCaml programs [@madhavapeddyUnikernelsLibraryOperating2013].
+The [MirageOS project](https://mirage.io) is a deployment method for these OCaml programs [@madhavapeddyUnikernelsLibraryOperating2013].
 Instead of running them as a traditional Unix process, we instead create a specialised 'unikernel' operating system to run the application, which allows dead code elimination improving security with smaller attack surfaces and improved efficiency.
 
-However, to deploy a Mirage unikernel with NixOS one has to use the imperative deployment methodologies native to the OCaml ecosystem, eliminating the benefit of reproducible systems that Nix gives us.
+However, to deploy a Mirage unikernel with NixOS, one must use the imperative deployment methodologies native to the OCaml ecosystem, eliminating the benefit of reproducible systems that Nix offers.
 This blog post will explore how we enabled reproducible deployments of Mirage unikernels with Nix.
 
 ## Nix
@@ -54,21 +54,21 @@ This blog post will explore how we enabled reproducible deployments of Mirage un
 
 At this point, the curious reader might be wondering, what on earth is 'Nix'?
 
-Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post as they all fundamentally mean the same thing - a piece of software.] which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
-<!-- We replace references to a component with this absolute path, or symlink into the nix store for the system path, for example. -->
+Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post, as they all fundamentally mean the same thing - a piece of software.], which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
+<!-- We replace references to a component with this absolute path, or symlink into the Nix store for the system path, for example. -->
 This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades and downgrades, and 
 multiple user environments [@dolstraNixSafePolicyFree2004].
 
-Nix uses a declarative domain-specific language (DSL), also called 'Nix', to build and configure software.
+Nix uses a declarative, domain-specific language (DSL), also called 'Nix', to build and configure software.
 The snippet used to deploy the DNS server is in fact a Nix expression.
-This example doesn't demonstrate it but Nix is Turing complete, being inspired by Haskell. 
+This example doesn't demonstrate it, but Nix is Turing complete, as it was inspired by Haskell. 
 Nix does not, however, have a type system.
 
-We used the DSL to write derivations for software, which describes how to build said software with input components and a build script.
+We used the DSL to write derivations for software, which describe how to build said software with input components and a build script.
 This Nix expression is then 'instantiated' to create 'store derivations' (`.drv` files), which is the low-level representation of how to build a single component.
 This store derivation is 'realised' into a built artefact, hereafter referred to as 'building'.
 
-Possibly the simplest Nix derivation uses bash to create a single file containing `Hello, World!`:
+Possibly the simplest Nix derivation uses `bash` to create a single file containing `Hello, World!`:
 ```nix
 { pkgs ? import <nixpkgs> {  } }:
 
@@ -79,7 +79,7 @@ builtins.derivation {
   args = [ "-c" ''echo "Hello, World!" > $out'' ];
 }
 ```
-Note that `derivation` is a function that we're calling with one argument which is a set of attributes.
+Note that `derivation` is a function that we're calling with one argument, which is a set of attributes.
 
 We can instantiate this Nix derivation expression to create a store derivation:
 ```
@@ -120,7 +120,7 @@ $ cat /nix/store/4v1dx6qaamakjy5jzii6lcmfiks57mhl-hello
 Hello, World!
 ```
 
-Most nix tooling does these two steps together:
+Most Nix tooling does these two steps together:
 ```
 nix-build default.nix
 this derivation will be built:
@@ -129,11 +129,11 @@ building '/nix/store/q5hg3vqby8a9c8pchhjal3la9n7g1m0z-hello.drv'...
 /nix/store/zyrki2hd49am36jwcyjh3xvxvn5j5wml-hello
 ```
 
-Nix realisations (hereafter referred to as builds) are done in isolation to ensure reproducibility.
-Projects often rely on interacting with package managers to make sure all dependencies are available, and may implicitly rely on system configuration at build time.
-To prevent this, every Nix derivation is built in isolation, without network access or access to the global file system, with only other Nix derivations as inputs.
+Nix realisations (hereafter referred to as 'builds') are done in isolation to ensure reproducibility.
+Projects often rely on interacting with package managers to make sure all dependencies are available and may implicitly rely on system configuration at build time.
+To prevent this, every Nix derivation is built in isolation (without network access or access to the global file system) with only other Nix derivations as inputs.
 
-> The name Nix is derived from the Dutch word niks, meaning nothing; build actions do not see anything that has not been explicitly declared as an input [@dolstraNixSafePolicyFree2004].
+> The name Nix is derived from the Dutch word *niks*, meaning *nothing*, since build actions don't see anything that has not been explicitly declared as an input [@dolstraNixSafePolicyFree2004].
 
 <!-- There are analogies to functional program versus imperative programming, but applied to system management and software builds/deployment. -->
 
@@ -145,7 +145,7 @@ However, Nixpkgs^[ [github.com/nixos/nixpkgs](https://github.com/nixos/nixpkgs) 
 We can use packages from Nixpkgs as inputs to a Nix derivation, as we've done with `bash`.
 
 There is also a command line package manager installing packages from Nixpkgs, which is why people often refer to Nix as a package manager.
-While Nix, and Therefore nix package management, is primarily source-based -- since derivations describe how to build software from source -- binary deployment is an optimization of this.
+While Nix, and therefore Nix package management, is primarily source-based (since derivations describe how to build software from source), binary deployment is an optimisation of this.
 Since packages are built in isolation and entirely determined by their inputs, binaries can be transparently deployed by downloading them from a remote server instead of building the derivation locally.
 
 ![Visualisation of Nixpkgs^[[www.tweag.io/blog/2022-09-13-nixpkgs-graph/](https://www.tweag.io/blog/2022-09-13-nixpkgs-graph/)]](./nixpkgs.png){width=100% min-width=5cm}
@@ -153,34 +153,34 @@ Since packages are built in isolation and entirely determined by their inputs, b
 #### NixOS
 
 NixOS^[[nixos.org](https://nixos.org)] is a Linux distribution built with Nix from a modular, purely functional specification [@dolstraNixOSPurelyFunctional2008].
-It has no traditional filesystem hierarchy (FSH) -- like `/bin`, `/lib`, `/usr` -- but instead stores all components in `/nix/store`.
-The configuration of the system is managed by Nix, with configuration files being built from modular Nix expressions.
-NixOS modules are just that -- small bits of configuration written in Nix that can be composed to build a full NixOS system^[[NixOS manual Chapter 66. Writing NixOS Modules](https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules).].
-While many NixOS modules are provided in the Nixpkgs repository they can also be written by an individual user.
+It has no traditional filesystem hierarchy (FSH), like `/bin`, `/lib`, `/usr`, but instead stores all components in `/nix/store`.
+The system configuration is managed by Nix, with configuration files built from modular Nix expressions.
+NixOS modules are just small bits of configuration written in Nix that can be composed to build a full NixOS system^[[NixOS manual Chapter 66. Writing NixOS Modules](https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules).].
+While many NixOS modules are provided in the Nixpkgs repository, they can also be written by an individual user.
 For example, the expression used to deploy a DNS server is a NixOS module.
 Together these modules form the configuration which builds the Linux system as a Nix derivation.
 
 NixOS minimises global mutable state that -- without knowing it -- you might rely on being set up in a certain way.
-For example, you might follow instructions to run a series of shell commands, and edit some files in a certain way, to get a piece of software working.
-You may subsequently be unable to reproduce the result because you've forgotten some intricacy, or are now using a different version of the software.
+For example, you might follow instructions to run a series of shell commands and edit some files in a certain way to get a piece of software working.
+You may subsequently be unable to reproduce the result because you've forgotten some intricacy or are now using a different version of the software.
 Nix forces you to encode this in a reproducible way, which is extremely useful for replicating software configurations and deployments, aiming to solve the 'It works on my machine' problem.
-Docker is often used to fix this configuration problem, but nix aims to be more reproducible.
-This can be frustrating at times because it can make it harder to get off the ground with a project, but I've found the benefits outweigh the downsides personally.
+Docker is often used to fix this configuration problem, but Nix aims to be more reproducible.
+This can be frustrating at times because it can make it harder to get a project off the ground, but I've found the benefits outweigh the downsides, personally.
 
 My own NixOS configuration is publicly available^[ [github.com/RyanGibb/nixos](https://github.com/RyanGibb/nixos) ].
-This makes it trivial to reproduce my system -- a collection of various configurations, services, and hacks -- on another machine.
+This makes it simple to reproduce my system (a collection of various configurations, services, and hacks) on another machine.
 I use it to manage servers, workstations, and more.
-Compared to my previous approach of maintaining a git repository of dotfiles, this is much more modular, reproducible, and flexible.
+Compared to my previous approach of maintaining a Git repository of `dotfiles`, this is much more modular, reproducible, and flexible.
 And if you want to deploy some new piece of software or service, it can be as easy as changing a single line in your system configuration.
 
-Despite these advantages, the reason I switched to NixOS from Arch Linux was simpler; NixOS allows rollbacks and atomic upgrades.
-As Arch packages bleeding-edge software with rolling updates it would frequently happen that some new version of something I was using would break.
+Despite these advantages, the reason I switched to NixOS from Arch Linux was simpler: NixOS allows rollbacks and atomic upgrades.
+As Arch packages bleeding-edge software with rolling updates, it would frequently happen that some new version of something I was using would break.
 Arch has one global coherent package set, so to avoid complications with solving dependency versions Arch doesn't support partial upgrades.
-Given this, the options were to wait for the bug to be fixed, or manually rollback all the updated packages by inspecting the pacman log (the Arch package manager) and reinstalling the old versions from the local cache.
-While there may be tools on top of pacman to improve this, the straw that broke the camel's back was when my machine crashed while updating the Linux kernel and I had to reinstall it from a live USB.
+Given this, the options were to wait for the bug to be fixed or manually rollback all the updated packages by inspecting the `pacman` log (the Arch package manager) and reinstalling the old versions from the local cache.
+While there may be tools on top of `pacman` to improve this, the final straw was when my machine crashed while updating the Linux kernel, and I had to reinstall it from a live USB.
 
-While Nixpkgs also has one global coherent package set, one can use multiple instances of Nixpkgs (i.e. channels) at once to support partial upgrades, as the Nix store allows multiple versions of a dependency to be stored.
-This also supports atomic upgrades as all the old versions of software can be kept until garbage collected.
+While Nixpkgs also has one global coherent package set, one can use multiple instances of Nixpkgs (i.e., channels) at once to support partial upgrades, as the Nix store allows multiple versions of a dependency to be stored.
+This also supports atomic upgrades, as all the software's old versions can be kept until garbage collection.
 The pointers to the new packages are only updated when the install succeeds, so the crash during the Linux kernel upgrade would not have broken my OS install on NixOS.
 And every new system configuration creates a GRUB entry, so you can boot previous systems even from your UEFI/BIOS.
 
@@ -191,11 +191,11 @@ To summarise the parts of the Nix ecosystem that we've discussed:
 #### Flakes
 
 We also use Nix flakes for this project.
-Without going into too much depth, for our purposes, they enable hermetic evaluation of nix expressions and provide a standard way to compose Nix projects.
-With flakes, instead of using a Nixpkgs repository version from a 'channel'^[[nixos.org/manual/nix/stable/package-management/channels.html](https://nixos.org/manual/nix/stable/package-management/channels.html)], we pin Nixpkgs as an input to every Nix flake -- be it a project build with Nix or a NixOS system.
+Without going into too much depth, they enable hermetic evaluation of Nix expressions and provide a standard way to compose Nix projects.
+With flakes, instead of using a Nixpkgs repository version from a 'channel'^[[nixos.org/manual/nix/stable/package-management/channels.html](https://nixos.org/manual/nix/stable/package-management/channels.html)], we pin Nixpkgs as an input to every Nix flake, be it a project build with Nix or a NixOS system.
 <!-- One of the reasons for improving Nix project composing is that there's some discussion around the sustainability of the Nixpkgs monorepo workflow^[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741]. -->
-Integrated with flakes there is also a new `nix` command aimed at improving the UI of Nix.
-More detail about flakes can be read in a series of blog posts by Eelco on the topic^[[tweag.io/blog/2020-05-25-flakes](https://www.tweag.io/blog/2020-05-25-flakes/)].
+Integrated with flakes, there is also a new `nix` command aimed at improving the UI of Nix.
+You can read more detail about flakes in a series of blog posts by Eelco on the topic^[[tweag.io/blog/2020-05-25-flakes](https://www.tweag.io/blog/2020-05-25-flakes/)].
 
 ## MirageOS
 
@@ -203,20 +203,20 @@ More detail about flakes can be read in a series of blog posts by Eelco on the t
 
 MirageOS is a library operating system that creates unikernels containing low-level operating system code and high-level application code bundled into one kernel and one address space [@madhavapeddyUnikernelsLibraryOperating2013].
 <!-- security, performance, speed -->
-It was the first such 'unikernel creation framework', but it comes from a long lineage of OS research such as the exokernel library OS architecture [@englerExokernelOperatingSystem].
-Embedding application code in the kernel allows for dead-code elimination -- removing OS interfaces that are used -- reducing the unikernels attack surface and offering improved efficiency.
+It was the first such "unikernel creation framework," but it comes from a long lineage of OS research, such as the exokernel library OS architecture [@englerExokernelOperatingSystem].
+Embedding application code in the kernel allows for dead-code elimination, removing OS interfaces that are used, which reduces the unikernels attack surface and offers improved efficiency.
 
 ![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach [@madhavapeddyUnikernelsLibraryOperating2013] ](./mirage-diagram.svg){width=70% min-width=5cm}
 
-Mirage unikernels are written in the typesafe high-level functional programming language OCaml.
-OCaml is a bit more practical than other functional programming languages such as Haskell for systems programming, such as supporting falling back on impure imperative code or mutable variables when warranted.
+Mirage unikernels are written in the type-safe, high-level functional programming language OCaml.
+OCaml is a bit more practical than other functional programming languages such as Haskell for systems programming, as it supports falling back on impure imperative code or mutable variables when warranted.
 
 ## Deploying Unikernels
 
 Now that we understand what Nix and Mirage are, and we've motivated the desire to deploy Mirage unikernels on a NixOS machine, what's stopping us from doing just that?
-Well, to support deploying a Mirage unikernel, such as for a DNS server, we would need to write a NixOS module for it.
+Well, to support deploying a Mirage unikernel, like for a DNS server, we would need to write a NixOS module for it.
 
-A paired-down^[The full module can be found [here](https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix)] version of the bind NixOS module, the module we use in our Nix expression for deploying a DNS server on NixOS ([&#167;](#cb1)), is:
+A paired-down^[The full module can be found [here](https://github.com/NixOS/nixpkgs/blob/fe76645aaf2fac3baaa2813fd0089930689c53b5/nixos/modules/services/networking/bind.nix)] version of the bind NixOS module, the module used in our Nix expression for deploying a DNS server on NixOS ([&#167;](#cb1)), is:
 ```nix
 { config, lib, pkgs, ... }:
 
@@ -355,7 +355,7 @@ Opam deals well with library dependencies but doesn't have a consistent way of i
 And Dune deals with file dependencies, but not the others.
 The OCaml compiler keeps track of function dependencies when compiling and linking a program.
 
-#### Cross-compilation
+#### Cross-Compilation
 
 Dune is used to support cross-compilation for Mirage unikernels ([&#167;](#building-unikernels)).
 We encode the cross-compilation context in Dune using the `preprocess` stanza from Dune's DSL, for example from [`mirage-tcpip`](https://github.com/mirage/mirage-tcpip/blob/3ab30ab7b43dede75abf7b37838e051e0ddbb23a/src/tcp/dune#L9-L10):
@@ -415,7 +415,7 @@ A very simple approach might be to programmatically prepend/append functions in 
 Another wackier idea is instead of having programmers manually specific constraints with version numbers, to resolve dependencies purely based on typing^[[twitter.com/TheLortex/status/1571884882363830273](https://twitter.com/TheLortex/status/1571884882363830273)].
 The issue here is that solving dependencies would now involve type checking, which could prove computationally expensive.
 
-#### Build systems
+#### Build Systems
 
 The build script in a Nix derivation -- if it doesn't invoke a compiler directly -- often invokes a build system like Make, or in this case Dune.
 But Nix can also be considered a build system with a suspending scheduler and deep constructive trace rebuilding [@mokhovBuildSystemsCarte2018].
