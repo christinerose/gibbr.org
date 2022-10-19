@@ -346,7 +346,7 @@ Most likely this will be for a single project, but in a monorepo these could spa
 This is the level of granuality that builds systems often deal with -- like Make, Dune, and Bazel.
 3. Function dependencies:<br>
 Are dependencies between functions or another unit of code native to a language.
-For example, if function `a` calls function `a` then a depends upon `b`.
+For example, if function `a` calls function `b`, then `a` 'depends' on `b`.
 This is the level of granualrity that compilers and interpretters are normally concerened with.
 
 Nix deals well with system dependencies but doesn't have a native way of resolving library dependency versions.

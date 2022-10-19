@@ -617,9 +617,9 @@ monorepo these could span many projects which all interoperate
 often deal with – like Make, Dune, and Bazel.</li>
 <li>Function dependencies:<br> Are dependencies between functions or
 another unit of code native to a language. For example, if function
-<code>a</code> calls function <code>a</code> then a depends upon
-<code>b</code>. This is the level of granualrity that compilers and
-interpretters are normally concerened with.</li>
+<code>a</code> calls function <code>b</code>, then <code>a</code>
+‘depends’ on <code>b</code>. This is the level of granualrity that
+compilers and interpretters are normally concerened with.</li>
 </ol>
 <p>Nix deals well with system dependencies but doesn’t have a native way
 of resolving library dependency versions. Opam deals well with library
