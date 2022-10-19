@@ -348,6 +348,7 @@ This is the level of granuality that builds systems often deal with -- like Make
 Are dependencies between functions or another unit of code native to a language.
 For example, if function `a` calls function `b`, then `a` 'depends' on `b`.
 This is the level of granualrity that compilers and interpretters are normally concerened with.
+In the realms of higher-order functions this dependance may not be known in advance, but this is essentially the same problem that build systems face with dynamic dependancies [@mokhovBuildSystemsCarte2018].
 
 Nix deals well with system dependencies but doesn't have a native way of resolving library dependency versions.
 Opam deals well with library dependencies but doesn't have a consistent way of installing system packages in a reproducible way.

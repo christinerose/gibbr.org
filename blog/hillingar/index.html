@@ -619,7 +619,13 @@ often deal with – like Make, Dune, and Bazel.</li>
 another unit of code native to a language. For example, if function
 <code>a</code> calls function <code>b</code>, then <code>a</code>
 ‘depends’ on <code>b</code>. This is the level of granualrity that
-compilers and interpretters are normally concerened with.</li>
+compilers and interpretters are normally concerened with. In the realms
+of higher-order functions this dependance may not be known in advance,
+but this is essentially the same problem that build systems face with
+dynamic dependancies <span class="citation"
+data-cites="mokhovBuildSystemsCarte2018"><a
+href="#ref-mokhovBuildSystemsCarte2018"
+role="doc-biblioref">[9]</a></span>.</li>
 </ol>
 <p>Nix deals well with system dependencies but doesn’t have a native way
 of resolving library dependency versions. Opam deals well with library
