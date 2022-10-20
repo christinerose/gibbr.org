@@ -795,6 +795,16 @@ dependencies. We need to know the derivation inputs in advance of
 invoking the build script. This is why in Hillingar we need to use IFD
 to import from a derivation invoking Opam to solve dependency
 versions.</p>
+<p>There is prior art that aims to support building Dune projects with
+Nix in the low-level manar described called <a
+href="https://gitlab.com/balsoft/tumbleweed">tumbleweed</a>. While this
+project is now abandoned, it shows the difficulties of trying to work
+with existing ecosystems. The Dune build system files need to be parsed
+and interpreted in Nix, which either requires convoluted and error-prone
+Nix code or painfully slow IFD. The former approach is taken with
+tumbleweed which means it could potentially benefit from improving the
+Nix language. But fundamentally this still requires the complex task of
+reimplementing part of Dune in another language.</p>
 <p>I would be very interested if anyone reading this knows if this idea
 went anywhere! A potential issue I see with this is the computational
 and storage overhead associated with storing derivations in the Nix
@@ -839,44 +849,48 @@ on this package in a reproducible way.</li>
 <li>We can use Nix to support building on different systems (<a
 href="#cross-compilation">§</a>).</li>
 </ul>
-<p>There exists related work in the deployment and reproducible building
-of Mirage unikernels. Albatross<a href="#fn40" class="footnote-ref"
-id="fnref40" role="doc-noteref"><sup>40</sup></a> is one such tool for
-deploying unikernels. Albotbass differs from Hillingar in that it also
-aims to provision resources for unikernels, share resources for
-unikernels between users, and monitor unikernels, with a Unix daemon;
-whereas Hillingar focuses on declaratively managing unikernel
-deployments reproducibly. It would be interesting to use Albatross to
-manage some of the inherent imperative processes being unikernels as
-well as share access to resources for unikernels for other users on a
-NixOS system. There is also work in improving the reproducibility of
-Opam packages (as Mirage unikernels are Opam packages themselves)<a
-href="#fn41" class="footnote-ref" id="fnref41"
-role="doc-noteref"><sup>41</sup></a>. Hillingar differs in that it only
-uses Opam for version resolution, instead using Nix to provide
-dependencies, which provides reproducibility with pinned Nix derivation
-inputs and builds in isolation by default.</p>
-<p>There are still a lot of things to improve with this project, as
-detailed at <a
+<p>There are many things to improve with this project, as detailed at <a
 href="https://github.com/RyanGibb/hillingar/issues">github.com/RyanGibb/hillingar/issues</a>.
-But the primary limitations of the project are that complex integration
-is required with the OCaml ecosystem to solve dependency version
-constraints with <code>opam-nix</code> and cross-compilation requires
-cloning all sources locally with <code>opam-monorepo</code> (<a
+But the primary limitations are that complex integration is required
+with the OCaml ecosystem to solve dependency version constraints with
+<code>opam-nix</code> and cross-compilation requires cloning all sources
+locally with <code>opam-monorepo</code> (<a
 href="#dependency-management">§</a>). Another issue that proved an
 annoyance during this project is the Nix DSL’s dynamic typing. When
 writing simple derivations this often isn’t a problem, but when writing
 complicated logic it quickly gets in the way of productivity; the
 runtime errors produced can be very hard to parse. Thankfully there is
 work towards creating a typed language for the Nix deployment system,
-such as Nickel<a href="#fn42" class="footnote-ref" id="fnref42"
-role="doc-noteref"><sup>42</sup></a>. However gradual typing is hard,
+such as Nickel<a href="#fn40" class="footnote-ref" id="fnref40"
+role="doc-noteref"><sup>40</sup></a>. However gradual typing is hard,
 and Nickel still isn’t ready for real-world use despite being
 open-sourced (in a week as of writing this) for 2 years. Finally,
 despite it being the primary motivation we haven’t actually written
 NixOS module for deploying a DNS server as a unikernel. There are still
 questions about how to provision resources like network access and
 provide zonefile data decleratively before we do this.</p>
+<p>There exists related work in the deployment and reproducible building
+of Mirage unikernels. Albatross<a href="#fn41" class="footnote-ref"
+id="fnref41" role="doc-noteref"><sup>41</sup></a> is one such tool for
+deploying unikernels. Albotbass differs from Hillingar in that it also
+aims to provision resources for unikernels, share resources for
+unikernels between users, and monitor unikernels, with a Unix daemon;
+whereas Hillingar focuses on declaratively managing unikernel
+deployments reproducibly. Albatross has recently had <a
+href="https://github.com/roburio/albatross/pull/120">support for
+building with nix added</a> to build Albatross with
+<code>opam-nix</code> in a Nix flake (along with a NixOS module for
+running it). Using Albatross to manage some of the inherent imperative
+processes behind unikernels, as well as share access to resources for
+unikernels for other users on a NixOS system, could simply the creation
+and improve the functionality of a NixOS module for a unikernel</p>
+<p>There is also work in improving the reproducibility of Opam packages
+(as Mirage unikernels are Opam packages themselves)<a href="#fn42"
+class="footnote-ref" id="fnref42" role="doc-noteref"><sup>42</sup></a>.
+Hillingar differs in that it only uses Opam for version resolution,
+instead using Nix to provide dependencies, which provides
+reproducibility with pinned Nix derivation inputs and builds in
+isolation by default.</p>
 <p>To conclude, while NixOS and MirageOS take fundamentally very
 different approaches, they’re both trying to bring some kind of
 functional programming paradigm to operating systems. NixOS does this in
@@ -907,29 +921,6 @@ this project.</li>
 </ul>
 <p>This work was completed with the support of <a
 href="https://tarides.com/">Tarides</a>.</p>
-<hr />
-<h4 id="updates"><a href="#updates" class="anchor"
-aria-hidden="true">Updates:</a></h4>
-<ul>
-<li>2022-10-20 On the topic of using Nix as a (fine-grained) build
-system (<a href="#build-systems">§</a>), Alexander has already worked on
-support to build Dune projects using Nix itself with <a
-href="https://gitlab.com/balsoft/tumbleweed">tumbleweed</a>. This
-project is now abandoned but shows the difficulties of trying to work
-with existing ecosystems. The Dune build system files need to be parsed
-and interpreted in Nix, which either requires fiddly and probably buggy
-Nix code, or painfully slow IFD. The former approach is taken with
-tumbleweed, which means it could benefit from Nickel. But fundamentally
-this still requires the complex task of reimplementing part of Dune in
-another language.</li>
-<li>2022-10-20 On the topic of using Albatross to manage unikernels from
-within NixOS (<a href="#conclusion">§</a>), Jules has <a
-href="https://github.com/roburio/albatross/pull/120">added support</a>
-to build Albatross with <code>opam-nix</code> in a Nix flake (along with
-a NixOS module for running it). This would allow us to create a NixOS
-module to run a unikernel built with Nix, using Albbaross built with
-Nix, in an entirely reproducible way!</li>
-</ul>
 <hr />
 <p>If you spot any errors, have any questions, notice something I’ve
 mentioned that someone has already thought of, or notice any incorrect
@@ -1201,15 +1192,15 @@ href="https://signalsandthreads.com/build-systems/#4305">signalsandthreads.com/b
 href="#fnref39" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn40" role="doc-endnote"><p><a
-href="https://hannes.robur.coop/Posts/VMM">hannes.robur.coop/Posts/VMM</a><a
+href="https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/">www.tweag.io/blog/2020-10-22-nickel-open-sourcing</a><a
 href="#fnref40" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn41" role="doc-endnote"><p><a
-href="https://hannes.nqsb.io/Posts/ReproducibleOPAM">hannes.nqsb.io/Posts/ReproducibleOPAM</a><a
+href="https://hannes.robur.coop/Posts/VMM">hannes.robur.coop/Posts/VMM</a><a
 href="#fnref41" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn42" role="doc-endnote"><p><a
-href="https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/">www.tweag.io/blog/2020-10-22-nickel-open-sourcing</a><a
+href="https://hannes.nqsb.io/Posts/ReproducibleOPAM">hannes.nqsb.io/Posts/ReproducibleOPAM</a><a
 href="#fnref42" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn43" role="doc-endnote"><p><a
