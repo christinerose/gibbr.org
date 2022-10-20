@@ -483,8 +483,7 @@ While only one was the primary motivation, other benefits of building unikernels
 Nix easily allows us to depend on this package in a reproducible way.
 - We can use Nix to support building on different systems ([&#167;](#cross-compilation)).
 
-There are many things to improve with this project, as detailed at [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues).
-But the primary limitations are that complex integration is required with the OCaml ecosystem to solve dependency version constraints with `opam-nix` and cross-compilation requires cloning all sources locally with `opam-monorepo` ([&#167;](#dependency-management)).
+Many issues remain, as detailed at [github.com/RyanGibb/hillingar/issues](https://github.com/RyanGibb/hillingar/issues), but the primary limitations are that complex integration is required with the OCaml ecosystem to solve dependency version constraints with `opam-nix` and cross-compilation requires cloning all sources locally with `opam-monorepo` ([&#167;](#dependency-management)).
 Another issue that proved an annoyance during this project is the Nix DSL's dynamic typing.
 When writing simple derivations this often isn't a problem, but when writing complicated logic it quickly gets in the way of productivity; the runtime errors produced can be very hard to parse.
 Thankfully there is work towards creating a typed language for the Nix deployment system, such as Nickel^[[www.tweag.io/blog/2020-10-22-nickel-open-sourcing](https://www.tweag.io/blog/2020-10-22-nickel-open-sourcing/)].
@@ -492,14 +491,14 @@ However gradual typing is hard, and Nickel still isn't ready for real-world use 
 Finally, despite it being the primary motivation we haven't actually written NixOS module for deploying a DNS server as a unikernel.
 There are still questions about how to provision resources like network access and provide zonefile data decleratively before we do this.
 
-There exists related work in the deployment and reproducible building of Mirage unikernels.
-Albatross^[[hannes.robur.coop/Posts/VMM](https://hannes.robur.coop/Posts/VMM)] is one such tool for deploying unikernels.
-Albotbass differs from Hillingar in that it also aims to provision resources for unikernels, share resources for unikernels between users, and monitor unikernels, with a Unix daemon;
+Related work in the deployment of Mirage unikernels notably includes Albatross^[[hannes.robur.coop/Posts/VMM](https://hannes.robur.coop/Posts/VMM)].
+Albatross differs from Hillingar in that it also aims to provision resources for unikernels, share resources for unikernels between users, and monitor unikernels, with a Unix daemon;
 whereas Hillingar focuses on declaratively managing unikernel deployments reproducibly.
 Albatross has recently had [support for building with nix added](https://github.com/roburio/albatross/pull/120) to build Albatross with `opam-nix` in a Nix flake (along with a NixOS module for running it).
 Using Albatross to manage some of the inherent imperative processes behind unikernels, as well as share access to resources for unikernels for other users on a NixOS system, could simply the creation and improve the functionality of a NixOS module for a unikernel
 
-There is also work in improving the reproducibility of Opam packages (as Mirage unikernels are Opam packages themselves)^[[hannes.nqsb.io/Posts/ReproducibleOPAM](https://hannes.nqsb.io/Posts/ReproducibleOPAM)].
+There also exists related work in the reproducible building of Mirage unikernels.
+Specifically, improving the reproducibility of Opam packages (as Mirage unikernels are Opam packages themselves)^[[hannes.nqsb.io/Posts/ReproducibleOPAM](https://hannes.nqsb.io/Posts/ReproducibleOPAM)].
 Hillingar differs in that it only uses Opam for version resolution, instead using Nix to provide dependencies, which provides reproducibility with pinned Nix derivation inputs and builds in isolation by default.
 
 To conclude, while NixOS and MirageOS take fundamentally very different approaches, they're both trying to bring some kind of functional programming paradigm to operating systems.
