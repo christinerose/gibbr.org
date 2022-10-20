@@ -796,10 +796,10 @@ invoking the build script. This is why in Hillingar we need to use IFD
 to import from a derivation invoking Opam to solve dependency
 versions.</p>
 <p>I would be very interested if anyone reading this knows if this idea
-went anywhere! The only issue I see with this is the computational and
-storage overhead associated with storing derivations in the Nix store
-that are manageable for coarse-grained dependencies might prove too
-costly for fine-grained file dependencies.</p>
+went anywhere! A potential issue I see with this is the computational
+and storage overhead associated with storing derivations in the Nix
+store that are manageable for coarse-grained dependencies might prove
+too costly for fine-grained file dependencies.</p>
 <p>While on the topic of build systems, to enable more minimal builds
 tighter integration with the compiler would enable analysing function
 dependencies<a href="#fn39" class="footnote-ref" id="fnref39"
@@ -840,14 +840,14 @@ on this package in a reproducible way.</li>
 href="#cross-compilation">§</a>).</li>
 </ul>
 <p>There exists related work in the deployment and reproducible building
-of Mirage unikernels. Albotross<a href="#fn40" class="footnote-ref"
+of Mirage unikernels. Albatross<a href="#fn40" class="footnote-ref"
 id="fnref40" role="doc-noteref"><sup>40</sup></a> is one such tool for
-deploying unikernels. Albotross differs from Hillingar in that it also
+deploying unikernels. Albotbass differs from Hillingar in that it also
 aims to provision resources for unikernels, share resources for
 unikernels between users, and monitor unikernels, with a Unix daemon;
 whereas Hillingar focuses on declaratively managing unikernel
-deployments reproducibly. It would be interesting to use Albotross to
-manage some of the inheritance imperative processes being unikernels as
+deployments reproducibly. It would be interesting to use Albatross to
+manage some of the inherent imperative processes being unikernels as
 well as share access to resources for unikernels for other users on a
 NixOS system. There is also work in improving the reproducibility of
 Opam packages (as Mirage unikernels are Opam packages themselves)<a
@@ -895,6 +895,8 @@ project:</p>
 <code>opam-nix</code> project and working with me on the
 <code>opam-monorepo</code> workflow integration.</li>
 <li>David Allsopp for his Opam expertise.</li>
+<li>Jules Aguillon and Olivier Nicole for their fellow
+Nix-enthusiasm.</li>
 <li>Sonja Heinze for her <code>ppx</code> insights.</li>
 <li>Anil Madhavapeddy for having a discussion that led to the idea for
 this project.</li>
@@ -905,6 +907,29 @@ this project.</li>
 </ul>
 <p>This work was completed with the support of <a
 href="https://tarides.com/">Tarides</a>.</p>
+<hr />
+<h4 id="updates"><a href="#updates" class="anchor"
+aria-hidden="true">Updates:</a></h4>
+<ul>
+<li>2022-10-20 On the topic of using Nix as a (fine-grained) build
+system (<a href="#build-systems">§</a>), Alexander has already worked on
+support to build Dune projects using Nix itself with <a
+href="https://gitlab.com/balsoft/tumbleweed">tumbleweed</a>. This
+project is now abandoned but shows the difficulties of trying to work
+with existing ecosystems. The Dune build system files need to be parsed
+and interpreted in Nix, which either requires fiddly and probably buggy
+Nix code, or painfully slow IFD. The former approach is taken with
+tumbleweed, which means it could benefit from Nickel. But fundamentally
+this still requires the complex task of reimplementing part of Dune in
+another language.</li>
+<li>2022-10-20 On the topic of using Albatross to manage unikernels from
+within NixOS (<a href="#conclusion">§</a>), Jules has <a
+href="https://github.com/roburio/albatross/pull/120">added support</a>
+to build Albatross with <code>opam-nix</code> in a Nix flake (along with
+a NixOS module for running it). This would allow us to create a NixOS
+module to run a unikernel built with Nix, using Albbaross built with
+Nix, in an entirely reproducible way!</li>
+</ul>
 <hr />
 <p>If you spot any errors, have any questions, notice something I’ve
 mentioned that someone has already thought of, or notice any incorrect

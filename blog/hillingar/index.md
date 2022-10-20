@@ -453,7 +453,7 @@ We need to know the derivation inputs in advance of invoking the build script.
 This is why in Hillingar we need to use IFD to import from a derivation invoking Opam to solve dependency versions.
 
 I would be very interested if anyone reading this knows if this idea went anywhere!
-The only issue I see with this is the computational and storage overhead associated with storing derivations in the Nix store that are manageable for coarse-grained dependencies might prove too costly for fine-grained file dependencies.
+A potential issue I see with this is the computational and storage overhead associated with storing derivations in the Nix store that are manageable for coarse-grained dependencies might prove too costly for fine-grained file dependencies.
 
 While on the topic of build systems, to enable more minimal builds tighter integration with the compiler would enable analysing function dependencies^[[signalsandthreads.com/build-systems/#4305](https://signalsandthreads.com/build-systems/#4305)].
 For example, Dune could recompile only certain functions that have changed since the last invocation.
@@ -478,10 +478,10 @@ Nix easily allows us to depend on this package in a reproducible way.
 - We can use Nix to support building on different systems ([&#167;](#cross-compilation)).
 
 There exists related work in the deployment and reproducible building of Mirage unikernels.
-Albotross^[[hannes.robur.coop/Posts/VMM](https://hannes.robur.coop/Posts/VMM)] is one such tool for deploying unikernels.
-Albotross differs from Hillingar in that it also aims to provision resources for unikernels, share resources for unikernels between users, and monitor unikernels, with a Unix daemon;
+Albatross^[[hannes.robur.coop/Posts/VMM](https://hannes.robur.coop/Posts/VMM)] is one such tool for deploying unikernels.
+Albotbass differs from Hillingar in that it also aims to provision resources for unikernels, share resources for unikernels between users, and monitor unikernels, with a Unix daemon;
 whereas Hillingar focuses on declaratively managing unikernel deployments reproducibly.
-It would be interesting to use Albotross to manage some of the inheritance imperative processes being unikernels as well as share access to resources for unikernels for other users on a NixOS system.
+It would be interesting to use Albatross to manage some of the inherent imperative processes being unikernels as well as share access to resources for unikernels for other users on a NixOS system.
 There is also work in improving the reproducibility of Opam packages (as Mirage unikernels are Opam packages themselves)^[[hannes.nqsb.io/Posts/ReproducibleOPAM](https://hannes.nqsb.io/Posts/ReproducibleOPAM)].
 Hillingar differs in that it only uses Opam for version resolution, instead using Nix to provide dependencies, which provides reproducibility with pinned Nix derivation inputs and builds in isolation by default.
 
@@ -504,6 +504,7 @@ Finally, I want to thank some people for their help with this project:
 - Lucas Pluvinage for invaluable help with the OCaml ecosystem.
 - Alexander Bantyev for getting me up to speed with the `opam-nix` project and working with me on the `opam-monorepo` workflow integration.
 - David Allsopp for his Opam expertise.
+- Jules Aguillon and Olivier Nicole for their fellow Nix-enthusiasm.
 - Sonja Heinze for her `ppx` insights.
 - Anil Madhavapeddy for having a discussion that led to the idea for this project.
 - Björg Bjarnadóttir for icelandic language consultation ('Hillingar').
@@ -511,6 +512,18 @@ Finally, I want to thank some people for their help with this project:
 <!-- A copy of this blog post can be found on Tarides website. -->
 
 This work was completed with the support of [Tarides](https://tarides.com/).
+
+---
+
+#### Updates:
+
+- 2022-10-20 On the topic of using Nix as a (fine-grained) build system ([&#167;](#build-systems)), Alexander has already worked on support to build Dune projects using Nix itself with [tumbleweed](https://gitlab.com/balsoft/tumbleweed).
+This project is now abandoned but shows the difficulties of trying to work with existing ecosystems.
+The Dune build system files need to be parsed and interpreted in Nix, which either requires fiddly and probably buggy Nix code, or painfully slow IFD.
+The former approach is taken with tumbleweed, which means it could benefit from Nickel.
+But fundamentally this still requires the complex task of reimplementing part of Dune in another language.
+- 2022-10-20 On the topic of using Albatross to manage unikernels from within NixOS ([&#167;](#conclusion)), Jules has [added support](https://github.com/roburio/albatross/pull/120) to build Albatross with `opam-nix` in a Nix flake (along with a NixOS module for running it).
+This would allow us to create a NixOS module to run a unikernel built with Nix, using Albbaross built with Nix, in an entirely reproducible way!
 
 ---
 
