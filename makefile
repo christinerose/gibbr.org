@@ -7,7 +7,6 @@ all: $(HTML_FILES)
 
 clean:
 	rm -v $(HTML_FILES)
-	rm ./blog/index.xml
 
 %.html: %.md makefile includes.yaml anchor-links.lua
 	$(MARKDOWN) $< --output $@
