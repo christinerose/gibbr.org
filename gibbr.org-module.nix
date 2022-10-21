@@ -1,6 +1,6 @@
 { pkgs, config, lib, ... }:
 
-let cfg = config.services."gibbr.org";
+let cfg = config.services."gibbr.org"; in
 {
   options.services."gibbr.org".enable = lib.mkEnableOption "gibbr.org";
 
