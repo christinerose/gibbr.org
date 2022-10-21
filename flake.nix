@@ -7,7 +7,7 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem
+    (flake-utils.lib.eachDefaultSystem
       (system:
         let pkgs = nixpkgs.legacyPackages.${system}; in
         {
@@ -32,10 +32,11 @@
               pkgs.pandoc
             ];
           };
-
-          nixosModules."gibbr.org" = {
-            imports = [ ./gibbr.org-module.nix ];
-          };
         }
-      );
+      )
+    ) // {
+      nixosModules.default = {
+        imports = [ ./gibbr.org-module.nix ];
+      };
+    };
 }
