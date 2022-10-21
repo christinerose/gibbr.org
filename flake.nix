@@ -7,7 +7,7 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }:
-    (flake-utils.lib.eachDefaultSystem
+    flake-utils.lib.eachDefaultSystem
       (system:
         let pkgs = nixpkgs.legacyPackages.${system}; in
         {
@@ -33,10 +33,5 @@
             ];
           };
         }
-      )
-    ) // {
-      overlays.default = final: prev: {
-        "gibbr.org" = self.packages.${system}.defaultPackage;
-      };
-    };
+      );
 }
