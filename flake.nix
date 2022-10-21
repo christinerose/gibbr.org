@@ -11,7 +11,7 @@
       (system:
         let pkgs = nixpkgs.legacyPackages.${system}; in
         {
-          defaultPackage = pkgs.stdenv.mkDerivation {
+          packages.default = pkgs.stdenv.mkDerivation {
             name = "gibbr.org";
 
             src = self;
@@ -26,10 +26,15 @@
               rsync -a --exclude '*.md' --exclude 'result' --exclude '.*' . $out
             '';
           };
+          
           devShells.default = pkgs.mkShell {
-              buildInputs = [
-                pkgs.pandoc
-              ];
+            buildInputs = [
+              pkgs.pandoc
+            ];
+          };
+
+          overlays.default = final: prev: {
+            "gibbr.org" = self.packages.${system}.defaultPackage;
           };
         }
       );
