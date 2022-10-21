@@ -10,14 +10,15 @@ Generates HTML files from markdown with pandoc.
 
 To build in `/nix/store` with symlinked `result`:
 ```
-$ nix-build
+$ nix build
 ```
 
 Or to create HTML files from markdown files in the working repo:
 ```
-$ nix-shell --run make
+$ nix develop -c make
 ```
 
 ## Generic
 
 Install Pandoc and run `$ make`
+
