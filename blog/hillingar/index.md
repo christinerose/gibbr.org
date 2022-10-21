@@ -4,7 +4,7 @@ date: "2022-10-17 00:00:00"
 bibliography: blog/hillingar/bibliography.bib
 ---
 
-# Hillingar: building Mirage unikernels with Nix
+# Hillingar: MirageOS unikernels on NixOS
 
 2022-10-17
 
