@@ -6,7 +6,7 @@ bibliography: blog/hillingar/bibliography.bib
 
 # Hillingar: MirageOS unikernels on NixOS
 
-2022-10-17
+2022-10-21
 
 > An arctic mirage[@lehnNovayaZemlyaEffect1979]
 
