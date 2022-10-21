@@ -32,6 +32,10 @@
               pkgs.pandoc
             ];
           };
+
+          nixosModules."gibbr.org" = {
+            imports = [ ./gibbr.org-module.nix ];
+          };
         }
       );
 }
