@@ -39,5 +39,29 @@
       nixosModules.default = {
         imports = [ ./gibbr.org-module.nix ];
       };
+
+      nixosConfigurations."container" = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ({ pkgs, ... }: {
+            boot.isContainer = true;
+            system.configurationRevision = nixpkgs.lib.mkIf (self ? rev) self.rev;
+            networking.useDHCP = false;
+            networking.firewall.allowedTCPPorts = [ 80 ];
+            services.nginx = {
+              enable = true;
+              virtualHosts."_" = {
+                  root = "${self.packages."x86_64-linux".default}";
+                  extraConfig = ''
+                  error_page 403 =404 /404.html;
+                  error_page 404 /404.html;
+                  '';
+              };
+            };
+            system.stateVersion = "22.11";
+          })
+          ./gibbr.org-module.nix
+        ];
+      };
     };
 }
