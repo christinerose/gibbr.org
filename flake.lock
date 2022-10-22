@@ -12,15 +12,16 @@
       "locked": {
         "lastModified": 1666452494,
         "narHash": "sha256-EfeA+ndzlYwQadp4bq+0tTfKSGHqOC1gFis20p1XZnQ=",
-        "owner": "RyanGibb",
-        "repo": "cv",
+        "ref": "main",
         "rev": "a21b3ad535c7f7ceb5b768c0ccc71d9438fa290e",
-        "type": "github"
+        "revCount": 24,
+        "type": "git",
+        "url": "ssh://git@github.com/RyanGibb/cv.git"
       },
       "original": {
-        "owner": "RyanGibb",
-        "repo": "cv",
-        "type": "github"
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@github.com/RyanGibb/cv.git"
       }
     },
     "flake-compat": {

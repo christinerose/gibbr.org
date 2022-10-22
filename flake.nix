@@ -6,7 +6,7 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-    cv.url = "github:RyanGibb/cv";
+    cv.url = "git+ssh://git@github.com/RyanGibb/cv.git?ref=main";
     cv.inputs.nixpkgs.follows = "nixpkgs";
     cv.inputs.flake-utils.follows = "flake-utils";
   };
