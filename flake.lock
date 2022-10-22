@@ -1,5 +1,28 @@
 {
   "nodes": {
+    "cv": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1666452494,
+        "narHash": "sha256-EfeA+ndzlYwQadp4bq+0tTfKSGHqOC1gFis20p1XZnQ=",
+        "owner": "RyanGibb",
+        "repo": "cv",
+        "rev": "a21b3ad535c7f7ceb5b768c0ccc71d9438fa290e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "RyanGibb",
+        "repo": "cv",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -46,6 +69,7 @@
     },
     "root": {
       "inputs": {
+        "cv": "cv",
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
