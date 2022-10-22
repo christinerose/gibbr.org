@@ -1,22 +1,20 @@
 ---
-pagetitle: "home | gibbr.org"
+pagetitle: "blog | gibbr.org"
 ---
 
 <h1>
-Home
+Blog
 <span style="float: right; margin: 0">
-	<a href="https://www.linkedin.com/in/ryan-gibb"
-		style="float: left; margin: 0 0.5em 0 0;">
-		<img src="/fonts/linkedin.svg" alt="Linkedin" height="50em">
-	</a>
-	<a href="https://github.com/RyanGibb"
+	<a href="./rss/"
 		style="float: left; margin: 0 0 0 0;">
-		<img src="/fonts/github-square.svg" alt="Github" height="50em">
+		<img src="/fonts/rss-square.svg" alt="RSS" height="50em">
 	</a>
 </span>
 </h1>
 
-Find my CV [here](/resources/cv.pdf).
-
-Feel free to get in touch at [ryan@gibbr.org](mailto:ryan@gibbr.org) or [\@ryan:gibbr.org](https://matrix.to/#/@ryan:gibbr.org).
-
+- 2022-08-30 [Nim](blog/nim)
+- 2022-04-18 [Virtual and Augmented Reality](blog/vr_ar)
+- 2022-01-18 [DNS LOC](blog/dns_loc_rr)
+- 2021-10-16 [ILNP overlay network application layer interface](ilnp_overlay_network_application_layer_interface)
+- 2021-06-03 [Cubes](blog/cubes)
+- 2021-05-10 [Network layer mobility](blog/network_layer_mobility)

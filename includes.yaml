@@ -3,9 +3,9 @@ header-includes: <link rel="shortcut icon" href="/favicon.ico">
 css: /style.css
 include-before:
 	<ul class="navbar" id="navbar">
-		<li><a href="/">home</a></li>
-		<li><a href="/blog/">blog</a></li>
+		<li><a href="/">blog</a></li>
 		<li><a href="/links.html">links</a></li>
+		<li><a href="/about.html">about</a></li>
 	</ul>
 citation-style: ieee-with-url.csl
 link-citations: true
