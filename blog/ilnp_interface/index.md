@@ -1,9 +1,9 @@
 ---
-pagetitle: "ILNP overlay network application layer interface | gibbr.org"
+pagetitle: "ILNP Interface | gibbr.org"
 date: "2021-10-16 00:00:00"
 ---
 
-# ILNP overlay network application layer interface
+# ILNP Interface
 
 2021-10-16
 
