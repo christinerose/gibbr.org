@@ -5,7 +5,7 @@ pagetitle: "blog | gibbr.org"
 <h1>
 Blog
 <span style="float: right; margin: 0">
-	<a href="./rss/"
+	<a href="./blog/rss/"
 		style="float: left; margin: 0 0 0 0;">
 		<img src="/fonts/rss-square.svg" alt="RSS" height="50em">
 	</a>
