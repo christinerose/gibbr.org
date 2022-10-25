@@ -18,3 +18,4 @@ Blog
 - 2021-10-16 [ILNP Interface](ilnp_interface)
 - 2021-06-03 [Cubes](blog/cubes)
 - 2021-05-10 [Network layer mobility](blog/network_layer_mobility)
+

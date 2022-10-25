@@ -6,9 +6,8 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-    cv.url = "git+ssh://git@github.com/RyanGibb/cv.git?ref=main";
-    cv.inputs.nixpkgs.follows = "nixpkgs";
-    cv.inputs.flake-utils.follows = "flake-utils";
+    # placeholder for private repo
+    cv.url = "./empty-flake";
   };
 
   outputs = { self, nixpkgs, flake-utils, cv, ... }:
@@ -26,7 +25,7 @@
             installPhase = ''
               mkdir -p $out
               ${pkgs.rsync}/bin/rsync -a --exclude '*.md' --exclude 'result' --exclude '.*' . $out
-              cp ${cv.defaultPackage.${system}}/*.pdf $out/resources/cv.pdf
+              cp ${if cv ? defaultPackage then cv.defaultPackage.${system} else ""}/*.pdf $out/resources/cv.pdf || true
             '';
           };
           
