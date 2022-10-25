@@ -6,16 +6,17 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-    # placeholder for private repo
-    cv.url = "./empty-flake";
+    cv.url = "git+ssh://git@github.com/RyanGibb/cv.git?ref=main";
+    cv.inputs.nixpkgs.follows = "nixpkgs";
+    cv.inputs.flake-utils.follows = "flake-utils";
   };
 
   outputs = { self, nixpkgs, flake-utils, cv, ... }:
     (flake-utils.lib.eachDefaultSystem
       (system:
-        let pkgs = nixpkgs.legacyPackages.${system}; in
-        {
-          packages.default = pkgs.stdenv.mkDerivation {
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          getDerivation = enable-cv: pkgs.stdenv.mkDerivation {
             name = "gibbr.org";
 
             src = self;
@@ -25,9 +26,17 @@
             installPhase = ''
               mkdir -p $out
               ${pkgs.rsync}/bin/rsync -a --exclude '*.md' --exclude 'result' --exclude '.*' . $out
-              ${if cv ? defaultPackage then "cp ${cv.defaultPackage.${system}}/*.pdf $out/resources/cv.pdf" else ""}
+              ${if enable-cv then "cp ${cv.defaultPackage.${system}}/*.pdf $out/resources/cv.pdf" else ""}
             '';
           };
+        in
+        {
+          packages = {
+            default = getDerivation false;
+            with-cv = getDerivation true;
+          };
+
+          defaultPackage = self.packages.${system}.default;
           
           devShells.default = pkgs.mkShell {
             buildInputs = [ pkgs.pandoc ];

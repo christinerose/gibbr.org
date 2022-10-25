@@ -1,15 +1,27 @@
 {
   "nodes": {
     "cv": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-5hb6uwA0qAVX1eecvREfcNE/2GYOLX46DESkdDGTQ5M=",
-        "path": "/nix/store/ng2npsqf4drz5m1sczr0m19i7jmmbdkw-source/empty-flake",
-        "type": "path"
+        "lastModified": 1666452494,
+        "narHash": "sha256-EfeA+ndzlYwQadp4bq+0tTfKSGHqOC1gFis20p1XZnQ=",
+        "ref": "main",
+        "rev": "a21b3ad535c7f7ceb5b768c0ccc71d9438fa290e",
+        "revCount": 24,
+        "type": "git",
+        "url": "ssh://git@github.com/RyanGibb/cv.git"
       },
       "original": {
-        "path": "/nix/store/ng2npsqf4drz5m1sczr0m19i7jmmbdkw-source/empty-flake",
-        "type": "path"
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@github.com/RyanGibb/cv.git"
       }
     },
     "flake-compat": {
