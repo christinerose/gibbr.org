@@ -52,15 +52,15 @@ This blog post will explore how we enabled reproducible deployments of Mirage un
 
 ![ Nix snowflake^[As 'nix' means snow in Latin. Credits to Tim Cuthbertson.] ](./nix-snowflake.svg){width=60% min-width=5cm}
 
-At this point, the curious reader might be wondering, what on earth is 'Nix'?
+At this point, the curious reader might be wondering, what is 'Nix'?
 
-Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post, as they all fundamentally mean the same thing -- a piece of software.], which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
-This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades and downgrades, and 
+Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post, as they all fundamentally mean the same thing -- a piece of software.] which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
+This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades , and 
 multiple user environments [@dolstraNixSafePolicyFree2004].
 
-Nix uses a declarative, domain-specific language (DSL), also called 'Nix', to build and configure software.
+Nix uses a declarative domain-specific language (DSL), also called 'Nix', to build and configure software.
 The snippet used to deploy the DNS server is in fact a Nix expression.
-This example doesn't demonstrate it, but Nix is Turing complete, as it was inspired by Haskell. 
+This example doesn't demonstrate it but Nix is Turing complete.
 Nix does not, however, have a type system.
 
 We used the DSL to write derivations for software, which describe how to build said software with input components and a build script.
@@ -80,7 +80,7 @@ builtins.derivation {
 ```
 Note that `derivation` is a function that we're calling with one argument, which is a set of attributes.
 
-We can instantiate this Nix derivation expression to create a store derivation:
+We can instantiate this Nix derivation to create a store derivation:
 ```
 $ nix-instantiate default.nix
 /nix/store/5d4il3h1q4cw08l6fnk4j04a19dsv71k-hello.drv
