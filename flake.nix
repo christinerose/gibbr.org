@@ -25,7 +25,7 @@
             installPhase = ''
               mkdir -p $out
               ${pkgs.rsync}/bin/rsync -a --exclude '*.md' --exclude 'result' --exclude '.*' . $out
-              cp ${if cv ? defaultPackage then cv.defaultPackage.${system} else ""}/*.pdf $out/resources/cv.pdf || true
+              ${if cv ? defaultPackage then "cp ${cv.defaultPackage.${system}}/*.pdf $out/resources/cv.pdf" else ""}
             '';
           };
           
