@@ -35,8 +35,9 @@ $ dig gibbr.org @ns1.gibbr.org +short
 
 Creating a glue record with our registrar pointing `ns1.gibbr.org` to the IP address of our DNS-hosting machine allows anyone to use our authoritative server via their resolver.
 
-This runs the venerable bind^[[ISC bind](https://www.isc.org/bind/), which has many [CVE's](https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64)] written in C.
+This runs the venerable bind^[[ISC bind](https://www.isc.org/bind/) has many [CVE's](https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64)] written in C.
 As an alternative, using functional, high-level, type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution [@madhavapeddyMelangeCreatingFunctional2007].
+
 One such language is OCaml.
 
 MirageOS^[ [mirage.io](https://mirage.io) ] is a deployment method for these OCaml programs [@madhavapeddyUnikernelsLibraryOperating2013].
