@@ -14,10 +14,7 @@ bibliography: blog/hillingar/bibliography.bib
 
 ## Introduction
 
-As part of my master's thesis, I've been hosting an authoritative DNS server at `ns1.gibbr.org`.
-More can be read in the dissertation [@gibbSpatialNameSystem2022], but DNS is one of the fundamental building blocks of the modern Internet.
-And as part of my master's thesis procrastination, I've been running it on a NixOS machine.
-Using NixOS, deploying a DNS server is as simple as:
+DNS is one of the fundamental building blocks of the modern Internet. As part of my master's thesis [@gibbSpatialNameSystem2022], I've been hosting an authoritative DNS server at `ns1.gibbr.org`. As part of my master's thesis procrastination, I've been running it on a NixOS machine, where deploying a DNS server is as simple as:
 ```nix
 {
   services.bind = {
@@ -38,8 +35,8 @@ $ dig gibbr.org @ns1.gibbr.org +short
 
 Creating a glue record with our registrar pointing `ns1.gibbr.org` to the IP address of our DNS-hosting machine allows anyone to use our authoritative server via their resolver.
 
-As you might notice, this is running the venerable bind^[[ISC bind](https://www.isc.org/bind/) has many [CVE's](https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64)] written in C.
-As an alternative, using functional high-level type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution [@madhavapeddyMelangeCreatingFunctional2007].
+This runs the venerable bind^[[ISC bind](https://www.isc.org/bind/), which has many [CVE's](https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64)] written in C.
+As an alternative, using functional, high-level, type-safe programming languages to create network applications can greatly benefit safety and usability whilst maintaining performant execution [@madhavapeddyMelangeCreatingFunctional2007].
 One such language is OCaml.
 
 MirageOS^[ [mirage.io](https://mirage.io) ] is a deployment method for these OCaml programs [@madhavapeddyUnikernelsLibraryOperating2013].
@@ -47,6 +44,21 @@ Instead of running them as a traditional Unix process, we instead create a speci
 
 However, to deploy a Mirage unikernel with NixOS, one must use the imperative deployment methodologies native to the OCaml ecosystem, eliminating the benefit of reproducible systems that Nix offers.
 This blog post will explore how we enabled reproducible deployments of Mirage unikernels with Nix.
+
+## MirageOS
+
+![ ^[Credits to Takayuki Imada] ](./mirage-logo.svg){width=50% min-width=5cm}
+
+MirageOS is a library operating system that creates unikernels containing low-level operating system code and high-level application code bundled into one kernel and one address space [@madhavapeddyUnikernelsLibraryOperating2013].
+<!-- security, performance, speed -->
+It was the first such "unikernel creation framework," but it comes from a long lineage of OS research, such as the exokernel library OS architecture [@englerExokernelOperatingSystem].
+Embedding application code in the kernel allows for dead-code elimination, removing OS interfaces that are unused, which reduces the unikernels attack surface and offers improved efficiency.
+
+![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach [@madhavapeddyUnikernelsLibraryOperating2013] ](./mirage-diagram.svg){width=70% min-width=5cm}
+
+Mirage unikernels are written OCaml.
+
+OCaml is a bit more practical than other functional programming languages, such as Haskell for systems programming, because it supports falling back on impure imperative code or mutable variables when warranted.
 
 ## Nix
 
@@ -195,20 +207,6 @@ With flakes, instead of using a Nixpkgs repository version from a 'channel'^[[ni
 <!-- One of the reasons for improving Nix project composing is that there's some discussion around the sustainability of the Nixpkgs monorepo workflow^[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741]. -->
 Integrated with flakes, there is also a new `nix` command aimed at improving the UI of Nix.
 You can read more detail about flakes in a series of blog posts by Eelco on the topic^[[tweag.io/blog/2020-05-25-flakes](https://www.tweag.io/blog/2020-05-25-flakes/)].
-
-## MirageOS
-
-![ ^[Credits to Takayuki Imada] ](./mirage-logo.svg){width=50% min-width=5cm}
-
-MirageOS is a library operating system that creates unikernels containing low-level operating system code and high-level application code bundled into one kernel and one address space [@madhavapeddyUnikernelsLibraryOperating2013].
-<!-- security, performance, speed -->
-It was the first such "unikernel creation framework," but it comes from a long lineage of OS research, such as the exokernel library OS architecture [@englerExokernelOperatingSystem].
-Embedding application code in the kernel allows for dead-code elimination, removing OS interfaces that are unused, which reduces the unikernels attack surface and offers improved efficiency.
-
-![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach [@madhavapeddyUnikernelsLibraryOperating2013] ](./mirage-diagram.svg){width=70% min-width=5cm}
-
-Mirage unikernels are written in the type-safe, high-level functional programming language OCaml.
-OCaml is a bit more practical than other functional programming languages such as Haskell for systems programming, as it supports falling back on impure imperative code or mutable variables when warranted.
 
 ## Deploying Unikernels
 
