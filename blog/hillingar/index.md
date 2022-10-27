@@ -44,6 +44,7 @@ MirageOS^[ [mirage.io](https://mirage.io) ] is a deployment method for these OCa
 Instead of running them as a traditional Unix process, we instead create a specialised 'unikernel' operating system to run the application, which allows dead code elimination improving security with smaller attack surfaces and improved efficiency.
 
 However, to deploy a Mirage unikernel with NixOS, one must use the imperative deployment methodologies native to the OCaml ecosystem, eliminating the benefit of reproducible systems that Nix offers.
+
 This blog post will explore how we enabled reproducible deployments of Mirage unikernels with Nix.
 
 ## MirageOS
@@ -65,15 +66,13 @@ OCaml is a bit more practical than other functional programming languages, such 
 
 ![ Nix snowflake^[As 'nix' means snow in Latin. Credits to Tim Cuthbertson.] ](./nix-snowflake.svg){width=60% min-width=5cm}
 
-At this point, the curious reader might be wondering, what is 'Nix'?
-
-Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post, as they all fundamentally mean the same thing -- a piece of software.] which are stored in a read-only directory, the Nix store, at `/nix/store/<hash>-<name>`.
-This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades , and 
+Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post, as they all fundamentally mean the same thing -- a piece of software.] that are stored in a read-only directory: the Nix store, at `/nix/store/<hash>-<name>`.
+This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades, and 
 multiple user environments [@dolstraNixSafePolicyFree2004].
 
-Nix uses a declarative domain-specific language (DSL), also called 'Nix', to build and configure software.
+Nix uses a declarative domain-specific language (DSL), also called Nix, to build and configure software.
 The snippet used to deploy the DNS server is in fact a Nix expression.
-This example doesn't demonstrate it but Nix is Turing complete.
+This example doesn't demonstrate it, but Nix is Turing complete.
 Nix does not, however, have a type system.
 
 We used the DSL to write derivations for software, which describe how to build said software with input components and a build script.
