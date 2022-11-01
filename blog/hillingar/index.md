@@ -14,7 +14,10 @@ bibliography: blog/hillingar/bibliography.bib
 
 ## Introduction
 
-DNS is one of the fundamental building blocks of the modern Internet. As part of my master's thesis [@gibbSpatialNameSystem2022], I've been hosting an authoritative DNS server at `ns1.gibbr.org`. As part of my master's thesis procrastination, I've been running it on a NixOS machine, where deploying a DNS server is as simple as:
+
+DNS is one of the fundamental building blocks of the modern Internet.
+As part of my master's thesis [@gibbSpatialNameSystem2022], I've been hosting an authoritative DNS server at `ns1.gibbr.org`.
+And as part of my master's thesis procrastination I've been running it on a NixOS machine, where deploying a DNS server is as simple as:
 ```nix
 {
   services.bind = {
@@ -47,28 +50,14 @@ However, to deploy a Mirage unikernel with NixOS, one must use the imperative de
 
 This blog post will explore how we enabled reproducible deployments of Mirage unikernels with Nix.
 
-## MirageOS
-
-![ ^[Credits to Takayuki Imada] ](./mirage-logo.svg){width=50% min-width=5cm}
-
-MirageOS is a library operating system that creates unikernels containing low-level operating system code and high-level application code bundled into one kernel and one address space [@madhavapeddyUnikernelsLibraryOperating2013].
-<!-- security, performance, speed -->
-It was the first such "unikernel creation framework," but it comes from a long lineage of OS research, such as the exokernel library OS architecture [@englerExokernelOperatingSystem].
-Embedding application code in the kernel allows for dead-code elimination, removing OS interfaces that are unused, which reduces the unikernels attack surface and offers improved efficiency.
-
-![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach [@madhavapeddyUnikernelsLibraryOperating2013] ](./mirage-diagram.svg){width=70% min-width=5cm}
-
-Mirage unikernels are written OCaml.
-
-OCaml is a bit more practical than other functional programming languages, such as Haskell for systems programming, because it supports falling back on impure imperative code or mutable variables when warranted.
-
 ## Nix
 
 ![ Nix snowflake^[As 'nix' means snow in Latin. Credits to Tim Cuthbertson.] ](./nix-snowflake.svg){width=60% min-width=5cm}
 
+At this point, the curious reader might be wondering, what is 'Nix'?
+
 Nix is a deployment system that uses cryptographic hashes to compute unique paths for components^[NB: we will use component, dependency, and package somewhat interchangeably in this blog post, as they all fundamentally mean the same thing -- a piece of software.] that are stored in a read-only directory: the Nix store, at `/nix/store/<hash>-<name>`.
-This provides a number of benefits including concurrent installation of multiple versions of a package, atomic upgrades, and 
-multiple user environments [@dolstraNixSafePolicyFree2004].
+This provides several benefits, including concurrent installation of multiple versions of a package, atomic upgrades, and multiple user environments [@dolstraNixSafePolicyFree2004].
 
 Nix uses a declarative domain-specific language (DSL), also called Nix, to build and configure software.
 The snippet used to deploy the DNS server is in fact a Nix expression.
@@ -207,6 +196,20 @@ With flakes, instead of using a Nixpkgs repository version from a 'channel'^[[ni
 <!-- One of the reasons for improving Nix project composing is that there's some discussion around the sustainability of the Nixpkgs monorepo workflow^[https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741](https://discourse.nixos.org/t/nixpkgss-current-development-workflow-is-not-sustainable/18741]. -->
 Integrated with flakes, there is also a new `nix` command aimed at improving the UI of Nix.
 You can read more detail about flakes in a series of blog posts by Eelco on the topic^[[tweag.io/blog/2020-05-25-flakes](https://www.tweag.io/blog/2020-05-25-flakes/)].
+
+## MirageOS
+
+![ ^[Credits to Takayuki Imada] ](./mirage-logo.svg){width=50% min-width=5cm}
+
+MirageOS is a library operating system that creates unikernels containing low-level operating system code and high-level application code bundled into one kernel and one address space [@madhavapeddyUnikernelsLibraryOperating2013].
+<!-- security, performance, speed -->
+It was the first such "unikernel creation framework," but it comes from a long lineage of OS research, such as the exokernel library OS architecture [@englerExokernelOperatingSystem].
+Embedding application code in the kernel allows for dead-code elimination, removing OS interfaces that are unused, which reduces the unikernels attack surface and offers improved efficiency.
+
+![ Contrasting software layers in existing VM appliances vs. unikernel's standalone kernel compilation approach [@madhavapeddyUnikernelsLibraryOperating2013] ](./mirage-diagram.svg){width=70% min-width=5cm}
+
+Mirage unikernels are written OCaml^[Barring the use of foreign function interfaces (FFIs).].
+OCaml is a bit more practical than other functional programming languages, such as Haskell for systems programming, as it supports falling back on impure imperative code or mutable variables when warranted.
 
 ## Deploying Unikernels
 
